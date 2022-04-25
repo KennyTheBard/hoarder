@@ -1,42 +1,40 @@
-import { Card, Center, Container, Grid, Stack, TextInput } from '@mantine/core';
-
+import { Center, Container, Input, Space, Stack } from '@mantine/core';
+import { BoardFeed } from '../../components/BoardFeed';
+import { WebResource } from '../../models/resource';
+import { Search } from 'tabler-icons-react';
 
 export function Home() {
 
-   const entries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-   const getListings = (columnCount: number, entries: Array<any>) => {
-      return (
-         <Grid justify="center">
-            {Array.from(Array(columnCount).keys()).map((columnIndex: number) => getColumn(columnIndex, columnCount, entries))}
-         </Grid>
-      )
-   }
-
-   const getColumn = (columnIndex: number, columnCount: number, entries: Array<any>) => {
-      return (
-         <Grid.Col span={3}>
-            <Stack>
-               {entries.filter((_, index) => index % columnCount === columnIndex).map(entry => {
-                  return(
-                     <Card>
-                        {entry}
-                     </Card>
-                  );
-               })}
-            </Stack>
-         </Grid.Col>
-      )
-   }
+   const entries: WebResource[] = [{
+      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
+      hostname: 'medium.com',
+      type: 'web',
+      tags: ['react', 'generic'],
+      createdTimestamp: new Date().getTime(),
+      updatedTimestamp: new Date().getTime()
+   }, {
+      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
+      hostname: 'medium.com',
+      type: 'web',
+      tags: ['react', 'generic'],
+      createdTimestamp: new Date().getTime(),
+      updatedTimestamp: new Date().getTime()
+   }];
 
    return (
       <>
-         <Container>
+         <Container size="xl">
             <Stack>
+               <Space h={50} />
                <Center>
-                  <TextInput />
+                  <Input
+                     icon={<Search size={16}/>}
+                     placeholder="Search..."
+                  />
                </Center>
-               {getListings(4, entries)}
+               <Space h={20} />
+               <BoardFeed columnCount={4} entries={entries} />
+               {/* TODO: add loading more spinner or "that's all" */}
             </Stack>
          </Container>
       </>

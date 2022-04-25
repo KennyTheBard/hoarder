@@ -8,7 +8,7 @@ export type TextResource = BaseResource<'text'> & {
 }
 
 export type BaseResource<T extends string> = {
-   type : T,
+   type: T,
    tags: string[],
    createdTimestamp: number,
    updatedTimestamp: number
