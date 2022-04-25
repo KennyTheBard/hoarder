@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { MantineProvider } from '@mantine/core';
-window.React = React
+window.React = React;
 
 ReactDOM.render(
   <React.StrictMode>
-    <MantineProvider theme={{ fontFamily: 'Open Sans' }}>
+    <MantineProvider>
       <App />
     </MantineProvider>
   </React.StrictMode>,
