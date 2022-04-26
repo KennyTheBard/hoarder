@@ -1,2 +1,1 @@
-export * from './web-resource-service';
-export * from './text-resource-service';
+export * from './bookmark-service';

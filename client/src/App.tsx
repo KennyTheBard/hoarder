@@ -1,4 +1,3 @@
-import { AppShell, Navbar, Header, Aside, Container } from '@mantine/core';
 import React from 'react';
 import {
   BrowserRouter as Router,
@@ -14,13 +13,17 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
+      <>
+        <div className="background"></div>
+        <div className="App">
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
             </Routes>
           </Router>
-      </div>
+        </div>
+      </>
+
     );
   }
 }

@@ -1,26 +1,25 @@
 import { Grid, Stack } from '@mantine/core';
-import { ReactNode } from 'react';
-import { WebResource } from '../models/resource';
-import { ResourceCard } from './ResourceCard';
+import { Bookmark } from '../models/bookmark';
+import { BookmarkCard } from './BookmarkCard';
 
 
 export interface BoardFeedProps {
    columnCount: number;
-   entries: Array<WebResource>;
+   entries: Array<Bookmark>;
 }
 
 export function BoardFeed(props: BoardFeedProps) {
 
-   const entriesPerColumn: WebResource[][] = Array.from(Array(props.columnCount).keys()).map(e => []);
+   const entriesPerColumn: Bookmark[][] = Array.from(Array(props.columnCount).keys()).map(e => []);
    console.log(entriesPerColumn)
-   props.entries.forEach((entry: WebResource, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
+   props.entries.forEach((entry: Bookmark, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
 
    return (
       <Grid columns={props.columnCount} justify="center">
          {entriesPerColumn.map(entries =>
             <Grid.Col span={1}>
                <Stack>
-                  {entries.map(entry => <ResourceCard resource={entry}/>)}
+                  {entries.map(entry => <BookmarkCard bookmark={entry}/>)}
                </Stack>
             </Grid.Col>
          )}

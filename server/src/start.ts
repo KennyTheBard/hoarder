@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { WebResourceService, TextResourceService } from './services';
+import { BookmarkService } from './services';
 
 (async () => {
    try {
@@ -16,8 +16,7 @@ import { WebResourceService, TextResourceService } from './services';
       const db = mongoClient.db(process.env.MONGO_DATABASE_NAME)
 
       // init services
-      const webResourceService = new WebResourceService(db, process.env.MONGO_COLLECTION_WEB_RESOURCES);
-      const textResourceService = new TextResourceService(db, process.env.MONGO_COLLECTION_TEXT_RESOURCES);
+      const bookmarkService = new BookmarkService(db);
 
       // init app with an websocket server
       const app = express();
