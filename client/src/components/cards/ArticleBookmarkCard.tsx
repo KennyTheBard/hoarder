@@ -2,16 +2,18 @@ import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Card, Center } from '@mantine/core';
 import { ArticleBookmark } from '../../models/bookmark';
 
-export interface ArticleBookmarkCardContentProps {
+export interface ArticleBookmarkCardProps {
    bookmark: ArticleBookmark
 }
 
-export function ArticleBookmarkCardContent(props: ArticleBookmarkCardContentProps) {
+export function ArticleBookmarkCard(props: ArticleBookmarkCardProps) {
+   const bookmark = props.bookmark;
+
    return (
       <Card.Section>
          <Center>
-            <LinkPreview url={props.bookmark.url} imageHeight={150} width={300} descriptionLength={35} />
+            <LinkPreview url={bookmark.url} imageHeight={150} width={300} descriptionLength={35} />
          </Center>
       </Card.Section>
-   )
+   );
 }

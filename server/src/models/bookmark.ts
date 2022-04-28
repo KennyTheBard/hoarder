@@ -13,40 +13,51 @@ export type PlainTextBookmark = BaseBookmark<'text'> & {
 }
 
 export type VideoBookmark = BaseBookmark<'video'> & {
-   platform: string;
+   url: string;
+   title: string;
+   hostname: string;
    lengthInSeconds: number;
 }
 
-export type MovieBookmark = BaseBookmark<'movie'> & {
-   platform?: string;
+export type MediaBookmark = {
+   title: string;
+   isOnNetflix: boolean;
+   posterUrl?: string;
+   premiered: boolean;
+   premieredYear?: number;
+}
+
+export type MovieBookmark = MediaBookmark & BaseBookmark<'movie'> & {
+   imdbUrl?: string;
+   imdbRating?: number;
+}
+
+export type ShowBookmark = MediaBookmark & BaseBookmark<'show'> & {
    imdbUrl: string;
    imdbRating?: number;
-   posterUrl?: string;
-   publishingYear: number;
+   finished: boolean;
+   finishedYear?: number;
+   seasonCount?: number;
 }
 
-export type ShowBookmark = MovieBookmark & BaseBookmark<'show'> & {
-   seasonsCount: number;
-   ongoing: boolean;
-}
-
-export type AnimeBookmark = BaseBookmark<'anime'> & {
-   platform?: string;
-   myAnimeListUrl: string;
-   myAnimeListRating?: number;
-   posterUrl: string;
-   publishingYear?: number;
-   adaptedAfterManga: boolean;
-   episodesCount: number;
+export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
+   myAnimeListUrl?: string;
+   myAnimeListScore?: number;
+   myAnimeListReviewCount?: number;
+   finished: boolean;
+   finishedYear?: number;
+   isAdaptation: boolean;
+   episodeCount?: number;
 }
 
 export type GameBookmark = BaseBookmark<'game'> & {
    url: string;
+   posterUrl?: string;
    title: string;
+   published: boolean;
+   publishedYear?: number;
    platforms: GamePlatform[];
-   stores: GameStore[];
-   reviewScore: number;
-   reviewSource: string;
+   reviews: GameReview[];
 }
 
 export type BaseBookmark<T extends string> = {
@@ -56,28 +67,28 @@ export type BaseBookmark<T extends string> = {
    updatedTimestamp: number
 }
 
-export enum GameStore {
-   STEAM = 'steam',
-   EPIC = 'epic',
-   GOG = 'gog',
-   ITCH = 'itch',
-   MICROSOFT = 'microsoft'
-}
-
 export enum GamePlatform {
    WINDOWS = 'Windows',
    LINUX = 'Linux',
    MAC = 'MacOS',
-   SWITCH = 'Nintendo Switch',
-   ANDROID = 'Android',
-   iOS = 'iOS',
-   PS1 = 'Play Station 1',
-   PS2 = 'Play Station 2',
-   PS3 = 'Play Station 3',
-   PS4 = 'Play Station 4',
-   PS5 = 'Play Station 5',
-   XBOX = 'Xbox',
-   XBOX_360 = 'Xbox 360',
-   XBOX_ONE = 'Xbox One',
-   XBOX_X = 'Xbox Series X'
+   SWITCH = 'Nintendo Switch'
+}
+
+export type GameReview = SteamReview | GogReview;
+
+export type SteamReview = Review<'steam'> & {
+   recentReviews?: string;
+   recentReviewsCount?: number;
+   allReviews?: string;
+   allReviewsCount?: number;
+}
+
+export type GogReview = Review<'gog'> & {
+   overall?: number;
+   verifiedOwners?: number;
+   filtersBased?: number;
+}
+
+export type Review<T extends string> = {
+   source: T
 }

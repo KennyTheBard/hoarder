@@ -2,7 +2,7 @@ import { Badge, Button, Card, Center, Group, Space, Text } from '@mantine/core';
 import { useState } from 'react';
 import { Edit, TrashX } from 'tabler-icons-react';
 import { Bookmark } from '../models/bookmark';
-import { ArticleBookmarkCardContent } from './card-contents/ArticleBookmarkCardContent';
+import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 
 
 export interface BookmarkCardProps {
@@ -16,8 +16,20 @@ export function BookmarkCard(props: BookmarkCardProps) {
    const getCardContentByBookmarkType = () => {
       switch (props.bookmark.type) {
          case 'article':
-            return <ArticleBookmarkCardContent bookmark={props.bookmark}/>
-         default: 
+            return <ArticleBookmarkCard bookmark={props.bookmark} />
+         case 'text':
+            return <PlainTextBookmarkCard bookmark={props.bookmark} />
+         case 'video':
+            return <VideoBookmarkCard bookmark={props.bookmark} />
+         case 'movie':
+            return <MovieBookmarkCard bookmark={props.bookmark} />
+         case 'show':
+            return <ShowBookmarkCard bookmark={props.bookmark} />
+         case 'anime':
+            return <AnimeBookmarkCard bookmark={props.bookmark} />
+         case 'game':
+            return <GameBookmarkCard bookmark={props.bookmark} />
+         default:
             return <></>
       }
    }
@@ -32,7 +44,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          onMouseLeave={() => setExpanded(false)}
       >
          <Space />
-            {getCardContentByBookmarkType()}
+         {getCardContentByBookmarkType()}
          <Space h="lg" />
          <Group>
             {props.bookmark.tags.map(tag => <Badge>{tag}</Badge>)}

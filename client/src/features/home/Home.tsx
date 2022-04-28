@@ -1,7 +1,7 @@
 import { Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/BoardFeed';
 import { Search } from 'tabler-icons-react';
-import { Bookmark } from '../../models/bookmark';
+import { Bookmark, GamePlatform } from '../../models/bookmark';
 
 export function Home() {
 
@@ -14,42 +14,88 @@ export function Home() {
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }, {
-      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
-      hostname: 'medium.com',
-      title: 'text',
-      type: 'article',
+      content: 'This is a text article',
+      type: 'text',
       tags: ['react', 'generic'],
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }, {
-      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
-      hostname: 'medium.com',
-      title: 'text',
-      type: 'article',
+      url: 'https://www.youtube.com/watch?v=Dr5a0L4GxZo',
+      title: 'KnightTrek Productions 20 Years Old',
+      hostname: 'youtube',
+      lengthInSeconds: 783,
+      type: 'video',
       tags: ['react', 'generic'],
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }, {
-      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
-      hostname: 'medium.com',
-      title: 'text',
-      type: 'article',
+      title: 'Skyscraper',
+      isOnNetflix: true,
+      imdbUrl: 'https://www.imdb.com/title/tt5758778',
+      imdbRating: 5.8,
+      posterUrl: 'https://www.imdb.com/title/tt5758778/mediaviewer/rm3930410752',
+      premiered: true,
+      premieredYear: 2011,
+      type: 'movie',
       tags: ['react', 'generic'],
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }, {
-      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
-      hostname: 'medium.com',
-      title: 'text',
-      type: 'article',
+      title: 'The Leftovers',
+      isOnNetflix: true,
+      imdbUrl: 'https://www.imdb.com/title/tt2699128',
+      imdbRating: 8.3,
+      posterUrl: 'https://www.imdb.com/title/tt2699128/mediaviewer/rm3000880896',
+      premiered: true,
+      premieredYear: 2014,
+      finished: true,
+      finishedYear: 2017,
+      seasonCount: 3,
+      type: 'show',
       tags: ['react', 'generic'],
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }, {
-      url: 'https://medium.com/edonec/creating-a-generic-component-with-react-typescript-2c17f8c4386e',
-      hostname: 'medium.com',
-      title: 'text',
-      type: 'article',
+      title: 'Fairy Tail',
+      isOnNetflix: false,
+      myAnimeListUrl: 'https://myanimelist.net/anime/6702/Fairy_Tail',
+      myAnimeListScore: 7.59,
+      myAnimeListReviewCount: 926705,
+      posterUrl: 'https://cdn.myanimelist.net/images/anime/5/18179l.jpg',
+      premiered: true,
+      premieredYear: 2009,
+      finished: true,
+      finishedYear: 2013,
+      isAdaptation: true,
+      episodeCount: 175,
+      type: 'anime',
+      tags: ['react', 'generic'],
+      createdTimestamp: new Date().getTime(),
+      updatedTimestamp: new Date().getTime()
+   }, {
+      url: 'https://store.steampowered.com/app/3830/Psychonauts/',
+      posterUrl: 'https://cdn.cloudflare.steamstatic.com/steam/apps/3830/header.jpg?t=1631142852',
+      title: 'Psychonauts',
+      published: true,
+      publishedYear: 2005,
+      platforms: [
+         GamePlatform.WINDOWS,
+         GamePlatform.LINUX,
+         GamePlatform.MAC
+      ],
+      reviews: [{
+         source: 'steam',
+         recentReviews: 'Overwhelmingly Positive',
+         recentReviewsCount: 138,
+         allReviews: 'Overwhelmingly Positive',
+         allReviewsCount: 8403,
+      }, {
+         source: 'gog',
+         overall: 4.7,
+         verifiedOwners: 4.4,
+         filtersBased: 4.5,
+      }],
+      type: 'game',
       tags: ['react', 'generic'],
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
@@ -62,7 +108,7 @@ export function Home() {
                <Space h={50} />
                <Center>
                   <Input
-                     icon={<Search size={16}/>}
+                     icon={<Search size={16} />}
                      placeholder="Search..."
                   />
                </Center>
