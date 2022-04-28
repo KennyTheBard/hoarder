@@ -1,6 +1,6 @@
-import { Badge, Button, Card, Center, Group, Space, Text } from '@mantine/core';
+import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } from '@mantine/core';
 import { useState } from 'react';
-import { Edit, TrashX } from 'tabler-icons-react';
+import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
 import { Bookmark } from '../models/bookmark';
 import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 
@@ -10,8 +10,6 @@ export interface BookmarkCardProps {
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
-
-   const [expanded, setExpanded] = useState<boolean>(false);
 
    const getCardContentByBookmarkType = () => {
       switch (props.bookmark.type) {
@@ -40,8 +38,6 @@ export function BookmarkCard(props: BookmarkCardProps) {
          radius={6}
          p="xl"
          component="a"
-         onMouseEnter={() => setExpanded(true)}
-         onMouseLeave={() => setExpanded(false)}
       >
          <Space />
          {getCardContentByBookmarkType()}
@@ -50,23 +46,17 @@ export function BookmarkCard(props: BookmarkCardProps) {
             {props.bookmark.tags.map(tag => <Badge>{tag}</Badge>)}
          </Group>
          <Space h="md" />
-         <Text size="xs">
-            {new Date(props.bookmark.createdTimestamp).toLocaleString('ro')}
-         </Text>
-
-         {expanded &&
-            <>
-               <Space h="md" />
-               <Group>
-                  <Button size="xs" leftIcon={<Edit size={14} />}>
-                     Edit
-                  </Button>
-                  <Button size="xs" leftIcon={<TrashX size={14} />} color="red">
-                     Delete
-                  </Button>
-               </Group>
-            </>
-         }
+         <Group position="apart">
+            <Text size="xs">
+               {new Date(props.bookmark.createdTimestamp).toLocaleString('ro')}
+            </Text>
+            <Menu position="right"
+               control={<ActionIcon><Settings/></ActionIcon>}>
+               <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
+               <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
+               <Menu.Item color="red" icon={<Trash size={14} />}>Delete</Menu.Item>
+            </Menu>
+         </Group>
       </Card>
    );
 }
