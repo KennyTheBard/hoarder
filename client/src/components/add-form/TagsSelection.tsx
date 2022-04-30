@@ -12,9 +12,9 @@ export function TagsSelection(props: {
 
    return (<>
       <MultiSelect
-         label="Creatable MultiSelect"
+         label="Tags"
          data={data}
-         placeholder="Select items"
+         placeholder="Select tags"
          searchable
          creatable
          maxDropdownHeight={160}

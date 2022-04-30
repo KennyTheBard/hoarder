@@ -9,7 +9,6 @@ export type ArticleBookmark = BaseBookmark<'article'> & {
    url: string;
    title: string;
    hostname: string;
-   previewUrl?: string;
 }
 
 export type VideoBookmark = BaseBookmark<'video'> & {

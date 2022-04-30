@@ -17,13 +17,13 @@ export function PlainTextBookmarkForm() {
    return (
       <form>
          <Textarea
-            placeholder="Autosize with no rows limit"
-            label="Autosize with no rows limit"
-            autosize
+            placeholder="Your text here..."
+            label="Content"
+            autosize required
             minRows={2}
             {...form.getInputProps('content')}
          />
-         <TagsSelection {...form.getInputProps('content')}/>
+         <TagsSelection {...form.getInputProps('tags')}/>
       </form>
    );
 }

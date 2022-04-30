@@ -1,6 +1,7 @@
 import { Alert, Button, Modal, SimpleGrid } from '@mantine/core';
 import { useState } from 'react';
 import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft } from 'tabler-icons-react';
+import { AnimeBookmarkForm, ArticleBookmarkForm, GameBookmarkForm, MovieBookmarkForm, PlainTextBookmarkForm, ShowBookmarkForm, VideoBookmarkForm } from './forms';
 
 export interface AddBookmarkModalProps {
    opened: boolean;
@@ -19,7 +20,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
             onClick={() => setBookmarkType(bookmarkType.toLowerCase())}
             leftIcon={<Icon size={14} />}
          >
-            Text
+            {bookmarkType}
          </Button>
       );
    }
@@ -27,12 +28,19 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    const getBookmarkFormByType = (bookmarkType: string) => {
       switch (bookmarkType) {
          case 'text':
+            return <PlainTextBookmarkForm/>
          case 'article':
+            return <ArticleBookmarkForm/>
          case 'video':
+            return <VideoBookmarkForm/>
          case 'movie':
+            return <MovieBookmarkForm/>
          case 'show':
+            return <ShowBookmarkForm/>
          case 'anime':
+            return <AnimeBookmarkForm/>
          case 'game':
+            return <GameBookmarkForm/>
          default:
             return <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
                Unknow bookmark type "{bookmarkType}"!
