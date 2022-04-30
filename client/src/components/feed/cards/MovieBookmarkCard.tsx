@@ -1,7 +1,7 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
 import { BrandNetflix } from 'tabler-icons-react';
-import { MovieBookmark } from '../../models/bookmark';
+import { MovieBookmark } from '../../../models/bookmark';
 
 export interface MovieBookmarkCardProps {
    bookmark: MovieBookmark
@@ -12,9 +12,9 @@ export function MovieBookmarkCard(props: MovieBookmarkCardProps) {
 
    return (
       <Card.Section>
-         {bookmark.posterUrl &&
+         {bookmark.imdbUrl &&
             <Center>
-               <LinkPreview url={bookmark.posterUrl} imageHeight={150} width={300} descriptionLength={35} />
+               <LinkPreview url={bookmark.imdbUrl} imageHeight={150} width={300} descriptionLength={35} />
             </Center>
          }
          <Stack>

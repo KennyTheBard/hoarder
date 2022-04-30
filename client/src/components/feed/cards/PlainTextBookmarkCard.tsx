@@ -1,5 +1,5 @@
 import { Card, Text } from '@mantine/core';
-import { PlainTextBookmark } from '../../models/bookmark';
+import { PlainTextBookmark } from '../../../models/bookmark';
 
 export interface PlainTextBookmarkCardProps {
    bookmark: PlainTextBookmark

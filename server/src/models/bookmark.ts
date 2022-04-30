@@ -22,7 +22,6 @@ export type VideoBookmark = BaseBookmark<'video'> & {
 export type MediaBookmark = {
    title: string;
    isOnNetflix: boolean;
-   posterUrl?: string;
    premiered: boolean;
    premieredYear?: number;
 }
@@ -52,7 +51,6 @@ export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
 
 export type GameBookmark = BaseBookmark<'game'> & {
    url: string;
-   posterUrl?: string;
    title: string;
    published: boolean;
    publishedYear?: number;

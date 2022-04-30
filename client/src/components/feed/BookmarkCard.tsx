@@ -1,12 +1,11 @@
 import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } from '@mantine/core';
-import { useState } from 'react';
 import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
-import { Bookmark } from '../models/bookmark';
+import { Bookmark } from '../../models/bookmark';
 import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 
 
 export interface BookmarkCardProps {
-   bookmark: Bookmark
+   bookmark: Bookmark;
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
@@ -43,7 +42,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          {getCardContentByBookmarkType()}
          <Space h="lg" />
          <Group>
-            {props.bookmark.tags.map(tag => <Badge>{tag}</Badge>)}
+            {props.bookmark.tags.map((tag: string) => <Badge>{tag}</Badge>)}
          </Group>
          <Space h="md" />
          <Group position="apart">

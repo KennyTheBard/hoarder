@@ -1,7 +1,7 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
 import { Checks, BrandNetflix, RocketOff, BrandWindows, BrandDebian, DeviceNintendo, BrandApple, BrandAndroid, BrandSteam, BrandAppstore } from 'tabler-icons-react';
-import { GameBookmark, GamePlatform } from '../../models/bookmark';
+import { GameBookmark, GamePlatform } from '../../../models/bookmark';
 
 export interface GameBookmarkCardProps {
    bookmark: GameBookmark
@@ -12,9 +12,9 @@ export function GameBookmarkCard(props: GameBookmarkCardProps) {
 
    return (
       <Card.Section>
-         {bookmark.posterUrl &&
+         {bookmark.url &&
             <Center>
-               <LinkPreview url={bookmark.posterUrl} imageHeight={150} width={300} descriptionLength={35} />
+               <LinkPreview url={bookmark.url} imageHeight={150} width={300} descriptionLength={35} />
             </Center>
          }
          <Stack>

@@ -1,15 +1,15 @@
-export type Bookmark = ArticleBookmark | PlainTextBookmark | VideoBookmark |
+export type Bookmark = PlainTextBookmark | ArticleBookmark | VideoBookmark |
    MovieBookmark | ShowBookmark | AnimeBookmark | GameBookmark;
+
+export type PlainTextBookmark = BaseBookmark<'text'> & {
+   content: string;
+}
 
 export type ArticleBookmark = BaseBookmark<'article'> & {
    url: string;
    title: string;
    hostname: string;
    previewUrl?: string;
-}
-
-export type PlainTextBookmark = BaseBookmark<'text'> & {
-   content: string;
 }
 
 export type VideoBookmark = BaseBookmark<'video'> & {
@@ -22,7 +22,6 @@ export type VideoBookmark = BaseBookmark<'video'> & {
 export type MediaBookmark = {
    title: string;
    isOnNetflix: boolean;
-   posterUrl?: string;
    premiered: boolean;
    premieredYear?: number;
 }
@@ -52,7 +51,6 @@ export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
 
 export type GameBookmark = BaseBookmark<'game'> & {
    url: string;
-   posterUrl?: string;
    title: string;
    published: boolean;
    publishedYear?: number;

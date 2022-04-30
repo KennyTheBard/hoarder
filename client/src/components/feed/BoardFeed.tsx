@@ -1,5 +1,5 @@
 import { Grid, Stack } from '@mantine/core';
-import { Bookmark } from '../models/bookmark';
+import { Bookmark } from '../../models/bookmark';
 import { BookmarkCard } from './BookmarkCard';
 
 

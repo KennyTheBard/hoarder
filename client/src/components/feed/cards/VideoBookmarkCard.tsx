@@ -1,6 +1,6 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Card, Center, Group, Space, Stack, Text } from '@mantine/core';
-import { VideoBookmark } from '../../models/bookmark';
+import { VideoBookmark } from '../../../models/bookmark';
 
 export interface VideoBookmarkCardProps {
    bookmark: VideoBookmark

@@ -1,7 +1,9 @@
-import { Center, Container, Input, Space, Stack } from '@mantine/core';
-import { BoardFeed } from '../../components/BoardFeed';
-import { Search } from 'tabler-icons-react';
+import { Affix, Button, Center, Container, Input, Modal, Space, Stack } from '@mantine/core';
+import { BoardFeed } from '../../components/feed/BoardFeed';
+import { Bookmark as BookmarkIcon, Search } from 'tabler-icons-react';
 import { Bookmark, GamePlatform } from '../../models/bookmark';
+import { useState } from 'react';
+import { AddBookmarkModal } from '../../components/add-form/AddBookmarkModal';
 
 export function Home() {
 
@@ -33,7 +35,6 @@ export function Home() {
       isOnNetflix: true,
       imdbUrl: 'https://www.imdb.com/title/tt5758778',
       imdbRating: 5.8,
-      posterUrl: 'https://www.imdb.com/title/tt5758778/mediaviewer/rm3930410752',
       premiered: true,
       premieredYear: 2011,
       type: 'movie',
@@ -45,7 +46,6 @@ export function Home() {
       isOnNetflix: true,
       imdbUrl: 'https://www.imdb.com/title/tt2699128',
       imdbRating: 8.3,
-      posterUrl: 'https://www.imdb.com/title/tt2699128/mediaviewer/rm3000880896',
       premiered: true,
       premieredYear: 2014,
       finished: true,
@@ -61,7 +61,6 @@ export function Home() {
       myAnimeListUrl: 'https://myanimelist.net/anime/6702/Fairy_Tail',
       myAnimeListScore: 7.59,
       myAnimeListReviewCount: 926705,
-      posterUrl: 'https://cdn.myanimelist.net/images/anime/5/18179l.jpg',
       premiered: true,
       premieredYear: 2009,
       finished: true,
@@ -74,7 +73,6 @@ export function Home() {
       updatedTimestamp: new Date().getTime()
    }, {
       url: 'https://store.steampowered.com/app/3830/Psychonauts/',
-      posterUrl: 'https://cdn.cloudflare.steamstatic.com/steam/apps/3830/header.jpg?t=1631142852',
       title: 'Psychonauts',
       published: true,
       publishedYear: 2005,
@@ -101,6 +99,8 @@ export function Home() {
       updatedTimestamp: new Date().getTime()
    }];
 
+   const [opened, setOpened] = useState(false);
+
    return (
       <>
          <Container size="xl">
@@ -117,6 +117,15 @@ export function Home() {
                {/* TODO: add loading more spinner or "that's all" */}
                <Space h={100} />
             </Stack>
+            <Affix position={{ bottom: 40, right: 40 }}>
+               <Button
+                  leftIcon={<BookmarkIcon />}
+                  onClick={() => setOpened(true)}
+               >
+                  Bookmark
+               </Button>
+            </Affix>
+            <AddBookmarkModal opened={opened} onClose={() => setOpened(false)}/>
          </Container>
       </>
    );

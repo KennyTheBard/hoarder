@@ -1,6 +1,6 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { Card, Center } from '@mantine/core';
-import { ArticleBookmark } from '../../models/bookmark';
+import { ArticleBookmark } from '../../../models/bookmark';
 
 export interface ArticleBookmarkCardProps {
    bookmark: ArticleBookmark

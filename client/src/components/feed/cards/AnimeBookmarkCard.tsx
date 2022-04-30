@@ -1,20 +1,20 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
 import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
-import { BrandNetflix, Checks } from 'tabler-icons-react';
-import { ShowBookmark } from '../../models/bookmark';
+import { Checks, BrandNetflix } from 'tabler-icons-react';
+import { AnimeBookmark } from '../../../models/bookmark';
 
-export interface ShowBookmarkCardProps {
-   bookmark: ShowBookmark
+export interface AnimeBookmarkCardProps {
+   bookmark: AnimeBookmark
 }
 
-export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
+export function AnimeBookmarkCard(props: AnimeBookmarkCardProps) {
    const bookmark = props.bookmark;
 
    return (
       <Card.Section>
-         {bookmark.posterUrl &&
+         {bookmark.myAnimeListUrl &&
             <Center>
-               <LinkPreview url={bookmark.posterUrl} imageHeight={150} width={300} descriptionLength={35} />
+               <LinkPreview url={bookmark.myAnimeListUrl} imageHeight={150} width={300} descriptionLength={35} />
             </Center>
          }
          <Stack>
@@ -31,8 +31,8 @@ export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
                }
             </Group>
             <Group position="apart">
-               <Anchor href={bookmark.imdbUrl} target="_blank">
-                  {bookmark.imdbRating} on IMDB
+               <Anchor href={bookmark.myAnimeListUrl} target="_blank">
+                  {bookmark.myAnimeListScore} ({bookmark.myAnimeListReviewCount}) on MyAnimeList
                </Anchor>
                {bookmark.isOnNetflix &&
                   <ActionIcon variant="transparent">
