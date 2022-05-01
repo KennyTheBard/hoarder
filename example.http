@@ -1,0 +1,5 @@
+
+@PROXY_URL=https://rlp-proxy.herokuapp.com/v2?url=
+
+###
+GET {{PROXY_URL}}https://store.steampowered.com/app/3830/Psychonauts/

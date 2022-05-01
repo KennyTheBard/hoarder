@@ -12,8 +12,6 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
 
    const [bookmarkType, setBookmarkType] = useState<string | null>(null);
 
-
-
    const getBookmarkTypeButton = (bookmarkType: string, Icon: React.FC<IconProps>, color: MantineColor = 'blue') => {
       return (
          <Button
@@ -37,7 +35,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
          <Button variant="subtle" color="green"
             leftIcon={<Check />}
          >
-            Submit
+            Save
          </Button>
       </Group>
    );
@@ -68,7 +66,10 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    return (
       <Modal
          opened={props.opened}
-         onClose={props.onClose}
+         onClose={() => {
+            props.onClose();
+            setTimeout(() => setBookmarkType(null), 300);
+         }}
          title="Add bookmark"
          centered
       >
