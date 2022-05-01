@@ -1,8 +1,9 @@
 import { TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { TagsSelection } from '../TagsSelection';
+import { FormProps } from '../utils';
 
-export function ArticleBookmarkForm() {
+export function ArticleBookmarkForm(props: FormProps) {
    const form = useForm({
       initialValues: {
          url: '',
@@ -22,6 +23,7 @@ export function ArticleBookmarkForm() {
             {...form.getInputProps('url')}
          />
          <TagsSelection {...form.getInputProps('tags')} />
+         {props.actions}
       </form>
    );
 }

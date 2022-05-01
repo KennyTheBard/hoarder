@@ -1,8 +1,9 @@
 import { TextInput, Checkbox } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { TagsSelection } from '../TagsSelection';
+import { FormProps } from '../utils';
 
-export function ShowBookmarkForm() {
+export function ShowBookmarkForm(props: FormProps) {
    const form = useForm({
       initialValues: {
          title: '',
@@ -44,6 +45,7 @@ export function ShowBookmarkForm() {
          />
 
          <TagsSelection {...form.getInputProps('tags')} />
+         {props.actions}
       </form>
    );
 }

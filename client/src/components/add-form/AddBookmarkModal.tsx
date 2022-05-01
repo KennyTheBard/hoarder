@@ -1,6 +1,6 @@
-import { Alert, Button, Modal, SimpleGrid } from '@mantine/core';
+import { Alert, Button, Group, MantineColor, Modal, SimpleGrid, Stack } from '@mantine/core';
 import { useState } from 'react';
-import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft } from 'tabler-icons-react';
+import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft, Check } from 'tabler-icons-react';
 import { AnimeBookmarkForm, ArticleBookmarkForm, GameBookmarkForm, MovieBookmarkForm, PlainTextBookmarkForm, ShowBookmarkForm, VideoBookmarkForm } from './forms';
 
 export interface AddBookmarkModalProps {
@@ -12,35 +12,52 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
 
    const [bookmarkType, setBookmarkType] = useState<string | null>(null);
 
-   
 
-   const getBookmarkTypeButton = (bookmarkType: string, Icon: React.FC<IconProps>) => {
+
+   const getBookmarkTypeButton = (bookmarkType: string, Icon: React.FC<IconProps>, color: MantineColor = 'blue') => {
       return (
          <Button
             onClick={() => setBookmarkType(bookmarkType.toLowerCase())}
-            leftIcon={<Icon size={14} />}
+            leftIcon={<Icon size={18} />}
+            color={color}
          >
             {bookmarkType}
          </Button>
       );
    }
 
+   const formActions = (
+      <Group>
+         <Button variant="subtle" color="red"
+            onClick={() => setBookmarkType(null)}
+            leftIcon={<ChevronLeft />}
+         >
+            Back
+         </Button>
+         <Button variant="subtle" color="green"
+            leftIcon={<Check />}
+         >
+            Submit
+         </Button>
+      </Group>
+   );
+
    const getBookmarkFormByType = (bookmarkType: string) => {
       switch (bookmarkType) {
          case 'text':
-            return <PlainTextBookmarkForm/>
+            return <PlainTextBookmarkForm actions={formActions}/>
          case 'article':
-            return <ArticleBookmarkForm/>
+            return <ArticleBookmarkForm actions={formActions}/>
          case 'video':
-            return <VideoBookmarkForm/>
+            return <VideoBookmarkForm actions={formActions}/>
          case 'movie':
-            return <MovieBookmarkForm/>
+            return <MovieBookmarkForm actions={formActions}/>
          case 'show':
-            return <ShowBookmarkForm/>
+            return <ShowBookmarkForm actions={formActions}/>
          case 'anime':
-            return <AnimeBookmarkForm/>
+            return <AnimeBookmarkForm actions={formActions}/>
          case 'game':
-            return <GameBookmarkForm/>
+            return <GameBookmarkForm actions={formActions}/>
          default:
             return <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
                Unknow bookmark type "{bookmarkType}"!
@@ -56,23 +73,18 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
          centered
       >
          {bookmarkType ?
-            <>
+            <Stack align="center" spacing="lg">
                {getBookmarkFormByType(bookmarkType!)}
-               <Button variant="subtle" color="gray"
-                  onClick={() => setBookmarkType(null)}
-                  leftIcon={<ChevronLeft />}
-               >
-                  Back
-               </Button>
-            </> :
-            <SimpleGrid cols={2}>
-               {getBookmarkTypeButton('Text', FileText)}
+
+            </Stack> :
+            <SimpleGrid cols={1}>
+               {getBookmarkTypeButton('Text', FileText, 'indigo')}
                {getBookmarkTypeButton('Article', News)}
-               {getBookmarkTypeButton('Video', Video)}
-               {getBookmarkTypeButton('Movie', Movie)}
-               {getBookmarkTypeButton('Show', DeviceTv)}
-               {getBookmarkTypeButton('Anime', Disc)}
-               {getBookmarkTypeButton('Game', DeviceGamepad)}
+               {getBookmarkTypeButton('Video', Video, 'cyan')}
+               {getBookmarkTypeButton('Movie', Movie, 'teal')}
+               {getBookmarkTypeButton('Show', DeviceTv, 'green')}
+               {getBookmarkTypeButton('Anime', Disc, 'lime')}
+               {getBookmarkTypeButton('Game', DeviceGamepad, 'yellow')}
             </SimpleGrid>
          }
 

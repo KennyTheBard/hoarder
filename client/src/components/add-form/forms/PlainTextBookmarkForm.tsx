@@ -1,9 +1,10 @@
 import { Textarea } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { TagsSelection } from '../TagsSelection';
+import { FormProps } from '../utils';
 
 
-export function PlainTextBookmarkForm() {
+export function PlainTextBookmarkForm(props: FormProps) {
    const form = useForm({
       initialValues: {
          content: '',
@@ -24,6 +25,7 @@ export function PlainTextBookmarkForm() {
             {...form.getInputProps('content')}
          />
          <TagsSelection {...form.getInputProps('tags')}/>
+         {props.actions}
       </form>
    );
 }

@@ -1,8 +1,9 @@
 import { TextInput, Checkbox } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import { TagsSelection } from '../TagsSelection';
+import { FormProps } from '../utils';
 
-export function AnimeBookmarkForm() {
+export function AnimeBookmarkForm(props: FormProps) {
    const form = useForm({
       initialValues: {
          title: '',
@@ -51,6 +52,7 @@ export function AnimeBookmarkForm() {
          />
 
          <TagsSelection {...form.getInputProps('tags')} />
+         {props.actions}
       </form>
    );
 }
