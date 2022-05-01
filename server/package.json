@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "nodemon -r dotenv/config build/server.js dotenv_config_path=.env",
-    "start-prod": "node -r dotenv/config build/server.js dotenv_config_path=.env"
+    "start": "nodemon -r dotenv/config build/start.js dotenv_config_path=.env",
+    "start-prod": "node -r dotenv/config build/start.js dotenv_config_path=.env"
   },
   "author": "KennyTheBard",
   "license": "MIT",

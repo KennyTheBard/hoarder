@@ -7,7 +7,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] use redux for client state management
 - [ ] create a `Dockerfile` for each service
 - [ ] create `docker-compose.yml` for the entire project
-- [ ] add a proxy for URL metadata retrieveal
+- [ ] add a proxy for URL metadata retrieveal (inside the server)
 - [ ] refactor add forms to be reusable for edit forms as well
 - [ ] retrieve suggestions for title (with URL metadata)
 - [ ] autofill form fields based on URL metadata
