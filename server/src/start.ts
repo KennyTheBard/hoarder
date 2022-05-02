@@ -4,7 +4,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, BookmarkController, GetBookmarksRequest, GetBookmarksResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, BookmarkController, DeleteBookmarkRequest, GetBookmarksRequest, GetBookmarksResponse, UpdateBookmarkRequest } from './controllers';
 import { postHandler } from './utils/endpoint-handlers';
 
 (async () => {
@@ -38,6 +38,12 @@ import { postHandler } from './utils/endpoint-handlers';
       ));
       app.post('/api/bookmark/getBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
          bookmarkController.getBookmarks
+      ));
+      app.post('/api/bookmark/updateBookmark', postHandler<UpdateBookmarkRequest, void>(
+         bookmarkController.updateBookmark
+      ));
+      app.post('/api/bookmark/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
+         bookmarkController.deleteBookmark
       ));
       
 

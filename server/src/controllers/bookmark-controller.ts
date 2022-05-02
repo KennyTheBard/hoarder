@@ -1,39 +1,33 @@
 import { BookmarkService } from '../services';
 import { Bookmark } from '../models';
-import { WithId } from '../utils';
 
 export class BookmarkController {
 
    constructor(
       private readonly bookmarkService: BookmarkService
-   ) {}
+   ) { }
 
    public addBookmark = async (request: AddBookmarkRequest): Promise<AddBookmarkResponse> => {
       const savedId = await this.bookmarkService.addBookmark(request);
-      return savedId ? {
-         success: true,
+      return {
          id: savedId
-      } : {
-         success: false,
-         error: 'Could not add bookmark'
       };
    }
 
    public getBookmarks = async (request: GetBookmarksRequest): Promise<GetBookmarksResponse> => {
       const bookmarks = await this.bookmarkService.getAllBookmarks();
-
       return {
          count: bookmarks.length,
          bookmarks
       }
    }
 
-   public async updateBookmark(req: Request, res: Response) {
-      
+   public updateBookmark = async (request: UpdateBookmarkRequest): Promise<void> => {
+      await this.bookmarkService.updateBookmark(request.id, request.bookmark);
    }
 
-   public async deleteBookmark(req: Request, res: Response) {
-      
+   public deleteBookmark = async (request: DeleteBookmarkRequest): Promise<void> => {
+      await this.bookmarkService.deleteBookmark(request.id);
    }
 
 }
@@ -41,11 +35,7 @@ export class BookmarkController {
 export type AddBookmarkRequest = Bookmark;
 
 export type AddBookmarkResponse = {
-   success: true;
    id: string;
-} | {
-   success: false;
-   error: string;
 };
 
 export type GetBookmarksRequest = Partial<{
@@ -59,4 +49,13 @@ export type GetBookmarksRequest = Partial<{
 export type GetBookmarksResponse = {
    count: number;
    bookmarks: Bookmark[];
-}
+};
+
+export type UpdateBookmarkRequest = {
+   id: string;
+   bookmark: Partial<Bookmark>;
+};
+
+export type DeleteBookmarkRequest = {
+   id: string;
+};
