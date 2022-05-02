@@ -5,7 +5,7 @@
 GET {{PROXY_URL}}https://store.steampowered.com/app/3830/Psychonauts/
 
 ###
-POST http://localhost:3000/api/bookmark/addBookmark
+POST http://localhost:3000/api/addBookmark
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/api/bookmark/getBookmarks
+POST http://localhost:3000/api/getBookmarks
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/api/bookmark/updateBookmark
+POST http://localhost:3000/api/updateBookmark
 Content-Type: application/json
 
 {

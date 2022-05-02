@@ -33,16 +33,16 @@ import { postHandler } from './utils/endpoint-handlers';
 
 
       // add endpoints
-      app.post('/api/bookmark/addBookmark', postHandler<AddBookmarkRequest, AddBookmarkResponse>(
+      app.post('/api/addBookmark', postHandler<AddBookmarkRequest, AddBookmarkResponse>(
          bookmarkController.addBookmark
       ));
-      app.post('/api/bookmark/getBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
+      app.post('/api/getBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
          bookmarkController.getBookmarks
       ));
-      app.post('/api/bookmark/updateBookmark', postHandler<UpdateBookmarkRequest, void>(
+      app.post('/api/updateBookmark', postHandler<UpdateBookmarkRequest, void>(
          bookmarkController.updateBookmark
       ));
-      app.post('/api/bookmark/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
+      app.post('/api/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
          bookmarkController.deleteBookmark
       ));
       
