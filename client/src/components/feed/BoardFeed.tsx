@@ -11,7 +11,6 @@ export interface BoardFeedProps {
 export function BoardFeed(props: BoardFeedProps) {
 
    const entriesPerColumn: Bookmark[][] = Array.from(Array(props.columnCount).keys()).map(e => []);
-   console.log(entriesPerColumn)
    props.entries.forEach((entry: Bookmark, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
 
    return (

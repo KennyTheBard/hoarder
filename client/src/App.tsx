@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import {
   BrowserRouter as Router,
   Route,
@@ -7,13 +8,14 @@ import {
 
 import './App.css';
 import { Home } from './features/home/Home';
+import { store } from './redux/store';
 
 
 export default class App extends React.Component {
 
   render() {
     return (
-      <>
+      <Provider store={store}>
         <div className="background"></div>
         <div className="App">
           <Router>
@@ -22,8 +24,7 @@ export default class App extends React.Component {
             </Routes>
           </Router>
         </div>
-      </>
-
+      </Provider>
     );
   }
 }

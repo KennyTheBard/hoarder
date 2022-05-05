@@ -2,6 +2,7 @@ import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } fro
 import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
 import { Bookmark } from '../../models/bookmark';
 import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
+import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 
 
 export interface BookmarkCardProps {
@@ -27,7 +28,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          case 'game':
             return <GameBookmarkCard bookmark={props.bookmark} />
          default:
-            return <></>
+            return <UnknownBookmarkCard bookmark={props.bookmark} />
       }
    }
 
@@ -42,15 +43,21 @@ export function BookmarkCard(props: BookmarkCardProps) {
          {getCardContentByBookmarkType()}
          <Space h="lg" />
          <Group>
-            {props.bookmark.tags.map((tag: string) => <Badge>{tag}</Badge>)}
+            {props.bookmark.tags 
+               ? props.bookmark.tags.map((tag: string) => <Badge>{tag}</Badge>)
+               : 'Missing tags'
+            }
          </Group>
          <Space h="md" />
          <Group position="apart">
             <Text size="xs">
-               {new Date(props.bookmark.createdTimestamp).toLocaleString('ro')}
+               {props.bookmark.createdTimestamp
+                  ? new Date(props.bookmark.createdTimestamp).toLocaleString('ro')
+                  : 'Missing creation date'
+               }
             </Text>
             <Menu position="right"
-               control={<ActionIcon><Settings/></ActionIcon>}>
+               control={<ActionIcon><Settings /></ActionIcon>}>
                <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
                <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
                <Menu.Item color="red" icon={<Trash size={14} />}>Delete</Menu.Item>
