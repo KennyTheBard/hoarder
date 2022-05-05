@@ -14,9 +14,9 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Media Queries to make the side mobile friendly
 - [ ] expose endpoints
   - [ ] bookmarks 
-    - [ ] save bookmark
-    - [ ] delete bookmark
-    - [ ] update bookmark
+    - [x] save bookmark
+    - [x] delete bookmark
+    - [x] update bookmark
     - [ ] get bookmarks + filters
   - [ ] tags
     - [ ] create tags
