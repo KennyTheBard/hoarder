@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Bookmark } from '../../models/bookmark';
 import { Pagination, paginationToDatabasePage } from '../../models/page';
 import axios from 'axios';
+import { WithId } from '../../utils/with-id';
 
 
 export const getBookmarks = createAsyncThunk(
@@ -21,7 +22,7 @@ export const getBookmarks = createAsyncThunk(
 );
 
 interface BookmarksState {
-   bookmarks: Bookmark[];
+   bookmarks: WithId<Bookmark>[];
 }
 
 const initialState: BookmarksState = {
@@ -40,7 +41,7 @@ export const bookmarkSlice = createSlice({
       // }
    },
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<Bookmark[]>) => {
+      .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
          state.bookmarks = action.payload;
       })
 });

@@ -1,11 +1,11 @@
-import { Affix, Button, Center, Container, Input, Modal, Space, Stack } from '@mantine/core';
+import { Affix, Button, Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/feed/BoardFeed';
 import { Bookmark as BookmarkIcon, Search } from 'tabler-icons-react';
 import { Bookmark, GamePlatform } from '../../models/bookmark';
 import { useState } from 'react';
 import { AddBookmarkModal } from '../../components/add-form/AddBookmarkModal';
 import { getBookmarks } from '../../redux/slices/bookmarkSlice';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 
 export function Home() {
 
@@ -102,7 +102,6 @@ export function Home() {
    }];
 
    const [opened, setOpened] = useState(false);
-   const bookmarks = useAppSelector((state) => state.bookmarksList.bookmarks);
    const dispatch = useAppDispatch();
 
    return (
@@ -117,7 +116,7 @@ export function Home() {
                   />
                </Center>
                <Space h={20} />
-               <BoardFeed columnCount={4} entries={bookmarks} />
+               <BoardFeed columnCount={4} />
                {/* TODO: add loading more spinner or "that's all" */}
                <Space h={100} />
             </Stack>

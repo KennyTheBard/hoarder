@@ -37,7 +37,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          shadow="sm"
          radius={6}
          p="xl"
-         component="a"
+         component="div"
       >
          <Space />
          {getCardContentByBookmarkType()}
