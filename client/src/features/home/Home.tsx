@@ -115,6 +115,11 @@ export function Home() {
                      placeholder="Search..."
                   />
                </Center>
+               <Button onClick={() => dispatch(getBookmarks({
+                  size: 20, index: 0
+               }))}>
+                  Load
+               </Button>
                <Space h={20} />
                <BoardFeed columnCount={4} />
                {/* TODO: add loading more spinner or "that's all" */}
@@ -128,12 +133,7 @@ export function Home() {
                   Bookmark
                </Button>
             </Affix>
-            <Button onClick={() => dispatch(getBookmarks({
-               size: 20, index: 0
-            }))}>
-               Load
-            </Button>
-            <AddBookmarkModal opened={opened} onClose={() => setOpened(false)}/>
+            <AddBookmarkModal opened={opened} onClose={() => setOpened(false)} />
          </Container>
       </>
    );

@@ -9,15 +9,23 @@ export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (page: Pagination, thunkAPI) => {
       const dbPage = paginationToDatabasePage(page);
-      // const { data } = await got.post('http://localhost:8080/api/getBookmarks', {
-      //    json: {
-      //       ...dbPage
-      //    }
-      // }).json();
       const { data } = await axios.post('http://localhost:8080/api/getBookmarks', {
          ...dbPage
       });
       return data.bookmarks;
+   }
+);
+
+export const deleteBookmark = createAsyncThunk(
+   'bookmark/deleteBookmark',
+   async (bookmarkId: string, thunkAPI) => {
+      await axios.post('http://localhost:8080/api/deleteBookmark', {
+         id: bookmarkId
+      });
+      thunkAPI.dispatch(getBookmarks({
+         size: 20,
+         index: 0
+      }))
    }
 );
 

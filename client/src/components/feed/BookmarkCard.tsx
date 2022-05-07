@@ -1,15 +1,20 @@
 import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } from '@mantine/core';
 import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
 import { Bookmark } from '../../models/bookmark';
+import { useAppDispatch } from '../../redux/hooks';
+import { deleteBookmark } from '../../redux/slices/bookmarkSlice';
+import { WithId } from '../../utils/with-id';
 import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 
 
 export interface BookmarkCardProps {
-   bookmark: Bookmark;
+   bookmark: WithId<Bookmark>;
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
+
+   const dispatch = useAppDispatch();
 
    const getCardContentByBookmarkType = () => {
       switch (props.bookmark.type) {
@@ -60,7 +65,12 @@ export function BookmarkCard(props: BookmarkCardProps) {
                control={<ActionIcon><Settings /></ActionIcon>}>
                <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
                <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
-               <Menu.Item color="red" icon={<Trash size={14} />}>Delete</Menu.Item>
+               <Menu.Item color="red"
+                  icon={<Trash size={14} />}
+                  onClick={() => dispatch(deleteBookmark(props.bookmark._id))}
+               >
+                  Delete
+               </Menu.Item>
             </Menu>
          </Group>
       </Card>
