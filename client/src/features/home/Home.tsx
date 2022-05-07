@@ -101,7 +101,7 @@ export function Home() {
       updatedTimestamp: new Date().getTime()
    }];
    
-   const opened = useAppSelector((state) => state.modals.isOpened);
+   const opened = useAppSelector((state) => state.modal.isOpened);
    const dispatch = useAppDispatch();
 
    return (

@@ -40,14 +40,7 @@ const initialState: BookmarksState = {
 export const bookmarkSlice = createSlice({
    name: 'bookmark',
    initialState,
-   reducers: {
-      // add: (state: BookmarksState, action: PayloadAction<number>) => {
-      //    state.value += action.payload
-      // },
-      // substract: (state: BookmarksState, action: PayloadAction<number>) => {
-      //    state.value -= action.payload
-      // }
-   },
+   reducers: {},
    extraReducers: (builder) => builder
       .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
          state.bookmarks = action.payload;

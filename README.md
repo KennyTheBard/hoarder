@@ -7,7 +7,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] use redux for client state management
 - [ ] create a `Dockerfile` for each service
 - [ ] create `docker-compose.yml` for the entire project
-- [ ] add a proxy for URL metadata retrieveal (inside the server)
+- [x] add a proxy for URL metadata retrieveal (inside the server)
 - [ ] refactor add forms to be reusable for edit forms as well
 - [ ] retrieve suggestions for title (with URL metadata)
 - [ ] Media Queries to make the side mobile friendly
@@ -22,7 +22,7 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [ ] get all tags
     - [ ] edit tag 
   - [ ] get URL suggestions
-    - [ ] get metadata
+    - [x] get metadata
     - [ ] IMDB suggestions
     - [ ] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
