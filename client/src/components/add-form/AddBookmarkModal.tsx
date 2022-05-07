@@ -1,7 +1,7 @@
 import { Alert, Button, Group, MantineColor, Modal, SimpleGrid, Stack } from '@mantine/core';
 import { useState } from 'react';
 import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft, Check } from 'tabler-icons-react';
-import { AnimeBookmarkForm, ArticleBookmarkForm, GameBookmarkForm, MovieBookmarkForm, PlainTextBookmarkForm, ShowBookmarkForm, VideoBookmarkForm } from './forms';
+import { AnimeBookmarkForm, ArticleBookmarkForm, GameBookmarkForm, MovieBookmarkForm, ShowBookmarkForm, VideoBookmarkForm } from './forms';
 
 export interface AddBookmarkModalProps {
    opened: boolean;
@@ -42,10 +42,10 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
 
    const getBookmarkFormByType = (bookmarkType: string) => {
       switch (bookmarkType) {
-         case 'text':
-            return <PlainTextBookmarkForm actions={formActions}/>
          case 'article':
             return <ArticleBookmarkForm actions={formActions}/>
+         case 'tool':
+            return <></>
          case 'video':
             return <VideoBookmarkForm actions={formActions}/>
          case 'movie':

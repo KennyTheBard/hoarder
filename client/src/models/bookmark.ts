@@ -1,25 +1,23 @@
-export type Bookmark = PlainTextBookmark | ArticleBookmark | VideoBookmark |
+export type Bookmark = ArticleBookmark | ToolBookmark | VideoBookmark |
    MovieBookmark | ShowBookmark | AnimeBookmark | GameBookmark;
 
-export type PlainTextBookmark = BaseBookmark<'text'> & {
-   content: string;
+export type ArticleBookmark = BaseBookmark<'article'> & {
+   description: string;
 }
 
-export type ArticleBookmark = BaseBookmark<'article'> & {
-   url: string;
-   title: string;
-   hostname: string;
+export type ToolBookmark = BaseBookmark<'tool'> & {
+   isOpenSource: boolean;
+   isWebsite: boolean;
+   isFree: boolean;
+   hasFreeTier: boolean;
 }
 
 export type VideoBookmark = BaseBookmark<'video'> & {
-   url: string;
-   title: string;
    hostname: string;
    lengthInSeconds: number;
 }
 
 export type MediaBookmark = {
-   title: string;
    isOnNetflix: boolean;
    premiered: boolean;
    premieredYear?: number;
@@ -39,7 +37,6 @@ export type ShowBookmark = MediaBookmark & BaseBookmark<'show'> & {
 }
 
 export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
-   myAnimeListUrl?: string;
    myAnimeListScore?: number;
    myAnimeListReviewCount?: number;
    finished: boolean;
@@ -50,7 +47,6 @@ export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
 
 export type GameBookmark = BaseBookmark<'game'> & {
    url: string;
-   title: string;
    published: boolean;
    publishedYear?: number;
    platforms: GamePlatform[];
@@ -59,6 +55,8 @@ export type GameBookmark = BaseBookmark<'game'> & {
 
 export type BaseBookmark<T extends string> = {
    type: T,
+   title: string;
+   url: string;
    tags: string[],
    createdTimestamp: number,
    updatedTimestamp: number

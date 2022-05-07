@@ -6,6 +6,7 @@ import { TagsSelection } from '../TagsSelection';
 import { enhanceInputProps, FormProps } from '../utils';
 import debounce from 'lodash.debounce';
 import { useCallback } from 'react';
+import { MetadataPreview } from '../utils/MetadataPreview';
 
 export function ArticleBookmarkForm(props: FormProps) {
    const form = useForm({
@@ -38,7 +39,11 @@ export function ArticleBookmarkForm(props: FormProps) {
             {...enhanceInputProps(form.getInputProps('url'), onUrlChange)}
          />
 
-         {JSON.stringify(metadata)}
+         {/* TODO: add condition to check if the preview url and current url are the same */}
+         {metadata !== undefined && <MetadataPreview metadata={metadata} ignore={{
+            title: false,
+            image: false
+         }} />}
 
          <TagsSelection {...form.getInputProps('tags')} />
          {props.actions}

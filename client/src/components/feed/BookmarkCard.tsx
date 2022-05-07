@@ -4,7 +4,7 @@ import { Bookmark } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
 import { deleteBookmark } from '../../redux/slices/bookmarkSlice';
 import { WithId } from '../../utils/with-id';
-import { ArticleBookmarkCard, PlainTextBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
+import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 
 
@@ -20,8 +20,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
       switch (props.bookmark.type) {
          case 'article':
             return <ArticleBookmarkCard bookmark={props.bookmark} />
-         case 'text':
-            return <PlainTextBookmarkCard bookmark={props.bookmark} />
+         case 'tool':
+            return <></>
          case 'video':
             return <VideoBookmarkCard bookmark={props.bookmark} />
          case 'movie':

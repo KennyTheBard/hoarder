@@ -12,9 +12,9 @@ export function AnimeBookmarkCard(props: AnimeBookmarkCardProps) {
 
    return (
       <Card.Section>
-         {bookmark.myAnimeListUrl &&
+         {bookmark.url &&
             <Center>
-               <LinkPreview url={bookmark.myAnimeListUrl} imageHeight={150} width={300} descriptionLength={35} />
+               <LinkPreview url={bookmark.url} imageHeight={150} width={300} descriptionLength={35} />
             </Center>
          }
          <Stack>
@@ -31,7 +31,7 @@ export function AnimeBookmarkCard(props: AnimeBookmarkCardProps) {
                }
             </Group>
             <Group position="apart">
-               <Anchor href={bookmark.myAnimeListUrl} target="_blank">
+               <Anchor href={bookmark.url} target="_blank">
                   {bookmark.myAnimeListScore} ({bookmark.myAnimeListReviewCount}) on MyAnimeList
                </Anchor>
                {bookmark.isOnNetflix &&
