@@ -1,11 +1,11 @@
-import { Affix, Button, Center, Container, Input, Space, Stack } from '@mantine/core';
+import { Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/feed/BoardFeed';
-import { Bookmark as BookmarkIcon, Search } from 'tabler-icons-react';
+import { Search } from 'tabler-icons-react';
 import { Bookmark, GamePlatform } from '../../models/bookmark';
 import { useState } from 'react';
 import { AddBookmarkModal } from '../../components/add-form/AddBookmarkModal';
-import { getBookmarks } from '../../redux/slices/bookmarkSlice';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setOpened } from '../../redux/slices';
 
 export function Home() {
 
@@ -100,8 +100,8 @@ export function Home() {
       createdTimestamp: new Date().getTime(),
       updatedTimestamp: new Date().getTime()
    }];
-
-   const [opened, setOpened] = useState(false);
+   
+   const opened = useAppSelector((state) => state.modals.isOpened);
    const dispatch = useAppDispatch();
 
    return (
@@ -115,25 +115,12 @@ export function Home() {
                      placeholder="Search..."
                   />
                </Center>
-               <Button onClick={() => dispatch(getBookmarks({
-                  size: 20, index: 0
-               }))}>
-                  Load
-               </Button>
                <Space h={20} />
                <BoardFeed columnCount={4} />
                {/* TODO: add loading more spinner or "that's all" */}
                <Space h={100} />
             </Stack>
-            <Affix position={{ bottom: 40, right: 40 }}>
-               <Button
-                  leftIcon={<BookmarkIcon />}
-                  onClick={() => setOpened(true)}
-               >
-                  Bookmark
-               </Button>
-            </Affix>
-            <AddBookmarkModal opened={opened} onClose={() => setOpened(false)} />
+            <AddBookmarkModal opened={opened} onClose={() => dispatch(setOpened(false))} />
          </Container>
       </>
    );
