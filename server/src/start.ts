@@ -3,9 +3,9 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, BookmarkController, DeleteBookmarkRequest, GetBookmarksRequest, GetBookmarksResponse, UpdateBookmarkRequest } from './controllers';
-import { postHandler } from './utils/endpoint-handlers';
+import { BookmarkService, MetadataService } from './services';
+import { AddBookmarkRequest, AddBookmarkResponse, BookmarkController, DeleteBookmarkRequest, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, UpdateBookmarkRequest } from './controllers';
+import { postHandler } from './utils';
 
 (async () => {
    try {
@@ -19,9 +19,11 @@ import { postHandler } from './utils/endpoint-handlers';
 
       // init services
       const bookmarkService = new BookmarkService(db);
+      const metadataService = new MetadataService();
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
+      const metadataController = new MetadataController(metadataService);
 
       // init app with an websocket server
       const app = express();
@@ -44,6 +46,9 @@ import { postHandler } from './utils/endpoint-handlers';
       ));
       app.post('/api/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
          bookmarkController.deleteBookmark
+      ));
+      app.post('/api/getUrlMetadata', postHandler<GetUrlMetadataRequest, GetUrlMetadataResponse>(
+         metadataController.getUrlMetadata
       ));
       
 
