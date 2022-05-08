@@ -12,9 +12,9 @@ export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
 
    return (
       <Card.Section>
-         {bookmark.imdbUrl &&
+         {bookmark.url &&
             <Center>
-               <LinkPreview url={bookmark.imdbUrl} imageHeight={150} width={300} descriptionLength={35} />
+               <LinkPreview url={bookmark.url} imageHeight={150} width={300} descriptionLength={35} />
             </Center>
          }
          <Stack>
@@ -22,16 +22,16 @@ export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
             <Group position="apart">
                <Text>
                   {bookmark.title} ({bookmark.premieredYear}
-                  {bookmark.finished && ` - ${bookmark.finishedYear}`})
+                  {bookmark.isFinished && ` - ${bookmark.finishedYear}`})
                </Text>
-               {bookmark.finished &&
+               {bookmark.isFinished &&
                   <ActionIcon variant="transparent">
                      <Checks />
                   </ActionIcon>
                }
             </Group>
             <Group position="apart">
-               <Anchor href={bookmark.imdbUrl} target="_blank">
+               <Anchor href={bookmark.url} target="_blank">
                   {bookmark.imdbRating} on IMDB
                </Anchor>
                {bookmark.isOnNetflix &&

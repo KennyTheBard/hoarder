@@ -16,6 +16,7 @@ export type MetadataComplete = {
 }
 
 export interface Metadata {
+   url: string;
    title: string | null;
    description: string | null;
    image: string | null;

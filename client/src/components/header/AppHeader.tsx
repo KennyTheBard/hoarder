@@ -1,7 +1,7 @@
 import { Anchor, Button, Group, Header, Image } from '@mantine/core'
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/hooks';
-import { getBookmarks } from '../../redux/slices/bookmarkSlice';
+import { getBookmarks } from '../../redux/slices/bookmarkListSlice';
 import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
 import { setOpened } from '../../redux/slices';
 

@@ -1,9 +1,7 @@
 import { Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/feed/BoardFeed';
 import { Search } from 'tabler-icons-react';
-import { Bookmark, GamePlatform } from '../../models/bookmark';
-import { useState } from 'react';
-import { AddBookmarkModal } from '../../components/add-form/AddBookmarkModal';
+import { AddBookmarkModal } from '../../components/bookmark-form/AddBookmarkModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setOpened } from '../../redux/slices';
 

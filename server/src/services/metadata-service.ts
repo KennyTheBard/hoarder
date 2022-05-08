@@ -31,6 +31,7 @@ export class MetadataService {
       const { hostname } = new URL(url);
 
       return {
+         url,
          title,
          description,
          image,

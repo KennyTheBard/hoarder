@@ -3,29 +3,40 @@ import { Metadata } from '../../../models';
 
 export type MetadataPreviewProps = {
    metadata: Metadata;
-   ignore: {
-      title: boolean;
-      image: boolean;
-   }
+   ignore?: MetadataPreviewIgnore;
+};
+
+export type MetadataPreviewIgnore = {
+   title?: boolean;
+   description?: boolean;
+   image?: boolean;
 };
 
 export function MetadataPreview(props: MetadataPreviewProps) {
 
    return (
       <Stack>
-         {props.metadata.image && !props.ignore.image &&
+         {props.metadata.image && (!props.ignore || !props.ignore.image) &&
             <Image
                radius="md"
                src={props.metadata.image!}
                alt="Preview"
             />
          }
-         {props.metadata.title && !props.ignore.title &&
+         {props.metadata.title && (!props.ignore || !props.ignore.title) &&
             <Text
                component="span"
                size="lg" weight={600}
             >
                {props.metadata.title!}
+            </Text>
+         }
+         {props.metadata.description && (!props.ignore || !props.ignore.description) &&
+            <Text
+               component="span"
+               size="md"
+            >
+               {props.metadata.description!}
             </Text>
          }
       </Stack>

@@ -22,9 +22,9 @@ export function AnimeBookmarkCard(props: AnimeBookmarkCardProps) {
             <Group position="apart">
                <Text>
                   {bookmark.title} ({bookmark.premieredYear}
-                  {bookmark.finished && ` - ${bookmark.finishedYear}`})
+                  {bookmark.isFinished && ` - ${bookmark.finishedYear}`})
                </Text>
-               {bookmark.finished &&
+               {bookmark.isFinished &&
                   <ActionIcon variant="transparent">
                      <Checks />
                   </ActionIcon>

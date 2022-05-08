@@ -2,7 +2,7 @@ import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } fro
 import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
 import { Bookmark } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
-import { deleteBookmark } from '../../redux/slices/bookmarkSlice';
+import { deleteBookmark } from '../../redux/slices/bookmarkListSlice';
 import { WithId } from '../../utils/with-id';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';

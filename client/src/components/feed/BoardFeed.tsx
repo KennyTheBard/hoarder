@@ -12,7 +12,7 @@ export interface BoardFeedProps {
 export function BoardFeed(props: BoardFeedProps) {
 
    const entriesPerColumn: WithId<Bookmark>[][] = Array.from(Array(props.columnCount).keys()).map(() => []);
-   const bookmarks = useAppSelector((state) => state.bookmarks.bookmarks);
+   const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
    bookmarks.forEach((entry: WithId<Bookmark>, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
 
    return (

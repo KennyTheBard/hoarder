@@ -1,6 +1,15 @@
 export type Bookmark = ArticleBookmark | ToolBookmark | VideoBookmark |
    MovieBookmark | ShowBookmark | AnimeBookmark | GameBookmark;
 
+export type BaseBookmark<T extends string> = {
+   type: T,
+   title: string;
+   url: string;
+   tags: string[],
+   createdTimestamp: number,
+   updatedTimestamp: number
+}
+
 export type ArticleBookmark = BaseBookmark<'article'> & {
    description: string;
 }
@@ -17,29 +26,27 @@ export type VideoBookmark = BaseBookmark<'video'> & {
    lengthInSeconds: number;
 }
 
-export type MediaBookmark = {
+export type MediaBookmarkMixin = {
    isOnNetflix: boolean;
-   premiered: boolean;
+   hasPremiered: boolean;
    premieredYear?: number;
 }
 
-export type MovieBookmark = MediaBookmark & BaseBookmark<'movie'> & {
-   imdbUrl?: string;
+export type MovieBookmark = MediaBookmarkMixin & BaseBookmark<'movie'> & {
    imdbRating?: number;
 }
 
-export type ShowBookmark = MediaBookmark & BaseBookmark<'show'> & {
-   imdbUrl: string;
+export type ShowBookmark = MediaBookmarkMixin & BaseBookmark<'show'> & {
    imdbRating?: number;
-   finished: boolean;
+   isFinished: boolean;
    finishedYear?: number;
    seasonCount?: number;
 }
 
-export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
+export type AnimeBookmark = MediaBookmarkMixin & BaseBookmark<'anime'> & {
    myAnimeListScore?: number;
    myAnimeListReviewCount?: number;
-   finished: boolean;
+   isFinished: boolean;
    finishedYear?: number;
    isAdaptation: boolean;
    episodeCount?: number;
@@ -47,19 +54,10 @@ export type AnimeBookmark = MediaBookmark & BaseBookmark<'anime'> & {
 
 export type GameBookmark = BaseBookmark<'game'> & {
    url: string;
-   published: boolean;
-   publishedYear?: number;
+   isLaunched: boolean;
+   launchYear?: number;
    platforms: GamePlatform[];
    reviews: GameReview[];
-}
-
-export type BaseBookmark<T extends string> = {
-   type: T,
-   title: string;
-   url: string;
-   tags: string[],
-   createdTimestamp: number,
-   updatedTimestamp: number
 }
 
 export enum GamePlatform {

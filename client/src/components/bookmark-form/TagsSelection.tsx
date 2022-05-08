@@ -1,10 +1,7 @@
 import { MultiSelect } from '@mantine/core';
+import { GenericInputProps } from './utils';
 
-export function TagsSelection(props: {
-   [x: string]: any;
-   onChange: any;
-   error: React.ReactNode;
-}) {
+export function TagsSelection(props: GenericInputProps) {
    const data = [
       { value: 'react', label: 'React' },
       { value: 'ng', label: 'Angular' }

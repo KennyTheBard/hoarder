@@ -1,13 +1,12 @@
-import { metadataReducer } from './slices/metadataSlice';
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkReducer, modalReducer } from './slices';
+import {  bookmarkListReducer, addBookmarkReducer, modalReducer } from './slices';
 
 
 export const store = configureStore({
    reducer: {
-      bookmarks: bookmarkReducer,
+      bookmarkList: bookmarkListReducer,
       modal: modalReducer,
-      metadata: metadataReducer
+      addBookmark: addBookmarkReducer
    }
 });
 

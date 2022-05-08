@@ -1,6 +1,6 @@
 import { LinkPreview } from '@dhaiwat10/react-link-preview';
-import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
-import { Checks, BrandNetflix, RocketOff, BrandWindows, BrandDebian, DeviceNintendo, BrandApple, BrandAndroid, BrandSteam, BrandAppstore } from 'tabler-icons-react';
+import { ActionIcon, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
+import { RocketOff, BrandWindows, DeviceNintendo, BrandApple, BrandSteam } from 'tabler-icons-react';
 import { GameBookmark, GamePlatform } from '../../../models/bookmark';
 
 export interface GameBookmarkCardProps {
@@ -21,9 +21,9 @@ export function GameBookmarkCard(props: GameBookmarkCardProps) {
             <Space />
             <Group position="apart">
                <Text>
-                  {bookmark.title} ({bookmark.publishedYear || 'TBD'})
+                  {bookmark.title} ({bookmark.launchYear || 'TBD'})
                </Text>
-               {!bookmark.published &&
+               {!bookmark.isLaunched &&
                   <ActionIcon variant="transparent">
                      <RocketOff />
                   </ActionIcon>

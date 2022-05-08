@@ -1,3 +1,10 @@
+
+export type GenericInputProps = {
+   [x: string]: any;
+   onChange: any;
+   error: Record<string | number, React.ReactNode>[string | number];
+}
+
 export function enhanceInputProps(inputProps: GenericInputProps, customOnChange: (...args: any) => void): GenericInputProps {
    const originalOnChange = inputProps.onChange;
    return {
@@ -9,11 +16,4 @@ export function enhanceInputProps(inputProps: GenericInputProps, customOnChange:
          }
       } 
    }
-}
-
-
-export type GenericInputProps = {
-   [x: string]: any;
-   onChange: any;
-   error: Record<string | number, React.ReactNode>[string | number];
 }

@@ -29,24 +29,23 @@ export const deleteBookmark = createAsyncThunk(
    }
 );
 
-interface BookmarksState {
+interface BookmarksListState {
    bookmarks: WithId<Bookmark>[];
 }
 
-const initialState: BookmarksState = {
+const initialState: BookmarksListState = {
    bookmarks: []
 };
 
-export const bookmarkSlice = createSlice({
-   name: 'bookmark',
+export const bookmarkListSlice = createSlice({
+   name: 'bookmarkList',
    initialState,
    reducers: {},
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
+      .addCase(getBookmarks.fulfilled, (state: BookmarksListState, action: PayloadAction<WithId<Bookmark>[]>) => {
          state.bookmarks = action.payload;
       })
 });
 
-// export const { add, substract } = bookmarkSlice.actions;
-export const bookmarkReducer = bookmarkSlice.reducer;
+export const bookmarkListReducer = bookmarkListSlice.reducer;
 
