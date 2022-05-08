@@ -18,8 +18,8 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [x] update bookmark
     - [ ] get bookmarks + filters
   - [ ] tags
-    - [ ] create tags
-    - [ ] get all tags
+    - [x] create tags
+    - [x] get all tags
     - [ ] edit tag 
   - [ ] get URL suggestions
     - [x] get metadata
@@ -27,4 +27,4 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [ ] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
 - [ ] autofill form fields based on URL metadata
-- replace modal slice with ModalManager
+- [ ] replace modal slice with ModalManager
