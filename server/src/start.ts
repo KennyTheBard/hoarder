@@ -3,8 +3,8 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, MetadataService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, BookmarkController, DeleteBookmarkRequest, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, UpdateBookmarkRequest } from './controllers';
+import { BookmarkService, MetadataService, TagService } from './services';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest } from './controllers';
 import { postHandler } from './utils';
 
 (async () => {
@@ -20,10 +20,12 @@ import { postHandler } from './utils';
       // init services
       const bookmarkService = new BookmarkService(db);
       const metadataService = new MetadataService();
+      const tagService = new TagService(db);
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
       const metadataController = new MetadataController(metadataService);
+      const tagController = new TagController(tagService);
 
       // init app with an websocket server
       const app = express();
@@ -32,7 +34,6 @@ import { postHandler } from './utils';
       app.use(cors());
       app.use(express.json());
       app.use(new ErrorHandlerMiddleware().use);
-
 
       // add endpoints
       app.post('/api/addBookmark', postHandler<AddBookmarkRequest, AddBookmarkResponse>(
@@ -50,8 +51,13 @@ import { postHandler } from './utils';
       app.post('/api/getUrlMetadata', postHandler<GetUrlMetadataRequest, GetUrlMetadataResponse>(
          metadataController.getUrlMetadata
       ));
+      app.post('/api/addTag', postHandler<AddTagRequest, AddTagResponse>(
+         tagController.addTag
+      ));
+      app.post('/api/getTags', postHandler<void, GetTagsResponse>(
+         tagController.getTags
+      ));
       
-
       // start server
       const port = process.env.PORT;
       app.listen(port, () => {

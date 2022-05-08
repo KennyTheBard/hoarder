@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkListReducer, addBookmarkReducer, modalReducer } from './slices';
+import { bookmarkListReducer, addBookmarkReducer, modalReducer, tagsReducer } from './slices';
 
 
 export const store = configureStore({
    reducer: {
       bookmarkList: bookmarkListReducer,
       modal: modalReducer,
-      addBookmark: addBookmarkReducer
+      addBookmark: addBookmarkReducer,
+      tags: tagsReducer,
    },
    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
       .concat(({ dispatch, getState }) => next => action => {

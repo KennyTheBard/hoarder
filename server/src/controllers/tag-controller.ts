@@ -1,20 +1,35 @@
-import { Request, Response } from 'express';
-
+import { Tag } from '../models';
+import { TagService } from '../services';
 
 export class TagController {
 
-   constructor() {}
+   constructor(
+      private readonly tagService: TagService,
+   ) {}
 
-   public async getAllTags(req: Request, res: Response) {
-      
+   public getTags = async (): Promise<GetTagsResponse> => {
+      const tags = await this.tagService.getAllTags();
+      return {
+         count: tags.length,
+         tags: tags
+      }
    }
 
-   public async createNewTag(req: Request, res: Response) {
-      
+   public addTag = async (request: AddTagRequest): Promise<AddTagResponse> => {
+      const savedId = await this.tagService.addTag(request);
+      return {
+         id: savedId
+      };
    }
-
-   public async updateTag(req: Request, res: Response) {
-      
-   }
-
 }
+
+export type GetTagsResponse = {
+   count: number;
+   tags: Tag[];
+}
+
+export type AddTagRequest = Tag;
+
+export type AddTagResponse = {
+   id: string;
+};
