@@ -1,9 +1,13 @@
 import { Alert, Button, Group, MantineColor, Modal, SimpleGrid, Stack, Stepper } from '@mantine/core';
 import { useState } from 'react';
 import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft, Check, Tool } from 'tabler-icons-react';
+import { Metadata } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getUrlMetadata, setTitle, setUrl } from '../../redux/slices';
 import { AnimeDetailsForm, ArticleDetailsForm, GameDetailsForm, MovieDetailsForm, ShowDetailsForm, VideoDetailsForm } from './details';
 import { GeneralDetailsForm } from './GeneralDetailsForm';
 import { TagsSelection } from './TagsSelection';
+import { MetadataPreview } from './utils';
 
 export interface AddBookmarkModalProps {
    opened: boolean;
@@ -16,6 +20,9 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    const [active, setActive] = useState(0);
    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+
+   const metadata = useAppSelector((state) => state.addBookmark.metadata);
+   const dispatch = useAppDispatch();
 
    const getBookmarkTypeButton = (bookmarkType: string, Icon: React.FC<IconProps>, color: MantineColor = 'blue') => {
       return (
@@ -110,7 +117,25 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
             </Stepper.Step>
 
             <Stepper.Step label="URL & Title" description="General for all" allowStepSelect={active > 1}>
-               <GeneralDetailsForm titleLabel={getTitleLabelByType(bookmarkType)} urlLabel={getUrlLabelByType(bookmarkType)} />
+               <GeneralDetailsForm
+                  urlLabel={getUrlLabelByType(bookmarkType)}
+                  titleLabel={getTitleLabelByType(bookmarkType)}
+                  onUrlChange={(url: string) => {
+                     dispatch(setUrl(url));
+                     dispatch(getUrlMetadata(url))
+                        .unwrap()
+                        .then((data: Metadata) => {
+                           if (data.title !== null && data.title !== '') dispatch(setTitle(data.title));
+                        });
+                  }}
+                  onTitleChange={(title: string) => {
+                     dispatch(setTitle(title));
+                  }}
+               >
+                  {metadata !== undefined &&
+                     <MetadataPreview metadata={metadata} />
+                  }
+               </GeneralDetailsForm>
             </Stepper.Step>
 
             <Stepper.Step label="Details" description="Specific for type" allowStepSelect={active > 2}>

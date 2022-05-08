@@ -2,6 +2,7 @@ import { Box, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import debounce from 'lodash.debounce';
 import { useCallback } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import { enhanceInputProps } from './utils';
 
 export type GeneralDetailsFormProps = {
@@ -13,6 +14,9 @@ export type GeneralDetailsFormProps = {
 }
 
 export function GeneralDetailsForm(props: GeneralDetailsFormProps) {
+
+   const title = useAppSelector((state) => state.addBookmark.title);
+   const url = useAppSelector((state) => state.addBookmark.url);
 
    const form = useForm({
       initialValues: {
@@ -49,12 +53,14 @@ export function GeneralDetailsForm(props: GeneralDetailsFormProps) {
             <TextInput
                placeholder="https://..."
                label={props.urlLabel || 'URL'}
+               value={url || form.values.url}
                required
                {...enhanceInputProps(form.getInputProps('url'), onUrlChange)}
             />
 
             <TextInput
                label={props.titleLabel || 'Title'}
+               value={title || form.values.title}
                required
                {...enhanceInputProps(form.getInputProps('title'), onTitleChange)}
             />

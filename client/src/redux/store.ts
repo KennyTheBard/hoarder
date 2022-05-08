@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import {  bookmarkListReducer, addBookmarkReducer, modalReducer } from './slices';
+import { bookmarkListReducer, addBookmarkReducer, modalReducer } from './slices';
 
 
 export const store = configureStore({
@@ -7,7 +7,12 @@ export const store = configureStore({
       bookmarkList: bookmarkListReducer,
       modal: modalReducer,
       addBookmark: addBookmarkReducer
-   }
+   },
+   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+      .concat(({ dispatch, getState }) => next => action => {
+         next(action);
+         console.log(getState());
+      })
 });
 
 export type RootState = ReturnType<typeof store.getState>;

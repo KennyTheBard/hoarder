@@ -41,12 +41,42 @@ const initialState: AddBookmarksState = {
 export const addBookmarkSlice = createSlice({
    name: 'addBookmark',
    initialState,
-   reducers: {},
+   reducers: {
+      setType: (state: AddBookmarksState, action: PayloadAction<string>) => {
+         state.type = action.payload
+      },
+      setTitle: (state: AddBookmarksState, action: PayloadAction<string>) => {
+         state.title = action.payload
+      },
+      setUrl: (state: AddBookmarksState, action: PayloadAction<string>) => {
+         state.url = action.payload
+      },
+      setDetails: (state: AddBookmarksState, action: PayloadAction<{
+         name: string,
+         value: any
+      }>) => {
+         state.details[action.payload.name] = action.payload.value
+      },
+      resetBookmarkForm: (state: AddBookmarksState, action: PayloadAction<void>) => {
+         state.type = null;
+         state.title = null;
+         state.url = null;
+         state.details = {};
+         state.tags = [];
+      },
+   },
    extraReducers: (builder) => builder
-   .addCase(getUrlMetadata.fulfilled, (state: AddBookmarksState, action: PayloadAction<Metadata | undefined>) => {
-      state.metadata = action.payload;
-   })
+      .addCase(getUrlMetadata.fulfilled, (state: AddBookmarksState, action: PayloadAction<Metadata | undefined>) => {
+         state.metadata = action.payload;
+      })
 });
 
+export const {
+   setType,
+   setTitle,
+   setUrl,
+   setDetails,
+   resetBookmarkForm
+} = addBookmarkSlice.actions;
 export const addBookmarkReducer = addBookmarkSlice.reducer;
 

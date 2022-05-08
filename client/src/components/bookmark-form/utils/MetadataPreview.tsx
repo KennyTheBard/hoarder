@@ -18,7 +18,7 @@ export function MetadataPreview(props: MetadataPreviewProps) {
       <Stack>
          {props.metadata.image && (!props.ignore || !props.ignore.image) &&
             <Image
-               radius="md"
+               radius="md" fit="contain" height={300}
                src={props.metadata.image!}
                alt="Preview"
             />

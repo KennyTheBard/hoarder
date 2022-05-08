@@ -27,4 +27,4 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [ ] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
 - [ ] autofill form fields based on URL metadata
-- 
+- replace modal slice with ModalManager
