@@ -1,4 +1,4 @@
-import { TextInput } from '@mantine/core';
+import { Box, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 import debounce from 'lodash.debounce';
 import { useCallback } from 'react';
@@ -45,21 +45,22 @@ export function GeneralDetailsForm(props: GeneralDetailsFormProps) {
 
    return (
       <form>
-         <TextInput
-            placeholder="https://..."
-            label={props.urlLabel || 'URL'}
-            required
-            {...enhanceInputProps(form.getInputProps('url'), onUrlChange)}
-         />
+         <Stack align="center" justify="space-around" spacing="lg">
+            <TextInput
+               placeholder="https://..."
+               label={props.urlLabel || 'URL'}
+               required
+               {...enhanceInputProps(form.getInputProps('url'), onUrlChange)}
+            />
 
-         <TextInput
-            label={props.titleLabel || 'Title'}
-            required
-            {...enhanceInputProps(form.getInputProps('title'), onTitleChange)}
-         />
+            <TextInput
+               label={props.titleLabel || 'Title'}
+               required
+               {...enhanceInputProps(form.getInputProps('title'), onTitleChange)}
+            />
 
-         {props.children}
-
+            {props.children}
+         </Stack>
       </form>
    );
 }

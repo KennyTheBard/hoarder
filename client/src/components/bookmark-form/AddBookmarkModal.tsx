@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft, Check, Tool } from 'tabler-icons-react';
 import { AnimeDetailsForm, ArticleDetailsForm, GameDetailsForm, MovieDetailsForm, ShowDetailsForm, VideoDetailsForm } from './details';
 import { GeneralDetailsForm } from './GeneralDetailsForm';
+import { TagsSelection } from './TagsSelection';
 
 export interface AddBookmarkModalProps {
    opened: boolean;
@@ -109,19 +110,19 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
             </Stepper.Step>
 
             <Stepper.Step label="URL & Title" description="General for all" allowStepSelect={active > 1}>
-               <Stack align="center" spacing="lg">
-                  <GeneralDetailsForm titleLabel={getTitleLabelByType(bookmarkType)} urlLabel={getUrlLabelByType(bookmarkType)} />
-               </Stack>
+               <GeneralDetailsForm titleLabel={getTitleLabelByType(bookmarkType)} urlLabel={getUrlLabelByType(bookmarkType)} />
             </Stepper.Step>
 
             <Stepper.Step label="Details" description="Specific for type" allowStepSelect={active > 2}>
-               <Stack align="center" spacing="lg">
+               <Stack align="center" justify="space-around" spacing="lg">
                   {getBookmarkFormByType(bookmarkType!)}
                </Stack>
             </Stepper.Step>
 
             <Stepper.Step label="Tags" description="Used for querying" allowStepSelect={active > 3}>
-               Step 3 content: Get full access
+               <Stack align="center" justify="space-around" spacing="lg">
+                  <TagsSelection />
+               </Stack>
             </Stepper.Step>
 
             <Stepper.Completed>

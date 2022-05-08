@@ -1,4 +1,4 @@
-import { Checkbox } from '@mantine/core';
+import { Checkbox, Stack } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 
 export function MovieDetailsForm() {
@@ -11,11 +11,13 @@ export function MovieDetailsForm() {
 
    return (
       <form>
-         <Checkbox
-            mt="md"
-            label="On netflix"
-            {...form.getInputProps('isOnNetflix', { type: 'checkbox' })}
-         />
+         <Stack align="center" justify="space-around" spacing="lg">
+            <Checkbox
+               mt="md"
+               label="On netflix"
+               {...form.getInputProps('isOnNetflix', { type: 'checkbox' })}
+            />
+         </Stack>
       </form>
    );
 }

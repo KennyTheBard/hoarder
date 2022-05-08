@@ -1,4 +1,4 @@
-import { Checkbox, MultiSelect } from '@mantine/core';
+import { Checkbox, MultiSelect, Stack } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 
 export function GameDetailsForm() {
@@ -13,22 +13,24 @@ export function GameDetailsForm() {
 
    return (
       <form>
-         <Checkbox
-            mt="md"
-            label="Is published"
-            {...form.getInputProps('launched', { type: 'checkbox' })}
-         />
+         <Stack align="center" justify="space-around" spacing="lg">
+            <Checkbox
+               mt="md"
+               label="Is published"
+               {...form.getInputProps('launched', { type: 'checkbox' })}
+            />
 
-         <MultiSelect
-            label="Platform available on"
-            data={[
-               { value: 'Windows', label: 'Windows' },
-               { value: 'Linux', label: 'Linux' },
-               { value: 'MacOS', label: 'MacOS' },
-               { value: 'Nintendo Switch', label: 'Nintendo Switch' },
-            ]}
-            {...form.getInputProps('platforms')}
-         />
+            <MultiSelect
+               label="Platform available on"
+               data={[
+                  { value: 'Windows', label: 'Windows' },
+                  { value: 'Linux', label: 'Linux' },
+                  { value: 'MacOS', label: 'MacOS' },
+                  { value: 'Nintendo Switch', label: 'Nintendo Switch' },
+               ]}
+               {...form.getInputProps('platforms')}
+            />
+         </Stack>
       </form>
    );
 }
