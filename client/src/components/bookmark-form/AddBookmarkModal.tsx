@@ -1,13 +1,12 @@
-import { Alert, Button, Group, MantineColor, Modal, SimpleGrid, Stack, Stepper } from '@mantine/core';
-import { useState } from 'react';
-import { DeviceGamepad, DeviceTv, Disc, FileText, IconProps, Movie, News, Video, AlertCircle, ChevronLeft, Check, Tool } from 'tabler-icons-react';
-import { Metadata } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getUrlMetadata, setTitle, setUrl } from '../../redux/slices';
-import { AnimeDetailsForm, ArticleDetailsForm, GameDetailsForm, MovieDetailsForm, ShowDetailsForm, VideoDetailsForm } from './details';
-import { GeneralDetailsForm } from './GeneralDetailsForm';
-import { TagsSelection } from './TagsSelection';
+import { Box, Button, Card, Container, Group, Modal, Select, Space, Stack, TextInput } from '@mantine/core';
+import debounce from 'lodash.debounce';
+import { useCallback, useState } from 'react';
+import { Trash } from 'tabler-icons-react';
+import { Bookmark, Metadata } from '../../models';
+import { useAppDispatch } from '../../redux/hooks';
+import { getUrlMetadata } from '../../redux/slices';
 import { MetadataPreview } from './utils';
+import { TagsSelect } from './utils/TagsSelect';
 
 export interface AddBookmarkModalProps {
    opened: boolean;
@@ -16,31 +15,13 @@ export interface AddBookmarkModalProps {
 
 export function AddBookmarkModal(props: AddBookmarkModalProps) {
 
-   const [bookmarkType, setBookmarkType] = useState<string | null>(null);
-   const [active, setActive] = useState(0);
-   const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
-   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+   const [bookmark, setBookmark] = useState<Partial<Bookmark>>({});
 
-   const metadata = useAppSelector((state) => state.addBookmark.metadata);
+   const [metadata, setMetadata] = useState<Metadata | null>(null);
    const dispatch = useAppDispatch();
 
-   const getBookmarkTypeButton = (bookmarkType: string, Icon: React.FC<IconProps>, color: MantineColor = 'blue') => {
-      return (
-         <Button
-            onClick={() => {
-               setBookmarkType(bookmarkType.toLowerCase());
-               nextStep();
-            }}
-            leftIcon={<Icon size={18} />}
-            color={color}
-         >
-            {bookmarkType}
-         </Button>
-      );
-   }
-
-   const getTitleLabelByType = (bookmarkType: string | null): string | undefined => {
-      switch (bookmarkType) {
+   const getTitleLabelByType = (): string | undefined => {
+      switch (bookmark.type) {
          case 'game':
          case 'tool':
             return 'Name'
@@ -53,10 +34,10 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
       }
    }
 
-   const getUrlLabelByType = (bookmarkType: string | null): string | undefined => {
-      switch (bookmarkType) {
+   const getUrlLabelByType = (): string | undefined => {
+      switch (bookmark.type) {
          case 'tool':
-            return 'website or repository URL'
+            return 'Website or repository URL'
          case 'show':
          case 'movie':
             return 'IMDB URL'
@@ -69,117 +50,121 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
       }
    }
 
-   const getBookmarkFormByType = (bookmarkType: string) => {
-      switch (bookmarkType) {
+   const getActionOnTitleUpdateByType = () => {
+      switch (bookmark.type) {
          case 'article':
-            return <ArticleDetailsForm />
-         case 'tool':
-            return <></>
          case 'video':
-            return <VideoDetailsForm />
-         case 'movie':
-            return <MovieDetailsForm />
+         case 'tool':
          case 'show':
-            return <ShowDetailsForm />
+         case 'movie':
          case 'anime':
-            return <AnimeDetailsForm />
          case 'game':
-            return <GameDetailsForm />
          default:
-            return <Alert icon={<AlertCircle size={16} />} title="Bummer!" color="red">
-               Unknow bookmark type "{bookmarkType}"!
-            </Alert>
+            return undefined;
       }
    }
+
+   const onUrlChange = debounce((url: string) => {
+      dispatch(getUrlMetadata(url))
+         .unwrap()
+         .then((data: Metadata | undefined) => {
+            if (!data) {
+               return;
+            }
+            setBookmark({
+               ...bookmark,
+               title: data.title || bookmark.title,
+               imageUrl: data.image || bookmark.imageUrl
+            });
+            setMetadata(data);
+         });
+   }, 500);
+
+   const onTitleChange = debounce((title: string) => console.log(title), 500);
 
    return (
       <Modal
          opened={props.opened}
          onClose={() => {
             props.onClose();
-            setTimeout(() => setBookmarkType(null), 300);
+            setTimeout(() => setBookmark({}), 300);
          }}
          title="Add bookmark"
-         size="55%"
+         padding="md"
+         size={metadata === null ? "md" : "xl"}
          centered
       >
-         <Stepper active={active} onStepClick={setActive} breakpoint="sm">
-            <Stepper.Step label="Type" description="Bookmark type" allowStepSelect={active > 0}>
-               <SimpleGrid cols={2} spacing="md">
-                  {getBookmarkTypeButton('Article', News)}
-                  {getBookmarkTypeButton('Tool', Tool, 'indigo')}
-                  {getBookmarkTypeButton('Video', Video, 'cyan')}
-                  {getBookmarkTypeButton('Movie', Movie, 'teal')}
-                  {getBookmarkTypeButton('Show', DeviceTv, 'green')}
-                  {getBookmarkTypeButton('Anime', Disc, 'lime')}
-                  {getBookmarkTypeButton('Game', DeviceGamepad, 'yellow')}
-               </SimpleGrid>
-            </Stepper.Step>
+         <Group direction="row" position="apart" spacing="xl" grow>
+            <Stack align="center" justify="space-around" spacing="lg">
+               <Select
+                  label="What type of bookmark is this?"
+                  placeholder="Pick one"
+                  nothingFound="Nothing..."
+                  searchable
+                  maxDropdownHeight={400}
+                  value={bookmark.type || null}
+                  data={[
+                     { value: 'article', label: 'Article' },
+                     { value: 'tool', label: 'Tool' },
+                     { value: 'video', label: 'Video' },
+                     { value: 'movie', label: 'Movie' },
+                     { value: 'show', label: 'Show' },
+                     { value: 'anime', label: 'Anime' },
+                     { value: 'game', label: 'Game' },
+                  ]}
+                  onChange={(value: 'article' | 'tool' | 'video' | 'movie' | 'show' | 'anime' | 'game' | null) => setBookmark({
+                     ...bookmark,
+                     type: value || undefined
+                  })}
+               />
 
-            <Stepper.Step label="URL & Title" description="General for all" allowStepSelect={active > 1}>
-               <GeneralDetailsForm
-                  urlLabel={getUrlLabelByType(bookmarkType)}
-                  titleLabel={getTitleLabelByType(bookmarkType)}
-                  onUrlChange={(url: string) => {
-                     dispatch(setUrl(url));
-                     dispatch(getUrlMetadata(url))
-                        .unwrap()
-                        .then((data: Metadata) => {
-                           if (data.title !== null && data.title !== '') dispatch(setTitle(data.title));
-                        });
+               <TextInput
+                  placeholder="https://..."
+                  label={getUrlLabelByType() || 'URL'}
+                  value={bookmark.url}
+                  required
+                  disabled={bookmark.type === undefined}
+                  onChange={(event) => {
+                     setBookmark({
+                        ...bookmark,
+                        url: event.target.value
+                     });
+                     onUrlChange(event.currentTarget.value);
                   }}
-                  onTitleChange={(title: string) => {
-                     dispatch(setTitle(title));
+               />
+
+               <TextInput
+                  label={getTitleLabelByType() || 'Title'}
+                  value={bookmark.title}
+                  required
+                  disabled={bookmark.type === undefined}
+                  onChange={(event) => {
+                     setBookmark({
+                        ...bookmark,
+                        title: event.target.value
+                     });
+                     onTitleChange(event.currentTarget.value)
                   }}
-               >
-                  {metadata !== undefined &&
-                     <MetadataPreview metadata={metadata} />
-                  }
-               </GeneralDetailsForm>
-            </Stepper.Step>
+               />
 
-            <Stepper.Step label="Details" description="Specific for type" allowStepSelect={active > 2}>
-               <Stack align="center" justify="space-around" spacing="lg">
-                  {getBookmarkFormByType(bookmarkType!)}
-               </Stack>
-            </Stepper.Step>
+               <TagsSelect disabled={bookmark.type === undefined} />
+            </Stack>
+            {metadata !== null &&
+               <Card>
+                  <MetadataPreview metadata={metadata} />
 
-            <Stepper.Step label="Tags" description="Used for querying" allowStepSelect={active > 3}>
-               <Stack align="center" justify="space-around" spacing="lg">
-                  <TagsSelection />
-               </Stack>
-            </Stepper.Step>
-
-            <Stepper.Completed>
-               Completed, click back button to get to previous step
-            </Stepper.Completed>
-         </Stepper>
-
-         <Group>
-            <Button variant="subtle" color="red"
-               onClick={() => prevStep()}
-               leftIcon={<ChevronLeft />}
-            >
-               Back
-            </Button>
-            {active <= 3 && active !== 0 &&
-               <Button variant="subtle" color="green"
-                  onClick={() => nextStep()}
-                  leftIcon={<Check />}
-               >
-                  Next
-               </Button>
+                  <Button
+                  color="red"
+                  leftIcon={<Trash />}
+                  onClick={() => setMetadata(null)}
+                  >
+                     Drop metadata
+                  </Button>
+               </Card>
             }
-            {active > 3 &&
-               <Button variant="subtle" color="green"
-                  leftIcon={<Check />}
-               >
-                  Save
-               </Button>
-            }
-
          </Group>
 
+         <Space h="lg" />
       </Modal >
    );
 }

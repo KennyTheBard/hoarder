@@ -3,8 +3,9 @@ export type Bookmark = ArticleBookmark | ToolBookmark | VideoBookmark |
 
 export type BaseBookmark<T extends string> = {
    type: T,
-   title: string;
-   url: string;
+   title: string,
+   url: string,
+   imageUrl?: string,
    tags: string[],
    createdTimestamp: number,
    updatedTimestamp: number
@@ -53,7 +54,6 @@ export type AnimeBookmark = MediaBookmarkMixin & BaseBookmark<'anime'> & {
 }
 
 export type GameBookmark = BaseBookmark<'game'> & {
-   url: string;
    isLaunched: boolean;
    launchYear?: number;
    platforms: GamePlatform[];

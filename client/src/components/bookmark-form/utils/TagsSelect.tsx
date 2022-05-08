@@ -1,6 +1,10 @@
 import { MultiSelect } from '@mantine/core';
 
-export function TagsSelection() {
+export type TagsSelectProps = {
+   disabled?: boolean;
+};
+
+export function TagsSelect(props: TagsSelectProps) {
    const data = [
       { value: 'react', label: 'React' },
       { value: 'ng', label: 'Angular' }
@@ -13,6 +17,7 @@ export function TagsSelection() {
          placeholder="Select tags"
          searchable
          creatable
+         disabled={props.disabled}
          maxDropdownHeight={160}
          getCreateLabel={(query) => `Create tag: ${query}`}
          onCreate={(query) => console.log(`Add ${query}`)}

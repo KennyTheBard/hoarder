@@ -1,2 +1,2 @@
-export * from './enhance-input-props';
+export * from './TagsSelect';
 export * from './MetadataPreview';

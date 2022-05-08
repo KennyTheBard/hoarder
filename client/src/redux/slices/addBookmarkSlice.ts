@@ -27,7 +27,6 @@ interface AddBookmarksState {
       [key: string]: any
    }
    tags: string[];
-   metadata?: Metadata;
 }
 
 const initialState: AddBookmarksState = {
@@ -64,11 +63,7 @@ export const addBookmarkSlice = createSlice({
          state.details = {};
          state.tags = [];
       },
-   },
-   extraReducers: (builder) => builder
-      .addCase(getUrlMetadata.fulfilled, (state: AddBookmarksState, action: PayloadAction<Metadata | undefined>) => {
-         state.metadata = action.payload;
-      })
+   }
 });
 
 export const {

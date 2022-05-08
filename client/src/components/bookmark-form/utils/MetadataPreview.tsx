@@ -1,4 +1,4 @@
-import { Stack, Image, Text } from '@mantine/core';
+import { Image, Text, Stack } from '@mantine/core';
 import { Metadata } from '../../../models';
 
 export type MetadataPreviewProps = {
@@ -15,10 +15,10 @@ export type MetadataPreviewIgnore = {
 export function MetadataPreview(props: MetadataPreviewProps) {
 
    return (
-      <Stack>
+      <Stack align="center" justify="space-around">
          {props.metadata.image && (!props.ignore || !props.ignore.image) &&
             <Image
-               radius="md" fit="contain" height={300}
+               radius="md" fit="contain" width={300}
                src={props.metadata.image!}
                alt="Preview"
             />
@@ -31,6 +31,7 @@ export function MetadataPreview(props: MetadataPreviewProps) {
                {props.metadata.title!}
             </Text>
          }
+         <br />
          {props.metadata.description && (!props.ignore || !props.ignore.description) &&
             <Text
                component="span"
