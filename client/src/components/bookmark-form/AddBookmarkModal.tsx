@@ -1,8 +1,8 @@
-import { Box, Button, Card, Container, Group, Modal, Select, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, Modal, Select, Space, Stack, TextInput } from '@mantine/core';
 import debounce from 'lodash.debounce';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trash } from 'tabler-icons-react';
-import { Bookmark, Metadata } from '../../models';
+import { Metadata } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
 import { getUrlMetadata } from '../../redux/slices';
 import { MetadataPreview } from './utils';
@@ -15,13 +15,33 @@ export interface AddBookmarkModalProps {
 
 export function AddBookmarkModal(props: AddBookmarkModalProps) {
 
-   const [bookmark, setBookmark] = useState<Partial<Bookmark>>({});
+   const [bookmarkType, setBookmarkType] = useState<string | null>(null);
+   const [bookmarkTitle, setBookmarkTitle] = useState<string | null>(null);
+   const [bookmarkUrl, setBookmarkUrl] = useState<string | null>(null);
+   const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
 
    const [metadata, setMetadata] = useState<Metadata | null>(null);
    const dispatch = useAppDispatch();
 
+   const debouncedGetUrlMetadata = debounce((url: string | null) => {
+      if (url === null) {
+         return;
+      }
+      dispatch(getUrlMetadata(url))
+         .unwrap()
+         .then((data: Metadata | undefined) => {
+            setMetadata(data || null);
+            if (!data) {
+               return;
+            }
+            setBookmarkTitle(data.title || bookmarkTitle);
+         });
+   }, 500)
+
+   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl])
+
    const getTitleLabelByType = (): string | undefined => {
-      switch (bookmark.type) {
+      switch (bookmarkType) {
          case 'game':
          case 'tool':
             return 'Name'
@@ -35,7 +55,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    }
 
    const getUrlLabelByType = (): string | undefined => {
-      switch (bookmark.type) {
+      switch (bookmarkType) {
          case 'tool':
             return 'Website or repository URL'
          case 'show':
@@ -51,7 +71,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    }
 
    const getActionOnTitleUpdateByType = () => {
-      switch (bookmark.type) {
+      switch (bookmarkType) {
          case 'article':
          case 'video':
          case 'tool':
@@ -64,30 +84,17 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
       }
    }
 
-   const onUrlChange = debounce((url: string) => {
-      dispatch(getUrlMetadata(url))
-         .unwrap()
-         .then((data: Metadata | undefined) => {
-            if (!data) {
-               return;
-            }
-            setBookmark({
-               ...bookmark,
-               title: data.title || bookmark.title,
-               imageUrl: data.image || bookmark.imageUrl
-            });
-            setMetadata(data);
-         });
-   }, 500);
-
-   const onTitleChange = debounce((title: string) => console.log(title), 500);
-
    return (
       <Modal
          opened={props.opened}
          onClose={() => {
             props.onClose();
-            setTimeout(() => setBookmark({}), 300);
+            setTimeout(() => {
+               setBookmarkType(null);
+               setBookmarkTitle('');
+               setBookmarkUrl('');
+               setBookmarkTags([]);
+            }, 300);
          }}
          title="Add bookmark"
          padding="md"
@@ -102,7 +109,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
                   nothingFound="Nothing..."
                   searchable
                   maxDropdownHeight={400}
-                  value={bookmark.type || null}
+                  value={bookmarkType || null}
                   data={[
                      { value: 'article', label: 'Article' },
                      { value: 'tool', label: 'Tool' },
@@ -112,51 +119,36 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
                      { value: 'anime', label: 'Anime' },
                      { value: 'game', label: 'Game' },
                   ]}
-                  onChange={(value: 'article' | 'tool' | 'video' | 'movie' | 'show' | 'anime' | 'game' | null) => setBookmark({
-                     ...bookmark,
-                     type: value || undefined
-                  })}
+                  onChange={(type: string) => setBookmarkType(type)}
                />
 
                <TextInput
                   placeholder="https://..."
                   label={getUrlLabelByType() || 'URL'}
-                  value={bookmark.url}
+                  value={bookmarkUrl || ''}
                   required
-                  disabled={bookmark.type === undefined}
-                  onChange={(event) => {
-                     setBookmark({
-                        ...bookmark,
-                        url: event.target.value
-                     });
-                     onUrlChange(event.currentTarget.value);
-                  }}
+                  disabled={bookmarkType === null}
+                  onChange={(event) => setBookmarkUrl(event.target.value)}
                />
 
                <TextInput
                   label={getTitleLabelByType() || 'Title'}
-                  value={bookmark.title}
+                  value={bookmarkTitle || ''}
                   required
-                  disabled={bookmark.type === undefined}
-                  onChange={(event) => {
-                     setBookmark({
-                        ...bookmark,
-                        title: event.target.value
-                     });
-                     onTitleChange(event.currentTarget.value)
-                  }}
+                  disabled={bookmarkType === null}
+                  onChange={(event) => setBookmarkTitle(event.target.value)}
                />
 
-               <TagsSelect disabled={bookmark.type === undefined} />
+               <TagsSelect disabled={bookmarkType === null} />
             </Stack>
             {metadata !== null &&
                <Card>
                   <MetadataPreview metadata={metadata} />
 
                   <Button
-                  color="red"
-                  leftIcon={<Trash />}
-                  onClick={() => setMetadata(null)}
+                     color="red"
+                     leftIcon={<Trash />}
+                     onClick={() => setMetadata(null)}
                   >
                      Drop metadata
                   </Button>
