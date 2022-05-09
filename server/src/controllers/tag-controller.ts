@@ -21,6 +21,10 @@ export class TagController {
          id: savedId
       };
    }
+
+   public deleteTag = async (request: DeleteTagRequest): Promise<void> => {
+      await this.tagService.deleteTag(request.id);
+   }  
 }
 
 export type GetTagsResponse = {
@@ -33,3 +37,7 @@ export type AddTagRequest = Tag;
 export type AddTagResponse = {
    id: string;
 };
+
+export type DeleteTagRequest = {
+   id: string;
+}

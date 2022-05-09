@@ -15,7 +15,6 @@ export function TagsSelect(props: TagsSelectProps) {
       dispatch(getTags());
    }
    useEffect(updateTags, []);
-   console.log(tags);
 
    return (<>
       <MultiSelect

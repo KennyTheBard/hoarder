@@ -1,7 +1,7 @@
 import { Grid, Stack } from '@mantine/core';
-import { Bookmark } from '../../models/bookmark';
+import { Bookmark } from '../../models';
 import { useAppSelector } from '../../redux/hooks';
-import { WithId } from '../../utils/with-id';
+import { WithId } from '../../utils';
 import { BookmarkCard } from './BookmarkCard';
 
 

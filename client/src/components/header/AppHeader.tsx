@@ -1,7 +1,6 @@
-import { Anchor, Button, Group, Header, Image } from '@mantine/core'
+import { Anchor, Button, Center, Group, Header, Image } from '@mantine/core'
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/hooks';
-import { getBookmarks } from '../../redux/slices/bookmarkListSlice';
 import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
 import { setOpened } from '../../redux/slices';
 
@@ -11,7 +10,9 @@ export function AppHeader() {
    const dispatch = useAppDispatch();
 
    return (
-      <Header height={60} p="xs">
+      <Header height={75} p="xs" sx={(theme) => ({
+         backgroundColor: '#1F1F1F'
+      })}>
          <Group position="apart">
             <Anchor component={Link} to="/">
                <Image
@@ -22,12 +23,10 @@ export function AppHeader() {
             </Anchor>
 
             <Group position="right">
-               <Button onClick={() => dispatch(getBookmarks({
-                  size: 20, index: 0
-               }))}>
-                  Refresh
+               <Button component={Link} to="/">
+                  Home
                </Button>
-               <Button>
+               <Button component={Link} to="/tags">
                   Tags
                </Button>
                <Button

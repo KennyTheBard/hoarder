@@ -10,6 +10,7 @@ import {
 import './App.css';
 import { AppHeader } from './components/header/AppHeader';
 import { Home } from './features/home/Home';
+import { TagList } from './features/tag-list/TagList';
 import { store } from './redux/store';
 
 
@@ -24,15 +25,10 @@ export default class App extends React.Component {
             <AppShell
               padding="md"
               header={<AppHeader />}
-              sx={(theme) => ({
-                backgroundColor: theme.colors.dark[0],
-                '&:hover': {
-                   backgroundColor: theme.colors.dark[1],
-                },
-             })}
             >
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/tags" element={<TagList />} />
               </Routes>
             </AppShell>
           </Router>

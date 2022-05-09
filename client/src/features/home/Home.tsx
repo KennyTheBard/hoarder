@@ -1,9 +1,9 @@
-import { Center, Container, Input, Space, Stack } from '@mantine/core';
+import { Button, Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/feed/BoardFeed';
 import { Search } from 'tabler-icons-react';
 import { AddBookmarkModal } from '../../components/bookmark-form/AddBookmarkModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setOpened } from '../../redux/slices';
+import { getBookmarks, setOpened } from '../../redux/slices';
 
 export function Home() {
 
@@ -98,7 +98,7 @@ export function Home() {
    //    createdTimestamp: new Date().getTime(),
    //    updatedTimestamp: new Date().getTime()
    // }];
-   
+
    const opened = useAppSelector((state) => state.modal.isOpened);
    const dispatch = useAppDispatch();
 
@@ -112,6 +112,11 @@ export function Home() {
                      icon={<Search size={16} />}
                      placeholder="Search..."
                   />
+                  <Button onClick={() => dispatch(getBookmarks({
+                     size: 20, index: 0
+                  }))}>
+                     Refresh
+                  </Button>
                </Center>
                <Space h={20} />
                <BoardFeed columnCount={4} />

@@ -5,8 +5,7 @@ import { Trash } from 'tabler-icons-react';
 import { Metadata } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
 import { getUrlMetadata } from '../../redux/slices';
-import { MetadataPreview } from './utils';
-import { TagsSelect } from './utils/TagsSelect';
+import { MetadataPreview, TagsSelect } from './utils';
 
 export interface AddBookmarkModalProps {
    opened: boolean;

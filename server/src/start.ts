@@ -4,7 +4,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, MetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest } from './controllers';
 import { postHandler } from './utils';
 
 (async () => {
@@ -56,6 +56,9 @@ import { postHandler } from './utils';
       ));
       app.post('/api/getTags', postHandler<void, GetTagsResponse>(
          tagController.getTags
+      ));
+      app.post('/api/deleteTag', postHandler<DeleteTagRequest, void>(
+         tagController.deleteTag
       ));
       
       // start server

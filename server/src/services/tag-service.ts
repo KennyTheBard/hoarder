@@ -1,4 +1,4 @@
-import { Collection, Db } from 'mongodb';
+import { Collection, Db, ObjectId } from 'mongodb';
 import { Tag } from '../models';
 
 export class TagService {
@@ -29,6 +29,13 @@ export class TagService {
 
    public async getAllTags(): Promise<Tag[]> {
       return await this.collection.find().toArray();
+   }
+
+   public async deleteTag(id: string): Promise<void> {
+      const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
+      if (!result.acknowledged || result.deletedCount === 0) {
+         throw new Error('Failed to delete tag');
+      }
    }
 
 }

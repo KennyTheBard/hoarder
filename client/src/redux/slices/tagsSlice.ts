@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Tag } from '../../models';
+import { WithId } from '../../utils';
 
 
 export const getTags = createAsyncThunk(
@@ -21,8 +22,30 @@ export const addTag = createAsyncThunk(
    }
 );
 
+
+export const editTag = createAsyncThunk(
+   'tags/editTag',
+   async (tag: WithId<Tag>, thunkAPI) => {
+      await axios.post('http://localhost:8080/api/editTag', {
+         ...tag
+      });
+      thunkAPI.dispatch(getTags());
+   }
+);
+
+
+export const deleteTag = createAsyncThunk(
+   'tags/deleteTag',
+   async (id: string, thunkAPI) => {
+      await axios.post('http://localhost:8080/api/deleteTag', {
+         id
+      });
+      thunkAPI.dispatch(getTags());
+   }
+);
+
 interface TagsState {
-   tags: Tag[];
+   tags: WithId<Tag>[];
 }
 
 const initialState: TagsState = {
@@ -34,7 +57,7 @@ export const TagsSlice = createSlice({
    initialState,
    reducers: {},
    extraReducers: (builder) => builder
-      .addCase(getTags.fulfilled, (state: TagsState, action: PayloadAction<Tag[]>) => {
+      .addCase(getTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
          state.tags = action.payload;
       })
 });
