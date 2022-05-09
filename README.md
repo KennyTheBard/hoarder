@@ -9,7 +9,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] create `docker-compose.yml` for the entire project
 - [x] add a proxy for URL metadata retrieveal (inside the server)
 - [ ] refactor add forms to be reusable for edit forms as well
-- [ ] retrieve suggestions for title (with URL metadata)
+- [x] retrieve suggestions for title (with URL metadata)
 - [ ] Media Queries to make the side mobile friendly
 - [ ] expose endpoints
   - [ ] bookmarks 
@@ -20,6 +20,7 @@ A better alternative than managing your links and messages in chat rooms with yo
   - [ ] tags
     - [x] create tags
     - [x] get all tags
+    - [x] delete tag
     - [ ] edit tag 
   - [ ] get URL suggestions
     - [x] get metadata
@@ -27,4 +28,4 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [ ] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
 - [ ] autofill form fields based on URL metadata
-- [ ] replace modal slice with ModalManager
+- [x] replace modal slice with ModalManager

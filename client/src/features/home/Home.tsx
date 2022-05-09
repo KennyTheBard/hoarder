@@ -1,9 +1,8 @@
 import { Button, Center, Container, Input, Space, Stack } from '@mantine/core';
 import { BoardFeed } from '../../components/feed/BoardFeed';
 import { Search } from 'tabler-icons-react';
-import { AddBookmarkModal } from '../../components/bookmark-form/AddBookmarkModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, setOpened } from '../../redux/slices';
+import { getBookmarks } from '../../redux/slices';
 import { useEffect } from 'react';
 
 export function Home() {
@@ -100,7 +99,6 @@ export function Home() {
    //    updatedTimestamp: new Date().getTime()
    // }];
 
-   const opened = useAppSelector((state) => state.modal.isOpened);
    const dispatch = useAppDispatch();
 
    const updateBookmarks = () => {
@@ -127,7 +125,6 @@ export function Home() {
                {/* TODO: add loading more spinner or "that's all" */}
                <Space h={100} />
             </Stack>
-            <AddBookmarkModal opened={opened} onClose={() => dispatch(setOpened(false))} />
          </Container>
       </>
    );

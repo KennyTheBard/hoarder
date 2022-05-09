@@ -1,4 +1,5 @@
-import { AppShell, Header } from '@mantine/core';
+import { AppShell } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import React from 'react';
 import { Provider } from 'react-redux';
 import {
@@ -6,19 +7,17 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
-
-import './App.css';
 import { AppHeader } from './components/header/AppHeader';
 import { Home } from './features/home/Home';
 import { TagList } from './features/tag-list/TagList';
 import { store } from './redux/store';
+import './App.css';
 
+export default function App() {
 
-export default class App extends React.Component {
-
-  render() {
-    return (
-      <Provider store={store}>
+  return (
+    <Provider store={store}>
+      <ModalsProvider>
         <div className="background"></div>
         <div className="App">
           <Router>
@@ -33,8 +32,9 @@ export default class App extends React.Component {
             </AppShell>
           </Router>
         </div>
-      </Provider>
-    );
-  }
+      </ModalsProvider>
+    </Provider>
+  );
+
 }
 

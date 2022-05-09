@@ -1,2 +1,2 @@
-export * from './AddBookmarkModal';
+export * from './AddBookmarkForm';
 export * from './utils';

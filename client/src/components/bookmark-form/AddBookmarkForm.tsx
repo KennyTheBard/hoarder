@@ -1,25 +1,20 @@
-import { Button, Card, Group, Modal, Select, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, Select, Space, Stack, TextInput } from '@mantine/core';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
 import { Trash } from 'tabler-icons-react';
 import { Metadata } from '../../models';
-import { useAppDispatch } from '../../redux/hooks';
-import { getUrlMetadata } from '../../redux/slices';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { getUrlMetadata, resetMetadata } from '../../redux/slices';
 import { MetadataPreview, TagsSelect } from './utils';
 
-export interface AddBookmarkModalProps {
-   opened: boolean;
-   onClose: () => void;
-}
-
-export function AddBookmarkModal(props: AddBookmarkModalProps) {
+export function AddBookmarkForm() {
 
    const [bookmarkType, setBookmarkType] = useState<string | null>(null);
    const [bookmarkTitle, setBookmarkTitle] = useState<string | null>(null);
    const [bookmarkUrl, setBookmarkUrl] = useState<string | null>(null);
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
 
-   const [metadata, setMetadata] = useState<Metadata | null>(null);
+   const metadata = useAppSelector((state) => state.addBookmark.metadata);
    const dispatch = useAppDispatch();
 
    const debouncedGetUrlMetadata = debounce((url: string | null) => {
@@ -29,7 +24,6 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
       dispatch(getUrlMetadata(url))
          .unwrap()
          .then((data: Metadata | undefined) => {
-            setMetadata(data || null);
             if (!data) {
                return;
             }
@@ -84,22 +78,7 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
    }
 
    return (
-      <Modal
-         opened={props.opened}
-         onClose={() => {
-            props.onClose();
-            setTimeout(() => {
-               setBookmarkType(null);
-               setBookmarkTitle('');
-               setBookmarkUrl('');
-               setBookmarkTags([]);
-            }, 300);
-         }}
-         title="Add bookmark"
-         padding="md"
-         size={metadata === null ? "md" : "xl"}
-         centered
-      >
+      <>
          <Group direction="row" position="apart" spacing="xl" grow>
             <Stack align="center" justify="space-around" spacing="lg">
                <Select
@@ -147,15 +126,14 @@ export function AddBookmarkModal(props: AddBookmarkModalProps) {
                   <Button
                      color="red"
                      leftIcon={<Trash />}
-                     onClick={() => setMetadata(null)}
+                     onClick={() => dispatch(resetMetadata())}
                   >
                      Drop metadata
                   </Button>
                </Card>
             }
          </Group>
-
          <Space h="lg" />
-      </Modal >
+      </>
    );
 }

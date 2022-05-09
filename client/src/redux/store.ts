@@ -1,11 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkListReducer, addBookmarkReducer, modalReducer, tagsReducer } from './slices';
+import { bookmarkListReducer, addBookmarkReducer, tagsReducer } from './slices';
 
 
 export const store = configureStore({
    reducer: {
       bookmarkList: bookmarkListReducer,
-      modal: modalReducer,
       addBookmark: addBookmarkReducer,
       tags: tagsReducer,
    },
