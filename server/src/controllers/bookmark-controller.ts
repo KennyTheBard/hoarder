@@ -41,10 +41,7 @@ export type AddBookmarkResponse = {
 export type GetBookmarksRequest = Partial<{
    type: string;
    tags: string[];
-}> & {
-   offset: number;
-   limit: number;
-};
+}>;
 
 export type GetBookmarksResponse = {
    count: number;

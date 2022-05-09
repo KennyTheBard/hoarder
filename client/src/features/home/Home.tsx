@@ -4,6 +4,7 @@ import { Search } from 'tabler-icons-react';
 import { AddBookmarkModal } from '../../components/bookmark-form/AddBookmarkModal';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, setOpened } from '../../redux/slices';
+import { useEffect } from 'react';
 
 export function Home() {
 
@@ -102,6 +103,11 @@ export function Home() {
    const opened = useAppSelector((state) => state.modal.isOpened);
    const dispatch = useAppDispatch();
 
+   const updateBookmarks = () => {
+      dispatch(getBookmarks());
+   }
+   useEffect(updateBookmarks, []);
+
    return (
       <>
          <Container size="xl">
@@ -112,9 +118,7 @@ export function Home() {
                      icon={<Search size={16} />}
                      placeholder="Search..."
                   />
-                  <Button onClick={() => dispatch(getBookmarks({
-                     size: 20, index: 0
-                  }))}>
+                  <Button onClick={() => dispatch(getBookmarks())}>
                      Refresh
                   </Button>
                </Center>
