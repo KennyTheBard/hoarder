@@ -29,9 +29,13 @@ export function AddBookmarkForm() {
             }
             setBookmarkTitle(data.title || bookmarkTitle);
          });
-   }, 500)
+   }, 500);
 
-   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl])
+   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl]);
+   const resetMetadataPreview = () => {
+      dispatch(resetMetadata());
+   }
+   useEffect(resetMetadataPreview, []);
 
    const getTitleLabelByType = (): string | undefined => {
       switch (bookmarkType) {

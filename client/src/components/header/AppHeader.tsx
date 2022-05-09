@@ -1,6 +1,5 @@
 import { Anchor, Button, Group, Header, Image } from '@mantine/core'
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../redux/hooks';
 import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
 import { useModals } from '@mantine/modals';
 import { AddBookmarkForm } from '../bookmark-form';
@@ -8,14 +7,12 @@ import { AddBookmarkForm } from '../bookmark-form';
 
 export function AppHeader() {
 
-   const metadata = useAppSelector((state) => state.addBookmark.metadata);
-
    const modals = useModals();
    const openAddBookmarkModal = () =>
       modals.openModal({
          title: "Add bookmark",
          padding: "md",
-         size: metadata === null ? "md" : "xl",
+         size: "xl",
          centered: true,
          children: (
             <AddBookmarkForm />
