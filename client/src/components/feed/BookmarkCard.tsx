@@ -19,19 +19,37 @@ export function BookmarkCard(props: BookmarkCardProps) {
    const getCardContentByBookmarkType = () => {
       switch (props.bookmark.type) {
          case 'article':
-            return <ArticleBookmarkCard bookmark={props.bookmark} />
+            return <ArticleBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'article',
+            }} />
          case 'tool':
             return <></>
          case 'video':
-            return <VideoBookmarkCard bookmark={props.bookmark} />
+            return <VideoBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'video',
+            }} />
          case 'movie':
-            return <MovieBookmarkCard bookmark={props.bookmark} />
+            return <MovieBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'movie',
+            }} />
          case 'show':
-            return <ShowBookmarkCard bookmark={props.bookmark} />
+            return <ShowBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'show',
+            }} />
          case 'anime':
-            return <AnimeBookmarkCard bookmark={props.bookmark} />
+            return <AnimeBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'anime',
+            }} />
          case 'game':
-            return <GameBookmarkCard bookmark={props.bookmark} />
+            return <GameBookmarkCard bookmark={{
+               ...props.bookmark,
+               type: 'game',
+            }} />
          default:
             return <UnknownBookmarkCard bookmark={props.bookmark} />
       }
@@ -49,7 +67,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          <Space h="lg" />
          <Group>
             {props.bookmark.tags 
-               ? props.bookmark.tags.map((tag: string) => <Badge>{tag}</Badge>)
+               ? props.bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)
                : 'Missing tags'
             }
          </Group>

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { Metadata } from '../../models';
+import { getBookmarks } from '.';
+import { Bookmark, Metadata } from '../../models';
 import { isValidHttpUrl } from '../../utils';
 
 
@@ -14,6 +15,17 @@ export const getUrlMetadata = createAsyncThunk(
          url
       });
       return data.metadata;
+   }
+);
+
+export const addBookmark = createAsyncThunk(
+   'addBookmark/addBookmark',
+   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp">, thunkAPI) => {
+      const { data } = await axios.post('http://localhost:8080/api/addBookmark', bookmark);
+      if (data.success) {
+         thunkAPI.dispatch(getBookmarks())
+      }
+      return data.success;
    }
 );
 

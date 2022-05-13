@@ -30,22 +30,22 @@ export function GameBookmarkCard(props: GameBookmarkCardProps) {
                }
             </Group>
             <Group position="left" spacing={1}>
-               {bookmark.platforms.includes(GamePlatform.WINDOWS) &&
+               {bookmark.platforms && bookmark.platforms.includes(GamePlatform.WINDOWS) &&
                   <ActionIcon variant="transparent">
                      <BrandWindows />
                   </ActionIcon>
                }
-               {bookmark.platforms.includes(GamePlatform.LINUX) &&
+               {bookmark.platforms && bookmark.platforms.includes(GamePlatform.LINUX) &&
                   <ActionIcon variant="transparent">
                      <BrandSteam />
                   </ActionIcon>
                }
-               {bookmark.platforms.includes(GamePlatform.MAC) &&
+               {bookmark.platforms && bookmark.platforms.includes(GamePlatform.MAC) &&
                   <ActionIcon variant="transparent">
                      <BrandApple />
                   </ActionIcon>
                }
-               {bookmark.platforms.includes(GamePlatform.SWITCH) &&
+               {bookmark.platforms && bookmark.platforms.includes(GamePlatform.SWITCH) &&
                   <ActionIcon variant="transparent">
                      <DeviceNintendo />
                   </ActionIcon>

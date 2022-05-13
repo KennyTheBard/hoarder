@@ -5,6 +5,8 @@ import { addTag, getTags } from '../../../redux/slices';
 
 export type TagsSelectProps = {
    disabled?: boolean;
+   error?: string | null;
+   onChange?: (value: string[]) => void;
 };
 
 export function TagsSelect(props: TagsSelectProps) {
@@ -32,6 +34,8 @@ export function TagsSelect(props: TagsSelectProps) {
          maxDropdownHeight={160}
          getCreateLabel={(query) => `Create tag: ${query}`}
          onCreate={(query) => dispatch(addTag(query))}
+         error={props.error}
+         onChange={props.onChange}
       />
    </>)
 }

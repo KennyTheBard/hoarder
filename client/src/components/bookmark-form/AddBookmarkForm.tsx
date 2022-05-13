@@ -1,10 +1,10 @@
 import { Button, Card, Group, Select, Space, Stack, TextInput } from '@mantine/core';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
-import { Trash } from 'tabler-icons-react';
+import { Pin, Trash } from 'tabler-icons-react';
 import { Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getUrlMetadata, resetMetadata } from '../../redux/slices';
+import { addBookmark, getUrlMetadata, resetMetadata } from '../../redux/slices';
 import { MetadataPreview, TagsSelect } from './utils';
 
 export function AddBookmarkForm() {
@@ -13,6 +13,8 @@ export function AddBookmarkForm() {
    const [bookmarkTitle, setBookmarkTitle] = useState<string | null>(null);
    const [bookmarkUrl, setBookmarkUrl] = useState<string | null>(null);
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
+   const [errors, setErrors] = useState<Record<string, string | null>>({});
+   const [isSubmitLoading, setSubmitLoading] = useState(false);
 
    const metadata = useAppSelector((state) => state.addBookmark.metadata);
    const dispatch = useAppDispatch();
@@ -81,6 +83,38 @@ export function AddBookmarkForm() {
       }
    }
 
+   const onBookmarkSubmit = async () => {
+      setSubmitLoading(true);
+
+      const errors = {
+         type: bookmarkType === null || bookmarkType === '' ? 'Type is mandatory' : null,
+         title: bookmarkTitle === null || bookmarkTitle === '' ? 'Title is mandatory' : null,
+         url: bookmarkUrl === null || bookmarkUrl === '' ? 'URL is mandatory' : null,
+         tags: bookmarkTags.length === 0 ? 'Provide at minimum 1 tag' : null,
+      };
+      console.log(errors);
+      setErrors(errors);
+      const ok = Object.values(errors).filter(v => v !== null).length === 0;
+
+      if (ok) {
+         const payload = {
+            type: bookmarkType!,
+            title: bookmarkTitle!,
+            url: bookmarkUrl!,
+            tags: bookmarkTags
+         };
+         console.log(payload);
+         const success = await dispatch(addBookmark(payload));
+         if (success) {
+
+         } else {
+
+         }
+      }
+
+      setSubmitLoading(false);
+   }
+
    return (
       <>
          <Group direction="row" position="apart" spacing="xl" grow>
@@ -102,6 +136,7 @@ export function AddBookmarkForm() {
                      { value: 'game', label: 'Game' },
                   ]}
                   onChange={(type: string) => setBookmarkType(type)}
+                  error={errors.type}
                />
 
                <TextInput
@@ -111,6 +146,7 @@ export function AddBookmarkForm() {
                   required
                   disabled={bookmarkType === null}
                   onChange={(event) => setBookmarkUrl(event.target.value)}
+                  error={errors.url}
                />
 
                <TextInput
@@ -119,11 +155,26 @@ export function AddBookmarkForm() {
                   required
                   disabled={bookmarkType === null}
                   onChange={(event) => setBookmarkTitle(event.target.value)}
+                  error={errors.title}
                />
 
-               <TagsSelect disabled={bookmarkType === null} />
+               <TagsSelect
+                  disabled={bookmarkType === null}
+                  error={errors.tags}
+                  onChange={(tags: string[]) => setBookmarkTags(tags)}
+               />
+
+               <Button
+                  color="green"
+                  disabled={bookmarkType === null}
+                  loading={isSubmitLoading}
+                  leftIcon={<Pin size={14} />}
+                  onClick={onBookmarkSubmit}
+               >
+                  Save
+               </Button>
             </Stack>
-            {metadata !== null &&
+            {metadata &&
                <Card>
                   <MetadataPreview metadata={metadata} />
 

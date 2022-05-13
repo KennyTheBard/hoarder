@@ -8,7 +8,12 @@ export class BookmarkController {
    ) { }
 
    public addBookmark = async (request: AddBookmarkRequest): Promise<AddBookmarkResponse> => {
-      const savedId = await this.bookmarkService.addBookmark(request);
+      const now = new Date().getTime();
+      const savedId = await this.bookmarkService.addBookmark({
+         ...request,
+         createdTimestamp: now,
+         updatedTimestamp: now
+      });
       return {
          id: savedId
       };
@@ -32,7 +37,14 @@ export class BookmarkController {
 
 }
 
-export type AddBookmarkRequest = Bookmark;
+export type AddBookmarkRequest = {
+   type: string,
+   title: string,
+   note: string;
+   url: string,
+   imageUrl?: string,
+   tags: string[],
+};
 
 export type AddBookmarkResponse = {
    id: string;
