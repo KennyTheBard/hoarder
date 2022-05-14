@@ -1,7 +1,7 @@
 import { Alert } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 import { AlertCircle } from 'tabler-icons-react';
-import { Bookmark } from '../../../models/bookmark';
+import { Bookmark } from '../../../../models/bookmark';
 
 
 export interface UnknownBookmarkCardProps {

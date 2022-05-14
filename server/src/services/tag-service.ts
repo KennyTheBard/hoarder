@@ -1,5 +1,6 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 import { Tag } from '../models';
+import { WithId } from '../utils';
 
 export class TagService {
 
@@ -29,6 +30,27 @@ export class TagService {
 
    public async getAllTags(): Promise<Tag[]> {
       return await this.collection.find().toArray();
+   }
+
+   public async updateTag(id: string, tag: Partial<Tag>): Promise<void> {
+      const extistingTag = await this.collection.findOne({
+         name: tag.name
+      });
+      if (extistingTag && !extistingTag._id.equals(id)) {
+         throw new Error(`Another tag with the name '${tag.name}' already exists`);
+      }
+
+      const result = await this.collection.updateOne(
+         { _id: new ObjectId(id) },
+         { $set: { ...tag } },
+         { upsert: true }
+      );
+      if (!result.acknowledged) {
+         throw new Error(`Could not update tag with id '${id}'`);
+      }
+      if (result.matchedCount === 0) {
+         throw new Error(`There is no tag with id '${id}'`);
+      }
    }
 
    public async deleteTag(id: string): Promise<void> {

@@ -29,3 +29,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] autofill form fields based on URL metadata
 - [x] replace modal slice with ModalManager
 - [ ] Add 'Refresh metadata' in bookmark card options
+- [ ] Add tag colors

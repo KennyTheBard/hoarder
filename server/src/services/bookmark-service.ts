@@ -30,8 +30,11 @@ export class BookmarkService {
          { $set: { ...bookmark } },
          { upsert: true }
       );
-      if (!result.acknowledged || result.matchedCount === 0) {
+      if (!result.acknowledged) {
          throw new Error(`Could not update bookmark with id '${id}'`);
+      }
+      if (result.matchedCount === 0) {
+         throw new Error(`There is no bookmark with id '${id}'`);
       }
    }
 

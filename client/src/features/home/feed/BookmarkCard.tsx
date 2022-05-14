@@ -1,9 +1,9 @@
 import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
 import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
-import { Bookmark } from '../../models/bookmark';
-import { useAppDispatch } from '../../redux/hooks';
-import { deleteBookmark } from '../../redux/slices/bookmarkListSlice';
-import { WithId } from '../../utils/with-id';
+import { Bookmark } from '../../../models/bookmark';
+import { useAppDispatch } from '../../../redux/hooks';
+import { deleteBookmark } from '../../../redux/slices/bookmarkListSlice';
+import { WithId } from '../../../utils/with-id';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from './cards';
 import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 

@@ -23,13 +23,17 @@ export const addTag = createAsyncThunk(
 );
 
 
-export const editTag = createAsyncThunk(
-   'tags/editTag',
-   async (tag: WithId<Tag>, thunkAPI) => {
-      await axios.post('http://localhost:8080/api/editTag', {
-         ...tag
+export const updateTagName = createAsyncThunk(
+   'tags/updateTagName',
+   async (tag: WithId<Pick<Tag, 'name'>>, thunkAPI) => {
+      const { data } = await axios.post('http://localhost:8080/api/updateTag', {
+         id: tag._id,
+         tag: {
+            name: tag.name
+         }
       });
       thunkAPI.dispatch(getTags());
+      return data;
    }
 );
 

@@ -1,5 +1,6 @@
 import { Tag } from '../models';
 import { TagService } from '../services';
+import { WithId } from '../utils';
 
 export class TagController {
 
@@ -22,6 +23,10 @@ export class TagController {
       };
    }
 
+   public updateTag = async (request: UpdateTagRequest): Promise<void> => {
+      await this.tagService.updateTag(request.id, request.tag);
+   }
+
    public deleteTag = async (request: DeleteTagRequest): Promise<void> => {
       await this.tagService.deleteTag(request.id);
    }  
@@ -36,6 +41,11 @@ export type AddTagRequest = Tag;
 
 export type AddTagResponse = {
    id: string;
+};
+
+export type UpdateTagRequest = {
+   id: string;
+   tag: Partial<Tag>;
 };
 
 export type DeleteTagRequest = {

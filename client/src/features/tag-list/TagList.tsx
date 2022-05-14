@@ -1,10 +1,10 @@
 import { Stack, Container } from '@mantine/core';
-import { TagCard } from '../../components';
 import { Tag } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getTags } from '../../redux/slices';
 import { WithId } from '../../utils';
 import { useEffect } from "react";
+import { TagCard } from './tag-card';
 
 export function TagList() {
 

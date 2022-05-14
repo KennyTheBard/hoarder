@@ -1,9 +1,9 @@
 import { Button, Center, Container, Input, Space, Stack } from '@mantine/core';
-import { BoardFeed } from '../../components/feed/BoardFeed';
 import { Search } from 'tabler-icons-react';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks } from '../../redux/slices';
 import { useEffect } from 'react';
+import { BoardFeed } from './feed';
 
 export function Home() {
 
