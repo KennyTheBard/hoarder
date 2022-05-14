@@ -1,5 +1,5 @@
-import { ActionIcon, Badge, Button, Card, Center, Group, Menu, Space, Text } from '@mantine/core';
-import { Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
+import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
+import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
 import { Bookmark } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
 import { deleteBookmark } from '../../redux/slices/bookmarkListSlice';
@@ -62,35 +62,53 @@ export function BookmarkCard(props: BookmarkCardProps) {
          p="xl"
          component="div"
       >
-         <Space />
-         {getCardContentByBookmarkType()}
-         <Space h="lg" />
-         <Group>
-            {props.bookmark.tags 
-               ? props.bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)
-               : 'Missing tags'
-            }
-         </Group>
-         <Space h="md" />
-         <Group position="apart">
-            <Text size="xs">
-               {props.bookmark.createdTimestamp
-                  ? new Date(props.bookmark.createdTimestamp).toLocaleString('ro')
-                  : 'Missing creation date'
+         <Box
+            sx={(theme) => ({
+               padding: theme.spacing.xs,
+            })}
+         >
+            <Card.Section>
+               <Center>
+                  {props.bookmark.imageUrl &&
+                     <Image
+                        radius="md" fit="contain" width={260}
+                        src={props.bookmark.imageUrl!}
+                        alt="Preview"
+                     />
+                  }
+               </Center>
+               <Stack>
+                  <Space />
+                  {getCardContentByBookmarkType()}
+               </Stack>
+            </Card.Section>
+
+            <Group>
+               {props.bookmark.tags
+                  ? props.bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)
+                  : 'Missing tags'
                }
-            </Text>
-            <Menu position="right"
-               control={<ActionIcon><Settings /></ActionIcon>}>
-               <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
-               <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
-               <Menu.Item color="red"
-                  icon={<Trash size={14} />}
-                  onClick={() => dispatch(deleteBookmark(props.bookmark._id))}
-               >
-                  Delete
-               </Menu.Item>
-            </Menu>
-         </Group>
+            </Group>
+            <Group position="apart">
+               <Text size="xs">
+                  {props.bookmark.createdTimestamp
+                     ? new Date(props.bookmark.createdTimestamp).toLocaleString('ro')
+                     : 'Missing creation date'
+                  }
+               </Text>
+               <Menu position="right"
+                  control={<ActionIcon><Settings /></ActionIcon>}>
+                  <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
+                  <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
+                  <Menu.Item color="red"
+                     icon={<Trash size={14} />}
+                     onClick={() => dispatch(deleteBookmark(props.bookmark._id))}
+                  >
+                     Delete
+                  </Menu.Item>
+               </Menu>
+            </Group>
+         </Box>
       </Card>
    );
 }

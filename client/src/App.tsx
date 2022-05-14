@@ -11,28 +11,31 @@ import { AppHeader } from './components/header/AppHeader';
 import { Home } from './features/home/Home';
 import { TagList } from './features/tag-list/TagList';
 import { store } from './redux/store';
+import { NotificationsProvider } from '@mantine/notifications';
 import './App.css';
 
 export default function App() {
 
   return (
     <Provider store={store}>
-      <ModalsProvider>
-        <div className="background"></div>
-        <div className="App">
-          <Router>
-            <AppShell
-              padding="md"
-              header={<AppHeader />}
-            >
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/tags" element={<TagList />} />
-              </Routes>
-            </AppShell>
-          </Router>
-        </div>
-      </ModalsProvider>
+      <NotificationsProvider>
+        <ModalsProvider>
+          <div className="background"></div>
+          <div className="App">
+            <Router>
+              <AppShell
+                padding="md"
+                header={<AppHeader />}
+              >
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/tags" element={<TagList />} />
+                </Routes>
+              </AppShell>
+            </Router>
+          </div>
+        </ModalsProvider>
+      </NotificationsProvider>
     </Provider>
   );
 

@@ -6,6 +6,7 @@ import { Pin, Trash } from 'tabler-icons-react';
 import { Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addBookmark, getBookmarks, getUrlMetadata, resetMetadata } from '../../redux/slices';
+import { isValidHttpUrl, notifyError } from '../../utils';
 import { MetadataPreview, TagsSelect } from './utils';
 
 export function AddBookmarkForm() {
@@ -16,15 +17,13 @@ export function AddBookmarkForm() {
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
+   const [isMetadataLoading, setMetadataLoading] = useState(false);
 
    const metadata = useAppSelector((state) => state.addBookmark.metadata);
    const dispatch = useAppDispatch();
    const modals = useModals();
 
-   const debouncedGetUrlMetadata = debounce((url: string | null) => {
-      if (url === null) {
-         return;
-      }
+   const debouncedGetUrlMetadata = debounce((url: string) => {
       dispatch(getUrlMetadata(url))
          .unwrap()
          .then((data: Metadata | undefined) => {
@@ -38,7 +37,23 @@ export function AddBookmarkForm() {
       dispatch(resetMetadata());
    }
 
-   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl]);
+   useEffect(() => {
+      if (bookmarkUrl === null || bookmarkUrl.length === 0) {
+         return;
+      }
+      if (!isValidHttpUrl(bookmarkUrl)) {
+         setErrors({
+            ...errors,
+            url: 'Invalid URL'
+         })
+         return;
+      }
+      setErrors({
+         ...errors,
+         url: null
+      })
+      debouncedGetUrlMetadata(bookmarkUrl)
+   }, [bookmarkUrl]);
    useEffect(resetMetadataPreview, []);
 
    const getTitleLabelByType = (): string | undefined => {
@@ -103,9 +118,9 @@ export function AddBookmarkForm() {
             type: bookmarkType!,
             title: bookmarkTitle!,
             url: bookmarkUrl!,
-            tags: bookmarkTags
+            tags: bookmarkTags,
+            imageUrl: (metadata && metadata.image) ? metadata.image : undefined,
          };
-         console.log(payload);
          dispatch(addBookmark(payload))
             .unwrap()
             .then((response) => {
@@ -114,12 +129,10 @@ export function AddBookmarkForm() {
                   dispatch(getBookmarks());
                   modals.closeAll();
                } else {
-                  console.error(response.error)
+                  notifyError(response.error);
                }
             });
-
       }
-
    }
 
    return (

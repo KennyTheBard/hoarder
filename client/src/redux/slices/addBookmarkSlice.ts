@@ -7,9 +7,6 @@ import { isValidHttpUrl } from '../../utils';
 export const getUrlMetadata = createAsyncThunk(
    'addBookmark/getUrlMetadata',
    async (url: string, thunkAPI) => {
-      if (!isValidHttpUrl(url)) {
-         return undefined;
-      }
       const { data } = await axios.post('http://localhost:8080/api/getUrlMetadata', {
          url
       });

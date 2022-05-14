@@ -8,11 +8,10 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] create a `Dockerfile` for each service
 - [ ] create `docker-compose.yml` for the entire project
 - [x] add a proxy for URL metadata retrieveal (inside the server)
-- [ ] refactor add forms to be reusable for edit forms as well
 - [x] retrieve suggestions for title (with URL metadata)
 - [ ] Media Queries to make the side mobile friendly
 - [ ] expose endpoints
-  - [ ] bookmarks 
+  - [x] bookmarks 
     - [x] save bookmark
     - [x] delete bookmark
     - [x] update bookmark
@@ -27,5 +26,6 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [ ] IMDB suggestions
     - [ ] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
-- [ ] autofill form fields based on URL metadata
+- [x] autofill form fields based on URL metadata
 - [x] replace modal slice with ModalManager
+- [ ] Add 'Refresh metadata' in bookmark card options
