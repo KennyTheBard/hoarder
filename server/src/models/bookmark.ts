@@ -95,7 +95,7 @@ export type GameDuration = {
 }
 
 export type GameDurationCandidate = {
-   name: string;
+   title: string;
    imageUrl: string;
    duration: GameDuration;
 }

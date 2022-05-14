@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkListReducer, addBookmarkReducer, tagsReducer } from './slices';
+import { bookmarkListReducer, pinBookmarkReducer, tagsReducer } from './slices';
 
 
 export const store = configureStore({
    reducer: {
       bookmarkList: bookmarkListReducer,
-      addBookmark: addBookmarkReducer,
+      pinBookmark: pinBookmarkReducer,
       tags: tagsReducer,
    },
    middleware: (getDefaultMiddleware) => getDefaultMiddleware()

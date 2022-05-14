@@ -19,7 +19,7 @@ export class MetadataController {
 
    public getGameDurationCandidates = async (request: GetGameDurationCandidatesRequest)
       : Promise<GetGameDurationCandidatesResponse> => {
-      const candidates = await this.gameMetadataService.getGameDurationCandidates(request.name);
+      const candidates = await this.gameMetadataService.getGameDurationCandidates(request.title);
       return {
          candidates
       };
@@ -36,7 +36,7 @@ export type GetUrlMetadataResponse = {
 }
 
 export type GetGameDurationCandidatesRequest = {
-   name: string;
+   title: string;
 }
 
 export type GetGameDurationCandidatesResponse = {

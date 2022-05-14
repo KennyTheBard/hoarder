@@ -1,3 +1,3 @@
 export * from './bookmarkListSlice';
-export * from './addBookmarkSlice';
+export * from './pinBookmarkSlice';
 export * from './tagsSlice';

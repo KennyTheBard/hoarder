@@ -9,12 +9,12 @@ export class GameMetadataService {
       this.hltbService = new HowLongToBeatService();
    }
 
-   public async getGameDurationCandidates(gameName: string): Promise<Array<GameDurationCandidate>> {
-      const games = await this.hltbService.search(gameName);
+   public async getGameDurationCandidates(title: string): Promise<Array<GameDurationCandidate>> {
+      const games = await this.hltbService.search(title);
 
       return games.map((game: HowLongToBeatEntry) => ({
-         name: game.name,
-         imageUrl: game.imageUrl,
+         title: game.name,
+         imageUrl: `http://howlongtobeat.com${game.imageUrl}`,
          duration: {
             main: game.gameplayMain,
             extra: game.gameplayMainExtra,

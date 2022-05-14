@@ -93,3 +93,9 @@ export type GameDuration = {
    extra: number;
    completionist: number;
 }
+
+export type GameDurationCandidate = {
+   title: string;
+   imageUrl: string;
+   duration: GameDuration;
+}

@@ -1,13 +1,14 @@
-import { Button, Card, Center, Group, LoadingOverlay, Select, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, LoadingOverlay, ScrollArea, Select, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
 import { Pin, Trash } from 'tabler-icons-react';
-import { Metadata } from '../../models';
+import { GameDuration, GameDurationCandidate, Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addBookmark, getBookmarks, getUrlMetadata, resetMetadata } from '../../redux/slices';
+import { getBookmarks, getGameDurationCandidates, getUrlMetadata, resetMetadata, saveBookmark } from '../../redux/slices';
 import { isValidHttpUrl, notifyError } from '../../utils';
 import { MetadataPreview, TagsSelect } from './utils';
+import { GameDurationCandidateCard } from './utils/GameDurationCandidateCard';
 
 export function AddBookmarkForm() {
 
@@ -15,11 +16,15 @@ export function AddBookmarkForm() {
    const [bookmarkTitle, setBookmarkTitle] = useState<string | null>(null);
    const [bookmarkUrl, setBookmarkUrl] = useState<string | null>(null);
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
+
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
    const [isMetadataLoading, setMetadataLoading] = useState(false);
 
-   const metadata = useAppSelector((state) => state.addBookmark.metadata);
+   const [gameDuration, setGameDuration] = useState<GameDuration | null>(null);
+
+   const metadata = useAppSelector((state) => state.pinBookmark.metadata);
+   const candidates = useAppSelector((state) => state.pinBookmark.gameDurationCandidates);
    const dispatch = useAppDispatch();
    const modals = useModals();
 
@@ -33,6 +38,15 @@ export function AddBookmarkForm() {
             }
             setBookmarkTitle(data.title || bookmarkTitle);
             setMetadataLoading(false);
+         });
+   }, 500);
+   const debouncedGetGameDurationCandidates = debounce((gameTitle: string) => {
+      dispatch(getGameDurationCandidates(gameTitle))
+         .unwrap()
+         .then((data: GameDurationCandidate[] | undefined) => {
+            if (!data) {
+               return;
+            }
          });
    }, 500);
    const resetMetadataPreview = () => {
@@ -56,6 +70,16 @@ export function AddBookmarkForm() {
       })
       debouncedGetUrlMetadata(bookmarkUrl)
    }, [bookmarkUrl]);
+   useEffect(() => {
+      if (bookmarkTitle === null || bookmarkTitle.length === 0) {
+         return;
+      }
+
+      switch (bookmarkType) {
+         case 'game':
+            debouncedGetGameDurationCandidates(bookmarkTitle);
+      }
+   }, [bookmarkTitle]);
    useEffect(resetMetadataPreview, []);
 
    const getTitleLabelByType = (): string | undefined => {
@@ -123,7 +147,7 @@ export function AddBookmarkForm() {
             tags: bookmarkTags,
             imageUrl: (metadata && metadata.image) ? metadata.image : undefined,
          };
-         dispatch(addBookmark(payload))
+         dispatch(saveBookmark(payload))
             .unwrap()
             .then((response) => {
                setSubmitLoading(false);
@@ -213,6 +237,19 @@ export function AddBookmarkForm() {
                }
             </Card>
          </Group>
+         <Space h="lg" />
+         {candidates && !gameDuration &&
+            <ScrollArea style={{ height: 400 }}>
+               <Group position="center">
+                  {candidates.map((candidate: GameDurationCandidate) => (
+                     <GameDurationCandidateCard
+                        candidate={candidate}
+                        onClick={() => setGameDuration(candidate.duration)}
+                     />
+                  ))}
+               </Group>
+            </ScrollArea>
+         }
          <Space h="lg" />
       </>
    );
