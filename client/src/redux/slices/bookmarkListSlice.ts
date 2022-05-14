@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Bookmark } from '../../models/bookmark';
-import axios from 'axios';
 import { WithId } from '../../utils/with-id';
+import { bookmarkService } from '../../services';
 
 
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (thunkAPI) => {
-      const { data } = await axios.post('http://localhost:8080/api/getBookmarks');
+      const { data } = await bookmarkService.getBookmarks();
       return data.bookmarks;
    }
 );
@@ -15,9 +15,7 @@ export const getBookmarks = createAsyncThunk(
 export const deleteBookmark = createAsyncThunk(
    'bookmark/deleteBookmark',
    async (bookmarkId: string, thunkAPI) => {
-      await axios.post('http://localhost:8080/api/deleteBookmark', {
-         id: bookmarkId
-      });
+      await bookmarkService.deleteBookmark(bookmarkId);
       thunkAPI.dispatch(getBookmarks())
    }
 );

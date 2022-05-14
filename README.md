@@ -16,11 +16,11 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [x] delete bookmark
     - [x] update bookmark
     - [ ] get bookmarks + filters
-  - [ ] tags
+  - [x] tags
     - [x] create tags
     - [x] get all tags
     - [x] delete tag
-    - [ ] edit tag 
+    - [x] edit tag 
   - [ ] get URL suggestions
     - [x] get metadata
     - [ ] IMDB suggestions
@@ -30,3 +30,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] replace modal slice with ModalManager
 - [ ] Add 'Refresh metadata' in bookmark card options
 - [ ] Add tag colors
+- [ ] Create configuration directory

@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { Tag } from '../../models';
+import { tagService } from '../../services';
 import { WithId } from '../../utils';
 
 
 export const getTags = createAsyncThunk(
    'tags/getTags',
    async (thunkAPI) => {
-      const { data } = await axios.post('http://localhost:8080/api/getTags');
+      const { data } = await tagService.getTags();
       return data.tags;
    }
 );
@@ -15,9 +15,7 @@ export const getTags = createAsyncThunk(
 export const addTag = createAsyncThunk(
    'tags/addTag',
    async (tagName: string, thunkAPI) => {
-      await axios.post('http://localhost:8080/api/addTag', {
-         name: tagName
-      });
+      await tagService.saveTag(tagName);
       thunkAPI.dispatch(getTags());
    }
 );
@@ -26,12 +24,12 @@ export const addTag = createAsyncThunk(
 export const updateTagName = createAsyncThunk(
    'tags/updateTagName',
    async (tag: WithId<Pick<Tag, 'name'>>, thunkAPI) => {
-      const { data } = await axios.post('http://localhost:8080/api/updateTag', {
+      const { data } = await tagService.updateTag({
          id: tag._id,
          tag: {
             name: tag.name
          }
-      });
+      })
       thunkAPI.dispatch(getTags());
       return data;
    }
@@ -41,9 +39,7 @@ export const updateTagName = createAsyncThunk(
 export const deleteTag = createAsyncThunk(
    'tags/deleteTag',
    async (id: string, thunkAPI) => {
-      await axios.post('http://localhost:8080/api/deleteTag', {
-         id
-      });
+      await tagService.deleteTag(id);
       thunkAPI.dispatch(getTags());
    }
 );
