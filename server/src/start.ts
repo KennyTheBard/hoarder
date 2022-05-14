@@ -3,8 +3,8 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, MetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest } from './controllers';
+import { BookmarkService, GameMetadataService, MetadataService, TagService } from './services';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse } from './controllers';
 import { postHandler } from './utils';
 
 (async () => {
@@ -20,11 +20,12 @@ import { postHandler } from './utils';
       // init services
       const bookmarkService = new BookmarkService(db);
       const metadataService = new MetadataService();
+      const gameMetadataService = new GameMetadataService();
       const tagService = new TagService(db);
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
-      const metadataController = new MetadataController(metadataService);
+      const metadataController = new MetadataController(metadataService, gameMetadataService);
       const tagController = new TagController(tagService);
 
       // init app with an websocket server
@@ -50,6 +51,9 @@ import { postHandler } from './utils';
       ));
       app.post('/api/getUrlMetadata', postHandler<GetUrlMetadataRequest, GetUrlMetadataResponse>(
          metadataController.getUrlMetadata
+      ));
+      app.post('/api/getGameDurationCandidates', postHandler<GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse>(
+         metadataController.getGameDurationCandidates
       ));
       app.post('/api/addTag', postHandler<AddTagRequest, AddTagResponse>(
          tagController.addTag

@@ -59,6 +59,7 @@ export type GameBookmark = BaseBookmark<'game'> & Partial<{
    launchYear?: number;
    platforms: GamePlatform[];
    reviews: GameReview[];
+   game: GameDuration;
 }>;
 
 export enum GamePlatform {
@@ -85,4 +86,16 @@ export type GogReview = Review<'gog'> & {
 
 export type Review<T extends string> = {
    source: T
+}
+
+export type GameDuration = {
+   main: number;
+   extra: number;
+   completionist: number;
+}
+
+export type GameDurationCandidate = {
+   name: string;
+   imageUrl: string;
+   duration: GameDuration;
 }
