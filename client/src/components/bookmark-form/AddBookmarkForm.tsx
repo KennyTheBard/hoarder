@@ -1,10 +1,11 @@
 import { Button, Card, Group, Select, Space, Stack, TextInput } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
 import { Pin, Trash } from 'tabler-icons-react';
 import { Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addBookmark, getUrlMetadata, resetMetadata } from '../../redux/slices';
+import { addBookmark, getBookmarks, getUrlMetadata, resetMetadata } from '../../redux/slices';
 import { MetadataPreview, TagsSelect } from './utils';
 
 export function AddBookmarkForm() {
@@ -18,6 +19,7 @@ export function AddBookmarkForm() {
 
    const metadata = useAppSelector((state) => state.addBookmark.metadata);
    const dispatch = useAppDispatch();
+   const modals = useModals();
 
    const debouncedGetUrlMetadata = debounce((url: string | null) => {
       if (url === null) {
@@ -32,11 +34,11 @@ export function AddBookmarkForm() {
             setBookmarkTitle(data.title || bookmarkTitle);
          });
    }, 500);
-
-   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl]);
    const resetMetadataPreview = () => {
       dispatch(resetMetadata());
    }
+
+   useEffect(() => debouncedGetUrlMetadata(bookmarkUrl), [bookmarkUrl]);
    useEffect(resetMetadataPreview, []);
 
    const getTitleLabelByType = (): string | undefined => {
@@ -104,15 +106,20 @@ export function AddBookmarkForm() {
             tags: bookmarkTags
          };
          console.log(payload);
-         const success = await dispatch(addBookmark(payload));
-         if (success) {
+         dispatch(addBookmark(payload))
+            .unwrap()
+            .then((response) => {
+               setSubmitLoading(false);
+               if (response.success) {
+                  dispatch(getBookmarks());
+                  modals.closeAll();
+               } else {
+                  console.error(response.error)
+               }
+            });
 
-         } else {
-
-         }
       }
 
-      setSubmitLoading(false);
    }
 
    return (
