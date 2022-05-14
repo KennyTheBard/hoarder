@@ -1,4 +1,5 @@
 import { Button, Group, Paper, Badge, Text, TextInput, ActionIcon } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { useState } from 'react';
 import { Check, Edit, Trash } from 'tabler-icons-react';
 import { Tag } from '../../../models';
@@ -17,7 +18,21 @@ export function TagCard(props: TagCardProps) {
    const [newTagName, setNewTagName] = useState<string>(props.tag.name);
 
    const dispatch = useAppDispatch();
-   console.log(props.tag);
+   const modals = useModals();
+
+   const openDeleteModal = () =>
+      modals.openConfirmModal({
+         title: 'Delete tag',
+         centered: true,
+         children: (
+            <Text size="sm">
+               This action is destructive and you will not be able to undo it!
+            </Text>
+         ),
+         labels: { confirm: 'Delete', cancel: 'Cancel' },
+         confirmProps: { color: 'red' },
+         onConfirm: () => dispatch(deleteTag(props.tag._id))
+      });
 
    return (
       <Paper shadow="md" p="md">
@@ -70,7 +85,7 @@ export function TagCard(props: TagCardProps) {
                <Button
                   color="red"
                   leftIcon={<Trash />}
-                  onClick={() => dispatch(deleteTag(props.tag._id))}
+                  onClick={openDeleteModal}
                >
                   Delete
                </Button>

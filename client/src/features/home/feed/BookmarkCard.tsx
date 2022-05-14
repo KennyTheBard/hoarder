@@ -1,4 +1,5 @@
 import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
 import { Bookmark } from '../../../models/bookmark';
 import { useAppDispatch } from '../../../redux/hooks';
@@ -15,6 +16,7 @@ export interface BookmarkCardProps {
 export function BookmarkCard(props: BookmarkCardProps) {
 
    const dispatch = useAppDispatch();
+   const modals = useModals();
 
    const getCardContentByBookmarkType = () => {
       switch (props.bookmark.type) {
@@ -54,6 +56,20 @@ export function BookmarkCard(props: BookmarkCardProps) {
             return <UnknownBookmarkCard bookmark={props.bookmark} />
       }
    }
+
+   const openDeleteModal = () =>
+      modals.openConfirmModal({
+         title: 'Delete bookmark',
+         centered: true,
+         children: (
+            <Text size="sm">
+               This action is destructive and you will not be able to undo it!
+            </Text>
+         ),
+         labels: { confirm: 'Delete', cancel: 'Cancel' },
+         confirmProps: { color: 'red' },
+         onConfirm: () => dispatch(deleteBookmark(props.bookmark._id))
+      });
 
    return (
       <Card
@@ -102,7 +118,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                   <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
                   <Menu.Item color="red"
                      icon={<Trash size={14} />}
-                     onClick={() => dispatch(deleteBookmark(props.bookmark._id))}
+                     onClick={openDeleteModal}
                   >
                      Delete
                   </Menu.Item>
