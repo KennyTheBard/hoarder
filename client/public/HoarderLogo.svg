@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Vectornator (http://vectornator.io/) -->
+
+<svg
+   xmlns:vectornator="http://vectornator.io"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="100%"
+   stroke-miterlimit="10"
+   style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+   version="1.1"
+   viewBox="0 0 1024 1024"
+   width="100%"
+   xml:space="preserve"
+   id="svg15"
+   sodipodi:docname="HoarderLogo.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1904"
+   inkscape:window-height="1027"
+   id="namedview17"
+   showgrid="false"
+   inkscape:zoom="0.11523438"
+   inkscape:cx="-2592.6983"
+   inkscape:cy="104.82494"
+   inkscape:window-x="8"
+   inkscape:window-y="8"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg15" />
+<metadata
+   id="metadata2">
+<vectornator:setting
+   key="IsTimeLapseWatermarkDisabled"
+   value="false" />
+<vectornator:setting
+   key="UndoHistoryDisabled"
+   value="true" />
+<vectornator:setting
+   key="VNDimensionsVisible"
+   value="true" />
+<vectornator:setting
+   key="VNSnapToGuides"
+   value="true" />
+<vectornator:setting
+   key="WDCMYKEnabledKey"
+   value="false" />
+<vectornator:setting
+   key="WDDisplayWhiteBackground"
+   value="false" />
+<vectornator:setting
+   key="WDDynamicGuides"
+   value="false" />
+<vectornator:setting
+   key="WDGuidesVisible"
+   value="true" />
+<vectornator:setting
+   key="WDIsolateActiveLayer"
+   value="false" />
+<vectornator:setting
+   key="WDOutlineMode"
+   value="false" />
+<vectornator:setting
+   key="WDRulersVisible"
+   value="true" />
+<vectornator:setting
+   key="WDSnapToEdges"
+   value="false" />
+<vectornator:setting
+   key="WDSnapToGrid"
+   value="false" />
+<vectornator:setting
+   key="WDSnapToPoints"
+   value="false" />
+<vectornator:setting
+   key="WDUnits"
+   value="Pixels" />
+<rdf:RDF><cc:Work
+     rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata>
+<defs
+   id="defs4" />
+<g
+   id="Layer-1"
+   vectornator:layerName="Layer 1"
+   transform="matrix(1.6350998,0,0,1.6350998,-352.8188,-134.4003)">
+<path
+   d="M 709.299,468.053 605.63,569.152 394.655,349.501 498.324,248.402 Z"
+   vectornator:blendMode="overlay"
+   id="path6"
+   inkscape:connector-curvature="0"
+   style="opacity:1;fill:#ff0000;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.59530067;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0" />
+<path
+   d="m 747.831,478.676 -128.469,128.943 192.554,68.237 c 0,0 -65.393,-197.816 -64.085,-197.18 z"
+   vectornator:blendMode="overlay"
+   id="path8"
+   inkscape:connector-curvature="0"
+   style="opacity:1;fill:#ff0000;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.59530067;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0" />
+<path
+   d="M 584.166,92.6972 230.478,441.166 265.666,476.885 H 400.541 L 620.072,260.603 V 129.135 Z"
+   id="path10"
+   inkscape:connector-curvature="0"
+   style="opacity:1;fill:#ff0000;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.59530067;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0" />
+<path
+   d="M 660.312,314.531 448.969,522.75 v 141.906 l 30.687,31.156 352.875,-347.687 -33.093,-33.594 z"
+   id="path12"
+   inkscape:connector-curvature="0"
+   style="opacity:1;fill:#ff0000;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.59530067;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0" />
+</g>
+</svg>

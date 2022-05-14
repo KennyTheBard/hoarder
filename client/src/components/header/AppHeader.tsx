@@ -1,9 +1,8 @@
-import { Anchor, Button, Group, Header, Image } from '@mantine/core'
+import { Anchor, Button, Group, Header, Image, Stack, Text } from '@mantine/core'
 import { Link } from 'react-router-dom';
 import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
 import { useModals } from '@mantine/modals';
 import { AddBookmarkForm } from '../bookmark-form';
-
 
 export function AppHeader() {
 
@@ -25,11 +24,25 @@ export function AppHeader() {
       })}>
          <Group position="apart">
             <Anchor component={Link} to="/">
-               <Image
-                  radius="md"
-                  src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
-                  alt="Random unsplash image"
-                  width={50} height={50} />
+               <Group>
+                  <Image
+                     radius="md"
+                     src="/HoarderLogo.svg"
+                     alt="Hoarder logo"
+                     width={50} height={50} />
+                  <Stack justify="flex-end"
+                     style={{ height: 60 }}
+                  >
+                     <Text color="white"
+                        style={{
+                           fontWeight: 1000,
+                           fontSize: 32
+                        }}
+                     >
+                        Hoarder
+                     </Text>
+                  </Stack>
+               </Group>
             </Anchor>
 
             <Group position="right">
