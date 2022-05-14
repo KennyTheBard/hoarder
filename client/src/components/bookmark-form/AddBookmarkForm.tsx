@@ -1,4 +1,4 @@
-import { Button, Card, Group, Select, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Center, Group, LoadingOverlay, Select, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
@@ -24,6 +24,7 @@ export function AddBookmarkForm() {
    const modals = useModals();
 
    const debouncedGetUrlMetadata = debounce((url: string) => {
+      setMetadataLoading(true);
       dispatch(getUrlMetadata(url))
          .unwrap()
          .then((data: Metadata | undefined) => {
@@ -31,6 +32,7 @@ export function AddBookmarkForm() {
                return;
             }
             setBookmarkTitle(data.title || bookmarkTitle);
+            setMetadataLoading(false);
          });
    }, 500);
    const resetMetadataPreview = () => {
@@ -194,19 +196,22 @@ export function AddBookmarkForm() {
                   Save
                </Button>
             </Stack>
-            {metadata &&
-               <Card>
-                  <MetadataPreview metadata={metadata} />
+            <Card>
+               <LoadingOverlay visible={isMetadataLoading} />
+               {metadata &&
+                  <Stack>
+                     <MetadataPreview metadata={metadata} />
 
-                  <Button
-                     color="red"
-                     leftIcon={<Trash />}
-                     onClick={() => dispatch(resetMetadata())}
-                  >
-                     Drop metadata
-                  </Button>
-               </Card>
-            }
+                     <Button
+                        color="red"
+                        leftIcon={<Trash />}
+                        onClick={() => dispatch(resetMetadata())}
+                     >
+                        Drop metadata
+                     </Button>
+                  </Stack>
+               }
+            </Card>
          </Group>
          <Space h="lg" />
       </>
