@@ -1,4 +1,4 @@
-import { Anchor, Button, Group, Header, Image, Stack, Text } from '@mantine/core'
+import { Anchor, Button, Group, Header, Image, Text } from '@mantine/core'
 import { Link } from 'react-router-dom';
 import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
 import { useModals } from '@mantine/modals';
@@ -30,9 +30,7 @@ export function AppHeader() {
                      src="/HoarderLogo.svg"
                      alt="Hoarder logo"
                      width={50} height={50} />
-                  <Stack justify="flex-end"
-                     style={{ height: 60 }}
-                  >
+
                      <Text color="white"
                         style={{
                            fontWeight: 1000,
@@ -41,7 +39,6 @@ export function AppHeader() {
                      >
                         Hoarder
                      </Text>
-                  </Stack>
                </Group>
             </Anchor>
 

@@ -1,3 +1,4 @@
+import { SteamAppDetails, SteamAppReviews } from './steam';
 
 export type MetadataComplete = {
    images: string[];
@@ -22,4 +23,9 @@ export interface Metadata {
    image: string | null;
    siteName: string | null;
    hostname: string | null;
+}
+
+export interface GameMetadata {
+   steamDetails?: SteamAppDetails;
+   steamReviews?: SteamAppReviews;
 }
