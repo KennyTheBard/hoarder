@@ -1,5 +1,6 @@
 import parser from 'html-metadata-parser';
 import { Metadata, MetadataComplete } from '../models';
+import { getHostnameForUrl } from '../utils';
 
 
 
@@ -28,7 +29,7 @@ export class MetadataService {
             : null;
       const title = (og.title ? og.title : meta.title) || '';
       const siteName = og.site_name || '';
-      const { hostname } = new URL(url);
+      const hostname = getHostnameForUrl(url);
 
       return {
          url,

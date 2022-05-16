@@ -45,4 +45,18 @@ export class BookmarkService {
       }
    }
 
+   public async getTypeCountByHostname(hostname: string): Promise<Record<string, number>> {
+      const results = await this.collection.aggregate([{
+         $match: { "hostname": hostname }
+      }, {
+         $group: {
+            _id: { type: "$type" },
+            count: { $sum: 1 }
+         }
+      }]).toArray();
+
+      const typeCountDictionary: Record<string, number> = {};
+      results.forEach(result => typeCountDictionary[result._id.type] = result.count);
+      return typeCountDictionary;
+   }
 }

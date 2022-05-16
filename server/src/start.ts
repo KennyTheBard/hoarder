@@ -1,3 +1,4 @@
+import { TypeFinderService } from './services/type-finder-service';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
@@ -27,6 +28,7 @@ import { RefreshSteamAppCacheCron } from './cron';
       const metadataService = new MetadataService();
       const gameMetadataService = new GameMetadataService(db, steamAppCache);
       const tagService = new TagService(db);
+      const typeFinderService = new TypeFinderService(bookmarkService);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(

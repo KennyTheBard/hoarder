@@ -1,5 +1,6 @@
 import { BookmarkService } from '../services';
 import { Bookmark } from '../models';
+import { getHostnameForUrl } from '../utils';
 
 export class BookmarkController {
 
@@ -9,8 +10,10 @@ export class BookmarkController {
 
    public addBookmark = async (request: AddBookmarkRequest): Promise<AddBookmarkResponse> => {
       const now = new Date().getTime();
+      const hostname = getHostnameForUrl(request.url);
       const savedId = await this.bookmarkService.addBookmark({
          ...request,
+         hostname,
          createdTimestamp: now,
          updatedTimestamp: now
       });
@@ -41,9 +44,9 @@ export type AddBookmarkRequest = {
    type: string,
    title: string,
    note: string;
-   url: string,
-   imageUrl?: string,
-   tags: string[],
+   url: string;
+   imageUrl?: string;
+   tags: string[];
 };
 
 export type AddBookmarkResponse = {

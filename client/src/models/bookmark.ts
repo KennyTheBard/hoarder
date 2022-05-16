@@ -8,6 +8,7 @@ export type BaseBookmark<T extends string> = {
    url: string,
    imageUrl?: string,
    tags: string[],
+   hostname: string;
    createdTimestamp: number,
    updatedTimestamp: number
 }
@@ -24,7 +25,6 @@ export type ToolBookmark = BaseBookmark<'tool'> & Partial<{
 }>;
 
 export type VideoBookmark = BaseBookmark<'video'> & Partial<{
-   hostname: string;
    lengthInSeconds: number;
 }>;
 

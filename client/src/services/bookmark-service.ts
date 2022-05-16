@@ -3,7 +3,7 @@ import { Bookmark } from '../models';
 
 
 export const bookmarkService = {
-   saveBookmark: (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp">) =>
+   saveBookmark: (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname">) =>
       axios.post('http://localhost:8080/api/addBookmark', bookmark),
    getBookmarks: () =>
       axios.post('http://localhost:8080/api/getBookmarks'),

@@ -13,7 +13,7 @@ export const getUrlMetadata = createAsyncThunk(
 
 export const saveBookmark = createAsyncThunk(
    'pinBookmark/saveBookmark',
-   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp">, thunkAPI) => {
+   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname">, thunkAPI) => {
       const { data } = await bookmarkService.saveBookmark(bookmark);
       return data;
    }

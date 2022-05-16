@@ -17,7 +17,7 @@ export class GameMetadataService {
       private readonly steamAppCache: SteamAppCache
    ) {
       this.hltbService = new HowLongToBeatService();
-      this.steam = new SteamAPI('');
+      this.steam = new SteamAPI('fakekeysoitwontshowwarnings');
       this.collection = this.db.collection<SteamAPI.App>('steamApps');
    }
 
