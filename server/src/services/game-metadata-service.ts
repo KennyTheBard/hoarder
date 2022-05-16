@@ -5,6 +5,7 @@ import { Collection, Db } from 'mongodb';
 import _ from 'lodash';
 import axios from 'axios';
 import { SteamAppDetails, SteamAppEntry, SteamAppReviews } from '../models/steam';
+import { SteamAppCache } from '../cache';
 
 export class GameMetadataService {
    private readonly hltbService: HowLongToBeatService;
@@ -13,10 +14,10 @@ export class GameMetadataService {
 
    constructor(
       private readonly db: Db,
-      steamApiKey: string
+      private readonly steamAppCache: SteamAppCache
    ) {
       this.hltbService = new HowLongToBeatService();
-      this.steam = new SteamAPI(steamApiKey);
+      this.steam = new SteamAPI('');
       this.collection = this.db.collection<SteamAPI.App>('steamApps');
    }
 
@@ -78,6 +79,17 @@ export class GameMetadataService {
    public async getSteamAppList(): Promise<SteamAppEntry[]> {
       const { data } = await axios.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/')
       return data.applist.apps;
+   }
+
+   public async getSteamGameSuggestions(searchTerm: string): Promise<SteamAppEntry[]> {
+      const { data } = await axios.get(`https://store.steampowered.com/search/suggest?term=${searchTerm}&cc=EN`)
+      const suggestions = data
+         .replace('<ul>', '')
+         .replace('</ul>', '')
+         .replace('<li>', '')
+         .split('</li>')
+         .filter((item: string) => item.length > 0);
+      return this.steamAppCache.getMulti(suggestions);
    }
 
 }

@@ -30,3 +30,7 @@ Content-Type: application/json
       "type": "text"
    }
 }
+
+
+###
+GET https://store.steampowered.com/search/suggest?term=star&cc=RO

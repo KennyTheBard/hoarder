@@ -6,6 +6,8 @@ import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, TagService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse } from './controllers';
 import { postHandler } from './utils';
+import { SteamAppCache } from './cache';
+import { RefreshSteamAppCacheCron } from './cron';
 
 (async () => {
    try {
@@ -17,11 +19,21 @@ import { postHandler } from './utils';
       await mongoClient.connect();
       const db = mongoClient.db(process.env.MONGO_DATABASE_NAME)
 
+      // init caches
+      const steamAppCache = new SteamAppCache();
+
       // init services
       const bookmarkService = new BookmarkService(db);
       const metadataService = new MetadataService();
-      const gameMetadataService = new GameMetadataService();
+      const gameMetadataService = new GameMetadataService(db, steamAppCache);
       const tagService = new TagService(db);
+
+      // init crons
+      RefreshSteamAppCacheCron.createAndInit(
+         5000,
+         gameMetadataService,
+         steamAppCache
+      );
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
