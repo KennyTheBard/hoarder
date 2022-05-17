@@ -1,22 +1,7 @@
 import { Anchor, Button, Group, Header, Image, Text } from '@mantine/core'
 import { Link } from 'react-router-dom';
-import { Bookmark as BookmarkIcon } from 'tabler-icons-react';
-import { useModals } from '@mantine/modals';
-import { AddBookmarkForm } from '../bookmark-form';
 
 export function AppHeader() {
-
-   const modals = useModals();
-   const openAddBookmarkModal = () =>
-      modals.openModal({
-         title: "Add bookmark",
-         padding: "md",
-         size: "xl",
-         centered: true,
-         children: (
-            <AddBookmarkForm />
-         )
-      });
 
    return (
       <Header height={75} p="xs" sx={(theme) => ({
@@ -48,13 +33,6 @@ export function AppHeader() {
                </Button>
                <Button component={Link} to="/tags">
                   Tags
-               </Button>
-               <Button
-                  color="red"
-                  leftIcon={<BookmarkIcon />}
-                  onClick={openAddBookmarkModal}
-               >
-                  Bookmark
                </Button>
             </Group>
          </Group>

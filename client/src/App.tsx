@@ -7,11 +7,11 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
-import { AppHeader } from './components/header/AppHeader';
 import { Home } from './features/home/Home';
 import { TagList } from './features/tag-list/TagList';
 import { store } from './redux/store';
 import { NotificationsProvider } from '@mantine/notifications';
+import { AppHeader, PinDialog } from './components';
 import './App.css';
 
 export default function App() {
@@ -34,6 +34,7 @@ export default function App() {
               </AppShell>
             </Router>
           </div>
+          <PinDialog />
         </ModalsProvider>
       </NotificationsProvider>
     </Provider>

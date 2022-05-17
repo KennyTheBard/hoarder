@@ -5,7 +5,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -39,7 +39,7 @@ import { RefreshSteamAppCacheCron } from './cron';
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
-      const metadataController = new MetadataController(metadataService, gameMetadataService);
+      const metadataController = new MetadataController(metadataService, gameMetadataService, typeFinderService);
       const tagController = new TagController(tagService);
 
       // init app with an websocket server
@@ -68,6 +68,9 @@ import { RefreshSteamAppCacheCron } from './cron';
       ));
       app.post('/api/getGameDurationCandidates', postHandler<GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse>(
          metadataController.getGameDurationCandidates
+      ));
+      app.post('/api/getTypeSuggestions', postHandler<GetTypeSuggestionsRequest, GetTypeSuggestionsResponse>(
+         metadataController.getTypeSuggestions
       ));
       app.post('/api/addTag', postHandler<AddTagRequest, AddTagResponse>(
          tagController.addTag

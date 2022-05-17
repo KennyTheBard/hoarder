@@ -23,7 +23,7 @@ export class TypeFinderService {
 
    public async findTypeForUrl(url: string): Promise<BookmarkTypeSuggestion[]> {
       if (!isValidHttpUrl(url)) {
-         return []; // TODO: replace with TEXT bookmark type
+         return []; // TODO: add TEXT bookmark type
       }
 
       const hostname = getHostnameForUrl(url);
@@ -57,7 +57,6 @@ export class TypeFinderService {
    }
 
 }
-
 
 export type BookmarkTypeSuggestion = {
    type: string;

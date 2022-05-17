@@ -1,5 +1,5 @@
 import { GameDurationCandidate, Metadata } from '../models';
-import { GameMetadataService, MetadataService } from '../services';
+import { BookmarkTypeSuggestion, GameMetadataService, MetadataService, TypeFinderService } from '../services';
 
 
 export class MetadataController {
@@ -7,6 +7,7 @@ export class MetadataController {
    constructor(
       private readonly metadataService: MetadataService,
       private readonly gameMetadataService: GameMetadataService,
+      private readonly typeFinderService: TypeFinderService
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
@@ -25,6 +26,13 @@ export class MetadataController {
       };
    }
 
+   public getTypeSuggestions = async (request: GetTypeSuggestionsRequest)
+      : Promise<GetTypeSuggestionsResponse> => {
+      const suggestions = await this.typeFinderService.findTypeForUrl(request.url);
+      return {
+         suggestions
+      };
+   }
 }
 
 export type GetUrlMetadataRequest = {
@@ -41,4 +49,12 @@ export type GetGameDurationCandidatesRequest = {
 
 export type GetGameDurationCandidatesResponse = {
    candidates: GameDurationCandidate[];
+}
+
+export type GetTypeSuggestionsRequest = {
+   url: string;
+}
+
+export type GetTypeSuggestionsResponse = {
+   suggestions: BookmarkTypeSuggestion[];
 }

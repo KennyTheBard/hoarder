@@ -27,8 +27,12 @@ export class RefreshSteamAppCacheCron {
    }
 
    private refreshCache = async (): Promise<void> => {
-      const steamApps = await this.gameMetadataService.getSteamAppList();
-      await this.steamAppCache.refresh(steamApps);
+      try {
+         const steamApps = await this.gameMetadataService.getSteamAppList();
+         await this.steamAppCache.refresh(steamApps);
+      } catch (err) {
+         console.error(err);
+      }
    }
 
 }

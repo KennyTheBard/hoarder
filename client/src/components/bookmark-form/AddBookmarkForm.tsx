@@ -7,8 +7,7 @@ import { GameDuration, GameDurationCandidate, Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, getGameDurationCandidates, getUrlMetadata, resetMetadata, saveBookmark } from '../../redux/slices';
 import { isValidHttpUrl, notifyError } from '../../utils';
-import { MetadataPreview, TagsSelect } from './utils';
-import { GameDurationCandidateCard } from './utils/GameDurationCandidateCard';
+import { GameDurationCandidateCard, MetadataPreview, TagsSelect } from './utils';
 
 export function AddBookmarkForm() {
 
@@ -243,6 +242,7 @@ export function AddBookmarkForm() {
                <Group position="center">
                   {candidates.map((candidate: GameDurationCandidate) => (
                      <GameDurationCandidateCard
+                        key={candidate.title}
                         candidate={candidate}
                         onClick={() => setGameDuration(candidate.duration)}
                      />
