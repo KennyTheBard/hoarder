@@ -1,19 +1,23 @@
-import { Button, Card, Group, LoadingOverlay, ScrollArea, Select, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, LoadingOverlay, ScrollArea, Select, SelectItem, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
 import { Pin, Trash } from 'tabler-icons-react';
-import { GameDuration, GameDurationCandidate, Metadata } from '../../models';
+import { BookmarkTypeSuggestion, GameDuration, GameDurationCandidate, Metadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getGameDurationCandidates, getUrlMetadata, resetMetadata, saveBookmark } from '../../redux/slices';
-import { isValidHttpUrl, notifyError } from '../../utils';
+import { getBookmarks, getGameDurationCandidates, getTypeSuggestions, getUrlMetadata, resetMetadata, saveBookmark } from '../../redux/slices';
+import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError } from '../../utils';
 import { GameDurationCandidateCard, MetadataPreview, TagsSelect } from './utils';
 
-export function AddBookmarkForm() {
+export type AddBookmarkFormProps = {
+   pinnedText: string;
+}
 
-   const [bookmarkType, setBookmarkType] = useState<string | null>(null);
-   const [bookmarkTitle, setBookmarkTitle] = useState<string | null>(null);
-   const [bookmarkUrl, setBookmarkUrl] = useState<string | null>(null);
+export function AddBookmarkForm(props: AddBookmarkFormProps) {
+
+   const [bookmarkType, setBookmarkType] = useState<string>('');
+   const [bookmarkTitle, setBookmarkTitle] = useState<string>(!isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
+   const [bookmarkUrl, setBookmarkUrl] = useState<string>(isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
 
    const [errors, setErrors] = useState<Record<string, string | null>>({});
@@ -24,8 +28,27 @@ export function AddBookmarkForm() {
 
    const metadata = useAppSelector((state) => state.pinBookmark.metadata);
    const candidates = useAppSelector((state) => state.pinBookmark.gameDurationCandidates);
+   const typeSuggestions = useAppSelector((state) => state.pinBookmark.typeSuggestions);
    const dispatch = useAppDispatch();
    const modals = useModals();
+
+   useEffect(() => {
+      if (isValidHttpUrl(bookmarkUrl)) {
+         dispatch(getTypeSuggestions(bookmarkUrl));
+      }
+   }, [bookmarkUrl]);
+   
+   const getTypeOptions = (suggestions: BookmarkTypeSuggestion[]): SelectItem[] => {
+      const suggestionDictionary: Record<string, number> = {};
+      suggestions.forEach((suggestion) => suggestionDictionary[suggestion.type] = suggestion.confidence);
+
+      const options = [
+         ...BOOKMARK_TYPE_OPTIONS
+      ];
+
+      options.sort((option1, option2) => (suggestionDictionary[option2.value] || 0) - (suggestionDictionary[option1.value] || 0));
+      return options;
+   }
 
    const debouncedGetUrlMetadata = debounce((url: string) => {
       setMetadataLoading(true);
@@ -171,15 +194,7 @@ export function AddBookmarkForm() {
                   searchable
                   maxDropdownHeight={400}
                   value={bookmarkType || null}
-                  data={[
-                     { value: 'article', label: 'Article' },
-                     { value: 'tool', label: 'Tool' },
-                     { value: 'video', label: 'Video' },
-                     { value: 'movie', label: 'Movie' },
-                     { value: 'show', label: 'Show' },
-                     { value: 'anime', label: 'Anime' },
-                     { value: 'game', label: 'Game' },
-                  ]}
+                  data={getTypeOptions(typeSuggestions)}
                   onChange={(type: string) => setBookmarkType(type)}
                   error={errors.type}
                />
@@ -189,7 +204,6 @@ export function AddBookmarkForm() {
                   label={getUrlLabelByType() || 'URL'}
                   value={bookmarkUrl || ''}
                   required
-                  disabled={bookmarkType === null}
                   onChange={(event) => setBookmarkUrl(event.target.value)}
                   error={errors.url}
                />
@@ -198,13 +212,11 @@ export function AddBookmarkForm() {
                   label={getTitleLabelByType() || 'Title'}
                   value={bookmarkTitle || ''}
                   required
-                  disabled={bookmarkType === null}
                   onChange={(event) => setBookmarkTitle(event.target.value)}
                   error={errors.title}
                />
 
                <TagsSelect
-                  disabled={bookmarkType === null}
                   error={errors.tags}
                   onChange={(tags: string[]) => setBookmarkTags(tags)}
                />

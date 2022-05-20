@@ -1,5 +1,5 @@
 import { BookmarkService } from '.';
-import { Bookmark } from '../models';
+import { BookmarkTypeSuggestion } from '../models';
 import { getHostnameForUrl, isValidHttpUrl } from '../utils';
 
 
@@ -23,7 +23,7 @@ export class TypeFinderService {
 
    public async findTypeForUrl(url: string): Promise<BookmarkTypeSuggestion[]> {
       if (!isValidHttpUrl(url)) {
-         return []; // TODO: add TEXT bookmark type
+         return [];
       }
 
       const hostname = getHostnameForUrl(url);
@@ -55,10 +55,4 @@ export class TypeFinderService {
    private getTypeByHostname(hostname: string): string | undefined {
       return hostnameToTypeDictionary[hostname];
    }
-
 }
-
-export type BookmarkTypeSuggestion = {
-   type: string;
-   confidence: number;
-};

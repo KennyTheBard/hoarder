@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Bookmark, GameDurationCandidate, Metadata } from '../../models';
+import { Bookmark, BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
 
 
@@ -8,6 +8,14 @@ export const getUrlMetadata = createAsyncThunk(
    async (url: string, thunkAPI) => {
       const { data } = await metadataService.getUrlMetadata(url);
       return data.metadata;
+   }
+);
+
+export const getTypeSuggestions = createAsyncThunk(
+   'pinBookmark/getTypeSuggestions',
+   async (url: string, thunkAPI) => {
+      const { data } = await metadataService.getTypeSuggestions(url);
+      return data.suggestions;
    }
 );
 
@@ -29,12 +37,14 @@ export const getGameDurationCandidates = createAsyncThunk(
 
 interface PinBookmarksState {
    metadata: Metadata | null;
-   gameDurationCandidates: GameDurationCandidate[] | null
+   gameDurationCandidates: GameDurationCandidate[] | null;
+   typeSuggestions: BookmarkTypeSuggestion[];
 }
 
 const initialState: PinBookmarksState = {
    metadata: null,
    gameDurationCandidates: null,
+   typeSuggestions: [],
 };
 
 export const pinBookmarkSlice = createSlice({
@@ -51,6 +61,9 @@ export const pinBookmarkSlice = createSlice({
       })
       .addCase(getGameDurationCandidates.fulfilled, (state: PinBookmarksState, action: PayloadAction<GameDurationCandidate[]>) => {
          state.gameDurationCandidates = action.payload;
+      })
+      .addCase(getTypeSuggestions.fulfilled, (state: PinBookmarksState, action: PayloadAction<BookmarkTypeSuggestion[]>) => {
+         state.typeSuggestions = action.payload;
       })
 });
 

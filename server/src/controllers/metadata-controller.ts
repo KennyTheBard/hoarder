@@ -1,5 +1,5 @@
-import { GameDurationCandidate, Metadata } from '../models';
-import { BookmarkTypeSuggestion, GameMetadataService, MetadataService, TypeFinderService } from '../services';
+import { BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
+import { GameMetadataService, MetadataService, TypeFinderService } from '../services';
 
 
 export class MetadataController {

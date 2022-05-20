@@ -29,3 +29,8 @@ export interface GameMetadata {
    steamDetails?: SteamAppDetails;
    steamReviews?: SteamAppReviews;
 }
+
+export type BookmarkTypeSuggestion = {
+   type: string;
+   confidence: number;
+};

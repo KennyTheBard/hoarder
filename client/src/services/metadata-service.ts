@@ -10,4 +10,8 @@ export const metadataService = {
       axios.post('http://localhost:8080/api/getGameDurationCandidates', {
          title: gameTitle
       }),
+   getTypeSuggestions: (url: string) =>
+      axios.post('http://localhost:8080/api/getTypeSuggestions', {
+         url
+      }),
 }
