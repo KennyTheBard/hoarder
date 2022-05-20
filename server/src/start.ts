@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, GameMetadataService, MetadataService, TagService } from './services';
+import { BookmarkService, GameMetadataService, MetadataService, MovieMetadataService, TagService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
@@ -29,6 +29,7 @@ import { RefreshSteamAppCacheCron } from './cron';
       const gameMetadataService = new GameMetadataService(db, steamAppCache);
       const tagService = new TagService(db);
       const typeFinderService = new TypeFinderService(bookmarkService);
+      const movieMetadataService = new MovieMetadataService(process.env.MOVIE_DB_KEY);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
@@ -39,7 +40,7 @@ import { RefreshSteamAppCacheCron } from './cron';
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
-      const metadataController = new MetadataController(metadataService, gameMetadataService, typeFinderService);
+      const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, movieMetadataService);
       const tagController = new TagController(tagService);
 
       // init app with an websocket server

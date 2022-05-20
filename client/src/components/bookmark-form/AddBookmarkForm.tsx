@@ -92,6 +92,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       })
       debouncedGetUrlMetadata(bookmarkUrl)
    }, [bookmarkUrl]);
+
    useEffect(() => {
       if (bookmarkTitle === null || bookmarkTitle.length === 0) {
          return;
@@ -102,6 +103,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             debouncedGetGameDurationCandidates(bookmarkTitle);
       }
    }, [bookmarkTitle]);
+   
    useEffect(resetMetadataPreview, []);
 
    const getTitleLabelByType = (): string | undefined => {

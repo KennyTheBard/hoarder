@@ -1,13 +1,14 @@
 import { BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
-import { GameMetadataService, MetadataService, TypeFinderService } from '../services';
+import { GameMetadataService, MetadataService, MovieMetadataService, TypeFinderService } from '../services';
 
 
 export class MetadataController {
 
    constructor(
+      private readonly typeFinderService: TypeFinderService,
       private readonly metadataService: MetadataService,
       private readonly gameMetadataService: GameMetadataService,
-      private readonly typeFinderService: TypeFinderService
+      private readonly movieMetadataService: MovieMetadataService,
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
