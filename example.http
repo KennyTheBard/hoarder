@@ -32,7 +32,7 @@ Content-Type: application/json
 
 
 ###
-GET https://store.steampowered.com/search/suggest?term=star&cc=RO
+GET https://store.steampowered.com/search/suggest?term=starve&cc=RO
 
 ###
 GET https://store.steampowered.com/api/appdetails?appids=892970&cc=us

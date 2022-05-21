@@ -11,7 +11,7 @@ export const store = configureStore({
    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
       .concat(({ dispatch, getState }) => next => action => {
          next(action);
-         console.log(getState());
+         // console.log(getState());
       })
 });
 

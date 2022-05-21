@@ -11,7 +11,8 @@ import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 
 export interface BookmarkCardProps {
    bookmark: WithId<Bookmark>;
-   viewOnly?: boolean
+   viewOnly?: boolean;
+   onClick?: () => void;
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
