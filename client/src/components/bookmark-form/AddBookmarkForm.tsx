@@ -8,7 +8,7 @@ import { BookmarkTypeSuggestion, GameDuration, Metadata, BookmarkTypeMetadata, B
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
 import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError, WithId } from '../../utils';
-import { TagsSelect } from './utils';
+import { MetadataCandidateCard, TagsSelect } from './utils';
 
 export type AddBookmarkFormProps = {
    pinnedText: string;
@@ -115,7 +115,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                ...selectedCandidate
             } as WithId<Bookmark>
             : null
-         )
+      )
    }, [bookmarkTitle, bookmarkUrl, bookmarkType, bookmarkTags, metadata]);
    useEffect(() => {
       const guaranteeTypes = typeSuggestions.filter(suggestion => suggestion.confidence === 1);
@@ -273,13 +273,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          {candidates && candidates.length > 0 &&
             <ScrollArea style={{ height: 400 }}>
                <Group position="center">
-                  {/* {candidates.map((candidate: GameDurationCandidate) => (
-                     <GameDurationCandidateCard
+                  {candidates.map((candidate: BookmarkTypeMetadata) => (
+                     <MetadataCandidateCard
+                        type={bookmarkType}
                         key={candidate.title}
                         candidate={candidate}
-                        onClick={() => setGameDuration(candidate.duration)}
+                        onClick={() => setSelectedCandidate(candidate)}
                      />
-                  ))} */}
+                  ))}
                </Group>
             </ScrollArea>
          }

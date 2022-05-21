@@ -30,10 +30,6 @@ export type BookmarkTypeSuggestion = {
    confidence: number;
 };
 
-export type TypeSpecificMetadataBase<T extends string> = {
-   type: string;
-}
-
 export type BookmarkTypeMetadata = TypeSpecificMetadata<GameBookmark, 'game'>
    | TypeSpecificMetadata<MovieBookmark, 'movie'>
    | TypeSpecificMetadata<ShowBookmark, 'show'>;

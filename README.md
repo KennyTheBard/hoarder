@@ -31,3 +31,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Add 'Refresh metadata' in bookmark card options
 - [ ] Add tag colors
 - [ ] Create configuration directory
+- [ ] Filter steam responses to only include games, not music or things like that

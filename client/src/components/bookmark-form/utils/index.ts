@@ -1,3 +1,3 @@
 export * from './TagsSelect';
 export * from './MetadataPreview';
-export * from './GameDurationCandidateCard';
+export * from './MetadataCandidateCard';
