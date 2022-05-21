@@ -23,6 +23,7 @@ export class RefreshSteamAppCacheCron {
    }
 
    private start(intervalInMs: number): void {
+      this.refreshCache();
       setInterval(this.refreshCache, intervalInMs);
    }
 

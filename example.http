@@ -1,11 +1,12 @@
 
 @PROXY_URL=https://rlp-proxy.herokuapp.com/v2?url=
+@HOST_URL=http://localhost:8080
 
 ###
 GET {{PROXY_URL}}https://store.steampowered.com/app/3830/Psychonauts/
 
 ###
-POST http://localhost:3000/api/addBookmark
+POST {{HOST_URL}}/api/addBookmark
 Content-Type: application/json
 
 {
@@ -13,15 +14,13 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/api/getBookmarks
+POST {{HOST_URL}}/api/getBookmarks
 Content-Type: application/json
 
-{
-
-}
+{}
 
 ###
-POST http://localhost:3000/api/updateBookmark
+POST {{HOST_URL}}/api/updateBookmark
 Content-Type: application/json
 
 {
@@ -34,3 +33,15 @@ Content-Type: application/json
 
 ###
 GET https://store.steampowered.com/search/suggest?term=star&cc=RO
+
+###
+GET https://store.steampowered.com/api/appdetails?appids=892970&cc=us
+
+###
+POST {{HOST_URL}}/api/getMetadataCandidates
+Content-Type: application/json
+
+{
+   "type": "game",
+   "title": "Valheim"
+}

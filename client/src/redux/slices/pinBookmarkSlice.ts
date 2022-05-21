@@ -35,46 +35,25 @@ export const getGameDurationCandidates = createAsyncThunk(
    }
 );
 
-export const getGameMetadataCandidates = createAsyncThunk(
-   'pinBookmark/getGameMetadataCandidates',
+export const getMetadataCandidates = createAsyncThunk(
+   'pinBookmark/getMetadataCandidates',
    async (payload: {
       type: string,
       gameTitle: string
    }, thunkAPI) => {
-      switch (payload.type) {
-         case 'game':
-            return (await metadataService.getGameMetadataCandidates(payload.gameTitle)).data.candidates
-         default:
-            return null;
-      }
+      const { data } = await metadataService.getMetadataCandidates(payload.type, payload.gameTitle);
+      return data.candidates;
    }
 );
 
-interface PinBookmarksState {
-   // metadata: Metadata | null;
-   // gameDurationCandidates: GameDurationCandidate[] | null;
-   // typeSuggestions: BookmarkTypeSuggestion[];
-}
+interface PinBookmarksState {}
 
-const initialState: PinBookmarksState = {
-   // metadata: null,
-   // typeSuggestions: [],
-};
+const initialState: PinBookmarksState = {};
 
 export const pinBookmarkSlice = createSlice({
    name: 'pinBookmark',
    initialState,
    reducers: {},
-   // extraReducers: (builder) => builder
-   //    .addCase(getUrlMetadata.fulfilled, (state: PinBookmarksState, action: PayloadAction<Metadata>) => {
-   //       state.metadata = action.payload;
-   //    })
-   //    .addCase(getGameDurationCandidates.fulfilled, (state: PinBookmarksState, action: PayloadAction<GameDurationCandidate[]>) => {
-   //       state.gameDurationCandidates = action.payload;
-   //    })
-   //    .addCase(getTypeSuggestions.fulfilled, (state: PinBookmarksState, action: PayloadAction<BookmarkTypeSuggestion[]>) => {
-   //       state.typeSuggestions = action.payload;
-   //    })
 });
 
 export const pinBookmarkReducer = pinBookmarkSlice.reducer;

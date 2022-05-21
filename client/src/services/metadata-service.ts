@@ -10,8 +10,9 @@ export const metadataService = {
       axios.post('http://localhost:8080/api/getGameDurationCandidates', {
          title: gameTitle
       }),
-   getGameMetadataCandidates: (gameTitle: string) =>
-      axios.post('http://localhost:8080/api/getGameMetadataCandidates', {
+   getMetadataCandidates: (bookmarkType: string, gameTitle: string) =>
+      axios.post('http://localhost:8080/api/getMetadataCandidates', {
+         type: bookmarkType,
          title: gameTitle
       }),
    getTypeSuggestions: (url: string) =>

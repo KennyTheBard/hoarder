@@ -8,7 +8,9 @@ export class SteamAppCache {
    constructor() {}
 
    public async refresh(entries: SteamAppEntry[]): Promise<void> {
-      this.cache = entries.reduce((acc, entry) => acc[entry.name] = entry, {})
+      const newCache = {};
+      entries.forEach(entry => newCache[entry.name] = entry);
+      this.cache = newCache;
    }
 
    public async get(gameName: string): Promise<SteamAppEntry | null> {

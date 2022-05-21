@@ -6,7 +6,7 @@ import { Pin } from 'tabler-icons-react';
 import { BookmarkCard } from '../../features/home/feed';
 import { BookmarkTypeSuggestion, GameDuration, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
-import { getBookmarks, getGameMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
+import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
 import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError, WithId } from '../../utils';
 import { TagsSelect } from './utils';
 
@@ -46,7 +46,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       return options;
    }
 
-   const debouncedDispatchOnUrlChange = debounce((url: string) => {
+   const debouncedGetUrlMetadata = debounce((url: string) => {
       setMetadataLoading(true);
       dispatch(getUrlMetadata(url))
          .unwrap()
@@ -58,15 +58,16 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             setMetadata(data || null);
             setMetadataLoading(false);
          });
-
+   }, 500);
+   const debouncedGetTypeSuggestions = debounce((url: string) => {
       dispatch(getTypeSuggestions(bookmarkUrl))
          .unwrap()
          .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
    }, 500);
-   const debouncedDispatchOnTitleChange = debounce((gameTitle: string) => {
+   const debouncedGetMetadataCandidates = debounce((gameTitle: string) => {
       switch (bookmarkType) {
          case 'game':
-            dispatch(getGameMetadataCandidates({ type: bookmarkType, gameTitle }))
+            dispatch(getMetadataCandidates({ type: bookmarkType, gameTitle }))
                .unwrap()
                .then((data: BookmarkTypeMetadata[] | null) => {
                   setCandidates(data);
@@ -74,7 +75,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }, 500);
 
-   // useEffect(() => setMetadata(null), []);
    useEffect(() => {
       if (bookmarkUrl.length === 0) {
          return;
@@ -90,14 +90,15 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          ...errors,
          url: null
       })
-      debouncedDispatchOnUrlChange(bookmarkUrl);
+      debouncedGetUrlMetadata(bookmarkUrl);
+      debouncedGetTypeSuggestions(bookmarkUrl);
    }, [bookmarkUrl]);
    useEffect(() => {
       if (bookmarkTitle.length === 0) {
          return;
       }
-      debouncedDispatchOnTitleChange(bookmarkTitle);
-   }, [bookmarkTitle]);
+      debouncedGetMetadataCandidates(bookmarkTitle);
+   }, [bookmarkTitle, bookmarkType]);
    useEffect(() => {
       setBookmarkData(
          bookmarkType
@@ -116,6 +117,12 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             : null
          )
    }, [bookmarkTitle, bookmarkUrl, bookmarkType, bookmarkTags, metadata]);
+   useEffect(() => {
+      const guaranteeTypes = typeSuggestions.filter(suggestion => suggestion.confidence === 1);
+      if (guaranteeTypes.length > 0) {
+         setBookmarkType(guaranteeTypes[0].type);
+      }
+   }, [typeSuggestions]);
 
    const getTitleLabelByType = (): string | undefined => {
       switch (bookmarkType) {

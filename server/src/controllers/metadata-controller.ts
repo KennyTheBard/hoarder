@@ -1,4 +1,4 @@
-import { BookmarkTypeSuggestion, GameDurationCandidate, GameMetadata, Metadata } from '../models';
+import { BookmarkTypeMetadata, BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
 import { GameMetadataService, MetadataService, MovieMetadataService, TypeFinderService } from '../services';
 
 
@@ -35,12 +35,18 @@ export class MetadataController {
       };
    }
 
-   public getGameMetadataCandidates = async (request: GetGameMetadataCandidatesRequest)
-      : Promise<GetGameMetadataCandidatesResponse> => {
-      const candidates = await this.gameMetadataService.getGameMetadataCandidates(request.title);
-      return {
-         candidates
-      };
+   public getMetadataCandidates = async (request: GetMetadataCandidatesRequest)
+      : Promise<GetMetadataCandidatesResponse> => {
+      switch (request.type) {
+         case 'game':
+            return {
+               candidates: await this.gameMetadataService.getGameMetadataCandidates(request.title)
+            }
+         default:
+            return {
+               candidates: null
+            }
+      }
    }
 }
 
@@ -69,10 +75,11 @@ export type GetGameDurationCandidatesResponse = {
    candidates: GameDurationCandidate[];
 }
 
-export type GetGameMetadataCandidatesRequest = {
+export type GetMetadataCandidatesRequest = {
+   type: string;
    title: string;
 }
 
-export type GetGameMetadataCandidatesResponse = {
-   candidates: GameMetadata[];
+export type GetMetadataCandidatesResponse = {
+   candidates: BookmarkTypeMetadata[] | null;
 }

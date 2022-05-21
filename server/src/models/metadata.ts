@@ -1,5 +1,4 @@
 import { BaseBookmark, GameBookmark, MovieBookmark, ShowBookmark } from './bookmark';
-import { SteamAppDetails, SteamAppReviews } from './steam';
 
 export type MetadataComplete = {
    images: string[];
@@ -39,4 +38,8 @@ export type BookmarkTypeMetadata = TypeSpecificMetadata<GameBookmark, 'game'>
    | TypeSpecificMetadata<MovieBookmark, 'movie'>
    | TypeSpecificMetadata<ShowBookmark, 'show'>;
 
-type TypeSpecificMetadata<T, U extends string> = Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>>;
+export type TypeSpecificMetadata<T, U extends string> = Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>> & {
+   title: string;
+   url: string;
+   imageUrl: string;
+};

@@ -1,4 +1,3 @@
-import { GetGameMetadataCandidatesRequest, GetGameMetadataCandidatesResponse } from './controllers/metadata-controller';
 import { MovieDb } from 'moviedb-promise';
 import { TypeFinderService } from './services/type-finder-service';
 import express from 'express';
@@ -7,7 +6,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, MovieMetadataService, ShowMetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -45,7 +44,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
-         5000,
+         60 * 60 * 1000,
          gameMetadataService,
          steamAppCache
       );
@@ -82,8 +81,8 @@ import { HowLongToBeatService } from 'howlongtobeat';
       app.post('/api/getGameDurationCandidates', postHandler<GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse>(
          metadataController.getGameDurationCandidates
       ));
-      app.post('/api/getGameMetadataCandidates', postHandler<GetGameMetadataCandidatesRequest, GetGameMetadataCandidatesResponse>(
-         metadataController.getGameMetadataCandidates
+      app.post('/api/getMetadataCandidates', postHandler<GetMetadataCandidatesRequest, GetMetadataCandidatesResponse>(
+         metadataController.getMetadataCandidates
       ));
       app.post('/api/getTypeSuggestions', postHandler<GetTypeSuggestionsRequest, GetTypeSuggestionsResponse>(
          metadataController.getTypeSuggestions

@@ -110,7 +110,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                <Text size="xs">
                   {props.bookmark.createdTimestamp
                      ? new Date(props.bookmark.createdTimestamp).toLocaleString('ro')
-                     : 'Missing creation date'
+                     : ''
                   }
                </Text>
                {!props.viewOnly &&
