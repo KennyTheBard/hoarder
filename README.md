@@ -23,8 +23,8 @@ A better alternative than managing your links and messages in chat rooms with yo
     - [x] edit tag 
   - [ ] get URL suggestions
     - [x] get metadata
-    - [ ] IMDB suggestions
-    - [ ] steam or how long to beat suggestions
+    - [x] IMDB suggestions
+    - [x] steam or how long to beat suggestions
     - [ ] MyAnimeList suggestions
 - [x] autofill form fields based on URL metadata
 - [x] replace modal slice with ModalManager

@@ -1,3 +1,5 @@
+import { SteamAppReviews } from './steam';
+
 export type Bookmark = BaseBookmark<string> | ArticleBookmark | ToolBookmark | VideoBookmark |
    MovieBookmark | ShowBookmark | AnimeBookmark | GameBookmark;
 
@@ -31,35 +33,36 @@ export type VideoBookmark = BaseBookmark<'video'> & Partial<{
 export type MediaBookmarkMixin = Partial<{
    isOnNetflix: boolean;
    hasPremiered: boolean;
-   premieredYear?: number;
+   premieredYear: number;
 }>;
 
 export type MovieBookmark = MediaBookmarkMixin & BaseBookmark<'movie'> & Partial<{
-   imdbRating?: number;
+   imdbRating: number;
 }>;
 
 export type ShowBookmark = MediaBookmarkMixin & BaseBookmark<'show'> & Partial<{
-   imdbRating?: number;
+   imdbRating: number;
    isFinished: boolean;
-   finishedYear?: number;
-   seasonCount?: number;
+   finishedYear: number;
+   seasonCount: number;
 }>;
 
 export type AnimeBookmark = MediaBookmarkMixin & BaseBookmark<'anime'> & Partial<{
-   myAnimeListScore?: number;
-   myAnimeListReviewCount?: number;
+   myAnimeListScore: number;
+   myAnimeListReviewCount: number;
    isFinished: boolean;
-   finishedYear?: number;
+   finishedYear: number;
    isAdaptation: boolean;
-   episodeCount?: number;
+   episodeCount: number;
 }>;
 
 export type GameBookmark = BaseBookmark<'game'> & Partial<{
    isLaunched: boolean;
-   launchYear?: number;
+   launchDate: string;
    platforms: GamePlatform[];
-   reviews: GameReview[];
-   game: GameDuration;
+   steamReviews: SteamAppReviews;
+   gogReviews: GogReviews;
+   duration: GameDuration;
 }>;
 
 export enum GamePlatform {
@@ -69,23 +72,10 @@ export enum GamePlatform {
    SWITCH = 'Nintendo Switch'
 }
 
-export type GameReview = SteamReview | GogReview;
-
-export type SteamReview = Review<'steam'> & {
-   recentReviews?: string;
-   recentReviewsCount?: number;
-   allReviews?: string;
-   allReviewsCount?: number;
-}
-
-export type GogReview = Review<'gog'> & {
+export type GogReviews = {
    overall?: number;
    verifiedOwners?: number;
    filtersBased?: number;
-}
-
-export type Review<T extends string> = {
-   source: T
 }
 
 export type GameDuration = {

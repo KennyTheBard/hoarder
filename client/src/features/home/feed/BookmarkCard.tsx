@@ -11,6 +11,7 @@ import { UnknownBookmarkCard } from './cards/UnknownBookmarkCard';
 
 export interface BookmarkCardProps {
    bookmark: WithId<Bookmark>;
+   viewOnly?: boolean
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
@@ -112,17 +113,19 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      : 'Missing creation date'
                   }
                </Text>
-               <Menu position="right"
-                  control={<ActionIcon><Settings /></ActionIcon>}>
-                  <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
-                  <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
-                  <Menu.Item color="red"
-                     icon={<Trash size={14} />}
-                     onClick={openDeleteModal}
-                  >
-                     Delete
-                  </Menu.Item>
-               </Menu>
+               {!props.viewOnly &&
+                  <Menu position="right"
+                     control={<ActionIcon><Settings /></ActionIcon>}>
+                     <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
+                     <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
+                     <Menu.Item color="red"
+                        icon={<Trash size={14} />}
+                        onClick={openDeleteModal}
+                     >
+                        Delete
+                     </Menu.Item>
+                  </Menu>
+               }
             </Group>
          </Box>
       </Card>

@@ -1,14 +1,19 @@
+import { GetGameMetadataCandidatesRequest, GetGameMetadataCandidatesResponse } from './controllers/metadata-controller';
+import { MovieDb } from 'moviedb-promise';
 import { TypeFinderService } from './services/type-finder-service';
 import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, GameMetadataService, MetadataService, MovieMetadataService, TagService } from './services';
+import { BookmarkService, GameMetadataService, MetadataService, MovieMetadataService, ShowMetadataService, TagService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
+import { Client as OmdbClient } from 'imdb-api';
+import SteamAPI from 'steamapi';
+import { HowLongToBeatService } from 'howlongtobeat';
 
 (async () => {
    try {
@@ -20,16 +25,23 @@ import { RefreshSteamAppCacheCron } from './cron';
       await mongoClient.connect();
       const db = mongoClient.db(process.env.MONGO_DATABASE_NAME)
 
+      // init APIs
+      const movieDbClient = new MovieDb(process.env.MOVIEDB_API_KEY);
+      const omdbClient = new OmdbClient({ apiKey: process.env.OMDB_API_KEY });
+      const steamClient = new SteamAPI('fakekeysoitwontshowwarnings');
+      const hltbService = new HowLongToBeatService();
+
       // init caches
       const steamAppCache = new SteamAppCache();
 
       // init services
       const bookmarkService = new BookmarkService(db);
       const metadataService = new MetadataService();
-      const gameMetadataService = new GameMetadataService(db, steamAppCache);
+      const gameMetadataService = new GameMetadataService(db, steamClient, steamAppCache, hltbService);
       const tagService = new TagService(db);
       const typeFinderService = new TypeFinderService(bookmarkService);
-      const movieMetadataService = new MovieMetadataService(process.env.MOVIE_DB_KEY);
+      const movieMetadataService = new MovieMetadataService(movieDbClient, omdbClient);
+      const showMetadataService = new ShowMetadataService(movieDbClient, omdbClient);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
@@ -69,6 +81,9 @@ import { RefreshSteamAppCacheCron } from './cron';
       ));
       app.post('/api/getGameDurationCandidates', postHandler<GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse>(
          metadataController.getGameDurationCandidates
+      ));
+      app.post('/api/getGameMetadataCandidates', postHandler<GetGameMetadataCandidatesRequest, GetGameMetadataCandidatesResponse>(
+         metadataController.getGameMetadataCandidates
       ));
       app.post('/api/getTypeSuggestions', postHandler<GetTypeSuggestionsRequest, GetTypeSuggestionsResponse>(
          metadataController.getTypeSuggestions

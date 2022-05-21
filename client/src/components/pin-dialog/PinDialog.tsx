@@ -24,12 +24,11 @@ export function PinDialog() {
          <Group align="flex-end">
             <TextInput
                value={url}
-               placeholder="http://..." style={{ flex: 1 }}
+               placeholder="Something... OR http://..." style={{ flex: 1 }}
                onChange={(event) => setUrl(event.target.value)}
             />
             <Button
                color="dark"
-               disabled={url.length === 0}
                onClick={() => {
                   setOpenedAddBookmarkModal(true);
                   modals.openModal({

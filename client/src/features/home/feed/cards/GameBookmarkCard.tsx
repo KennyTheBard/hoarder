@@ -13,7 +13,7 @@ export function GameBookmarkCard(props: GameBookmarkCardProps) {
       <>
          <Group position="apart">
             <Text>
-               {bookmark.title} ({bookmark.launchYear || 'TBD'})
+               {bookmark.title} ({bookmark.launchDate || 'TBD'})
             </Text>
             {!bookmark.isLaunched &&
                <ActionIcon variant="transparent">

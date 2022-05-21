@@ -2,12 +2,13 @@ import { Button, Card, Group, LoadingOverlay, ScrollArea, Select, SelectItem, Sp
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
-import { Pin, Trash } from 'tabler-icons-react';
-import { BookmarkTypeSuggestion, GameDuration, GameDurationCandidate, Metadata } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getGameDurationCandidates, getTypeSuggestions, getUrlMetadata, resetMetadata, saveBookmark } from '../../redux/slices';
-import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError } from '../../utils';
-import { GameDurationCandidateCard, MetadataPreview, TagsSelect } from './utils';
+import { Pin } from 'tabler-icons-react';
+import { BookmarkCard } from '../../features/home/feed';
+import { BookmarkTypeSuggestion, GameDuration, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
+import { useAppDispatch } from '../../redux/hooks';
+import { getBookmarks, getGameMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
+import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError, WithId } from '../../utils';
+import { TagsSelect } from './utils';
 
 export type AddBookmarkFormProps = {
    pinnedText: string;
@@ -15,29 +16,24 @@ export type AddBookmarkFormProps = {
 
 export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
+   const dispatch = useAppDispatch();
+   const modals = useModals();
+
    const [bookmarkType, setBookmarkType] = useState<string>('');
    const [bookmarkTitle, setBookmarkTitle] = useState<string>(!isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
    const [bookmarkUrl, setBookmarkUrl] = useState<string>(isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
    const [bookmarkTags, setBookmarkTags] = useState<string[]>([]);
-
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
    const [isMetadataLoading, setMetadataLoading] = useState(false);
-
    const [gameDuration, setGameDuration] = useState<GameDuration | null>(null);
+   const [metadata, setMetadata] = useState<Metadata | null>(null);
+   const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
+   const [candidates, setCandidates] = useState<BookmarkTypeMetadata[] | null>(null);
+   const [selectedCandidate, setSelectedCandidate] = useState<BookmarkTypeMetadata | null>(null);
+   const [bookmarkData, setBookmarkData] = useState<WithId<Bookmark> | null>()
 
-   const metadata = useAppSelector((state) => state.pinBookmark.metadata);
-   const candidates = useAppSelector((state) => state.pinBookmark.gameDurationCandidates);
-   const typeSuggestions = useAppSelector((state) => state.pinBookmark.typeSuggestions);
-   const dispatch = useAppDispatch();
-   const modals = useModals();
-
-   useEffect(() => {
-      if (isValidHttpUrl(bookmarkUrl)) {
-         dispatch(getTypeSuggestions(bookmarkUrl));
-      }
-   }, [bookmarkUrl]);
-   
+   // TODO: move in utils
    const getTypeOptions = (suggestions: BookmarkTypeSuggestion[]): SelectItem[] => {
       const suggestionDictionary: Record<string, number> = {};
       suggestions.forEach((suggestion) => suggestionDictionary[suggestion.type] = suggestion.confidence);
@@ -50,7 +46,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       return options;
    }
 
-   const debouncedGetUrlMetadata = debounce((url: string) => {
+   const debouncedDispatchOnUrlChange = debounce((url: string) => {
       setMetadataLoading(true);
       dispatch(getUrlMetadata(url))
          .unwrap()
@@ -59,24 +55,28 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                return;
             }
             setBookmarkTitle(data.title || bookmarkTitle);
+            setMetadata(data || null);
             setMetadataLoading(false);
          });
-   }, 500);
-   const debouncedGetGameDurationCandidates = debounce((gameTitle: string) => {
-      dispatch(getGameDurationCandidates(gameTitle))
-         .unwrap()
-         .then((data: GameDurationCandidate[] | undefined) => {
-            if (!data) {
-               return;
-            }
-         });
-   }, 500);
-   const resetMetadataPreview = () => {
-      dispatch(resetMetadata());
-   }
 
+      dispatch(getTypeSuggestions(bookmarkUrl))
+         .unwrap()
+         .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
+   }, 500);
+   const debouncedDispatchOnTitleChange = debounce((gameTitle: string) => {
+      switch (bookmarkType) {
+         case 'game':
+            dispatch(getGameMetadataCandidates({ type: bookmarkType, gameTitle }))
+               .unwrap()
+               .then((data: BookmarkTypeMetadata[] | null) => {
+                  setCandidates(data);
+               });
+      }
+   }, 500);
+
+   // useEffect(() => setMetadata(null), []);
    useEffect(() => {
-      if (bookmarkUrl === null || bookmarkUrl.length === 0) {
+      if (bookmarkUrl.length === 0) {
          return;
       }
       if (!isValidHttpUrl(bookmarkUrl)) {
@@ -90,21 +90,32 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          ...errors,
          url: null
       })
-      debouncedGetUrlMetadata(bookmarkUrl)
+      debouncedDispatchOnUrlChange(bookmarkUrl);
    }, [bookmarkUrl]);
-
    useEffect(() => {
-      if (bookmarkTitle === null || bookmarkTitle.length === 0) {
+      if (bookmarkTitle.length === 0) {
          return;
       }
-
-      switch (bookmarkType) {
-         case 'game':
-            debouncedGetGameDurationCandidates(bookmarkTitle);
-      }
+      debouncedDispatchOnTitleChange(bookmarkTitle);
    }, [bookmarkTitle]);
-   
-   useEffect(resetMetadataPreview, []);
+   useEffect(() => {
+      setBookmarkData(
+         bookmarkType
+            ? {
+               _id: '',
+               createdTimestamp: 0,
+               updatedTimestamp: 0,
+               type: bookmarkType,
+               title: bookmarkTitle,
+               url: bookmarkUrl,
+               tags: bookmarkTags,
+               imageUrl: metadata !== null && metadata.image !== null ? metadata.image : undefined,
+               hostname: metadata !== null && metadata.hostname !== null ? metadata.hostname : undefined,
+               ...selectedCandidate
+            } as WithId<Bookmark>
+            : null
+         )
+   }, [bookmarkTitle, bookmarkUrl, bookmarkType, bookmarkTags, metadata]);
 
    const getTitleLabelByType = (): string | undefined => {
       switch (bookmarkType) {
@@ -235,32 +246,33 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             </Stack>
             <Card>
                <LoadingOverlay visible={isMetadataLoading} />
-               {metadata &&
-                  <Stack>
-                     <MetadataPreview metadata={metadata} />
+               {bookmarkData &&
+                  <BookmarkCard bookmark={bookmarkData} viewOnly={true} />
+                  // <Stack>
+                  //    <MetadataPreview metadata={metadata} />
 
-                     <Button
-                        color="red"
-                        leftIcon={<Trash />}
-                        onClick={() => dispatch(resetMetadata())}
-                     >
-                        Drop metadata
-                     </Button>
-                  </Stack>
+                  //    <Button
+                  //       color="red"
+                  //       leftIcon={<Trash />}
+                  //       onClick={() => setMetadata(null)}
+                  //    >
+                  //       Drop metadata
+                  //    </Button>
+                  // </Stack>
                }
             </Card>
          </Group>
          <Space h="lg" />
-         {candidates && !gameDuration &&
+         {candidates && candidates.length > 0 &&
             <ScrollArea style={{ height: 400 }}>
                <Group position="center">
-                  {candidates.map((candidate: GameDurationCandidate) => (
+                  {/* {candidates.map((candidate: GameDurationCandidate) => (
                      <GameDurationCandidateCard
                         key={candidate.title}
                         candidate={candidate}
                         onClick={() => setGameDuration(candidate.duration)}
                      />
-                  ))}
+                  ))} */}
                </Group>
             </ScrollArea>
          }

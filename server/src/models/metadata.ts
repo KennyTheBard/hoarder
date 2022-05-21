@@ -1,3 +1,4 @@
+import { BaseBookmark, GameBookmark, MovieBookmark, ShowBookmark } from './bookmark';
 import { SteamAppDetails, SteamAppReviews } from './steam';
 
 export type MetadataComplete = {
@@ -25,12 +26,17 @@ export interface Metadata {
    hostname: string | null;
 }
 
-export interface GameMetadata {
-   steamDetails?: SteamAppDetails;
-   steamReviews?: SteamAppReviews;
-}
-
 export type BookmarkTypeSuggestion = {
    type: string;
    confidence: number;
 };
+
+export type TypeSpecificMetadataBase<T extends string> = {
+   type: string;
+}
+
+export type BookmarkTypeMetadata = TypeSpecificMetadata<GameBookmark, 'game'>
+   | TypeSpecificMetadata<MovieBookmark, 'movie'>
+   | TypeSpecificMetadata<ShowBookmark, 'show'>;
+
+type TypeSpecificMetadata<T, U extends string> = Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>>;

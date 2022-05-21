@@ -1,4 +1,4 @@
-import { BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
+import { BookmarkTypeSuggestion, GameDurationCandidate, GameMetadata, Metadata } from '../models';
 import { GameMetadataService, MetadataService, MovieMetadataService, TypeFinderService } from '../services';
 
 
@@ -19,6 +19,14 @@ export class MetadataController {
       };
    }
 
+   public getTypeSuggestions = async (request: GetTypeSuggestionsRequest)
+      : Promise<GetTypeSuggestionsResponse> => {
+      const suggestions = await this.typeFinderService.findTypeForUrl(request.url);
+      return {
+         suggestions
+      };
+   }
+
    public getGameDurationCandidates = async (request: GetGameDurationCandidatesRequest)
       : Promise<GetGameDurationCandidatesResponse> => {
       const candidates = await this.gameMetadataService.getGameDurationCandidates(request.title);
@@ -27,11 +35,11 @@ export class MetadataController {
       };
    }
 
-   public getTypeSuggestions = async (request: GetTypeSuggestionsRequest)
-      : Promise<GetTypeSuggestionsResponse> => {
-      const suggestions = await this.typeFinderService.findTypeForUrl(request.url);
+   public getGameMetadataCandidates = async (request: GetGameMetadataCandidatesRequest)
+      : Promise<GetGameMetadataCandidatesResponse> => {
+      const candidates = await this.gameMetadataService.getGameMetadataCandidates(request.title);
       return {
-         suggestions
+         candidates
       };
    }
 }
@@ -44,6 +52,15 @@ export type GetUrlMetadataResponse = {
    metadata: Metadata;
 }
 
+
+export type GetTypeSuggestionsRequest = {
+   url: string;
+}
+
+export type GetTypeSuggestionsResponse = {
+   suggestions: BookmarkTypeSuggestion[];
+}
+
 export type GetGameDurationCandidatesRequest = {
    title: string;
 }
@@ -52,10 +69,10 @@ export type GetGameDurationCandidatesResponse = {
    candidates: GameDurationCandidate[];
 }
 
-export type GetTypeSuggestionsRequest = {
-   url: string;
+export type GetGameMetadataCandidatesRequest = {
+   title: string;
 }
 
-export type GetTypeSuggestionsResponse = {
-   suggestions: BookmarkTypeSuggestion[];
+export type GetGameMetadataCandidatesResponse = {
+   candidates: GameMetadata[];
 }

@@ -1,23 +1,22 @@
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
-import { GameDurationCandidate } from '../models';
+import { BookmarkTypeMetadata, GameDurationCandidate, GamePlatform } from '../models';
 import SteamAPI from 'steamapi';
 import { Collection, Db } from 'mongodb';
 import _ from 'lodash';
 import axios from 'axios';
 import { SteamAppDetails, SteamAppEntry, SteamAppReviews } from '../models/steam';
 import { SteamAppCache } from '../cache';
+import levenshtein from 'fast-levenshtein';
 
 export class GameMetadataService {
-   private readonly hltbService: HowLongToBeatService;
-   private readonly steam: SteamAPI;
    private readonly collection: Collection<SteamAPI.App>;
 
    constructor(
       private readonly db: Db,
-      private readonly steamAppCache: SteamAppCache
+      private readonly steamClient: SteamAPI,
+      private readonly steamAppCache: SteamAppCache,
+      private readonly hltbService: HowLongToBeatService
    ) {
-      this.hltbService = new HowLongToBeatService();
-      this.steam = new SteamAPI('fakekeysoitwontshowwarnings');
       this.collection = this.db.collection<SteamAPI.App>('steamApps');
    }
 
@@ -35,6 +34,7 @@ export class GameMetadataService {
       }));
    }
 
+   // Doesn't seem used, i think i can remove it
    public async updateSteamAppList(apps: SteamAPI.App[]): Promise<void> {
       const lastAddedDocuments = await this.collection.find()
          .sort({
@@ -66,22 +66,39 @@ export class GameMetadataService {
       }
    }
 
-   public async getSteamAppDetails(appid: number): Promise<SteamAppDetails> {
-      const { data } = await this.steam.getGameDetails(String(appid));
-      return data[appid].data;
-   }
-
-   public async getSteamAppReviews(appid: number): Promise<SteamAppReviews> {
-      const { data } = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`)
-      return data.query_summary;
-   }
-
    public async getSteamAppList(): Promise<SteamAppEntry[]> {
       const { data } = await axios.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/')
       return data.applist.apps;
    }
 
-   public async getSteamGameSuggestions(searchTerm: string): Promise<SteamAppEntry[]> {
+   public async getGameMetadataCandidates(title: string): Promise<BookmarkTypeMetadata[]> {
+      const suggestions = await this.getSteamGameSuggestions(title);
+
+      return Promise.all(
+         suggestions.map((suggestion: SteamAppEntry) => this.getGameMetadataByAppId(suggestion.name, suggestion.appid))
+      );
+   }
+
+   public async getGameMetadataByAppId(title: string, appid: number): Promise<BookmarkTypeMetadata> {
+      const details = await this.getSteamAppDetails(appid);
+      const reviews = await this.getSteamAppReviews(appid);
+      const durationCandidates = await this.getGameDurationCandidates(title);
+      const duration = durationCandidates.sort((a, b) => levenshtein.get(a.title, title) - levenshtein.get(b.title, title))[0]
+
+      return {
+         steamReviews: reviews,
+         platforms: [
+            ...(details.platforms.windows ? [GamePlatform.WINDOWS] : []),
+            ...(details.platforms.linux ? [GamePlatform.LINUX] : []),
+            ...(details.platforms.mac ? [GamePlatform.MAC] : []),
+         ],
+         launchDate: details.release_date ? details.release_date.date : undefined,
+         isLaunched: details.release_date ? !details.release_date.coming_soon : undefined,
+         duration: duration !== undefined ? duration.duration : undefined,
+      };
+   }
+
+   private async getSteamGameSuggestions(searchTerm: string): Promise<SteamAppEntry[]> {
       const { data } = await axios.get(`https://store.steampowered.com/search/suggest?term=${searchTerm}&cc=EN`)
       const suggestions = data
          .replace('<ul>', '')
@@ -90,6 +107,16 @@ export class GameMetadataService {
          .split('</li>')
          .filter((item: string) => item.length > 0);
       return this.steamAppCache.getMulti(suggestions);
+   }
+
+   private async getSteamAppDetails(appid: number): Promise<SteamAppDetails> {
+      const { data } = await this.steamClient.getGameDetails(String(appid));
+      return data[appid].data;
+   }
+
+   private async getSteamAppReviews(appid: number): Promise<SteamAppReviews> {
+      const { data } = await axios.get(`https://store.steampowered.com/appreviews/${appid}?json=1`)
+      return data.query_summary;
    }
 
 }

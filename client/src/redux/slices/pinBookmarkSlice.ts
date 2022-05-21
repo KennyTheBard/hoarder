@@ -35,38 +35,47 @@ export const getGameDurationCandidates = createAsyncThunk(
    }
 );
 
+export const getGameMetadataCandidates = createAsyncThunk(
+   'pinBookmark/getGameMetadataCandidates',
+   async (payload: {
+      type: string,
+      gameTitle: string
+   }, thunkAPI) => {
+      switch (payload.type) {
+         case 'game':
+            return (await metadataService.getGameMetadataCandidates(payload.gameTitle)).data.candidates
+         default:
+            return null;
+      }
+   }
+);
+
 interface PinBookmarksState {
-   metadata: Metadata | null;
-   gameDurationCandidates: GameDurationCandidate[] | null;
-   typeSuggestions: BookmarkTypeSuggestion[];
+   // metadata: Metadata | null;
+   // gameDurationCandidates: GameDurationCandidate[] | null;
+   // typeSuggestions: BookmarkTypeSuggestion[];
 }
 
 const initialState: PinBookmarksState = {
-   metadata: null,
-   gameDurationCandidates: null,
-   typeSuggestions: [],
+   // metadata: null,
+   // typeSuggestions: [],
 };
 
 export const pinBookmarkSlice = createSlice({
    name: 'pinBookmark',
    initialState,
-   reducers: {
-      resetMetadata: (state: PinBookmarksState, action: PayloadAction<void>) => {
-         state.metadata = null;
-      },
-   },
-   extraReducers: (builder) => builder
-      .addCase(getUrlMetadata.fulfilled, (state: PinBookmarksState, action: PayloadAction<Metadata>) => {
-         state.metadata = action.payload;
-      })
-      .addCase(getGameDurationCandidates.fulfilled, (state: PinBookmarksState, action: PayloadAction<GameDurationCandidate[]>) => {
-         state.gameDurationCandidates = action.payload;
-      })
-      .addCase(getTypeSuggestions.fulfilled, (state: PinBookmarksState, action: PayloadAction<BookmarkTypeSuggestion[]>) => {
-         state.typeSuggestions = action.payload;
-      })
+   reducers: {},
+   // extraReducers: (builder) => builder
+   //    .addCase(getUrlMetadata.fulfilled, (state: PinBookmarksState, action: PayloadAction<Metadata>) => {
+   //       state.metadata = action.payload;
+   //    })
+   //    .addCase(getGameDurationCandidates.fulfilled, (state: PinBookmarksState, action: PayloadAction<GameDurationCandidate[]>) => {
+   //       state.gameDurationCandidates = action.payload;
+   //    })
+   //    .addCase(getTypeSuggestions.fulfilled, (state: PinBookmarksState, action: PayloadAction<BookmarkTypeSuggestion[]>) => {
+   //       state.typeSuggestions = action.payload;
+   //    })
 });
 
-export const { resetMetadata } = pinBookmarkSlice.actions;
 export const pinBookmarkReducer = pinBookmarkSlice.reducer;
 
