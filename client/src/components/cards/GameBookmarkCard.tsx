@@ -1,6 +1,6 @@
 import { ActionIcon, Group, Text } from '@mantine/core';
 import { RocketOff, BrandWindows, DeviceNintendo, BrandApple, BrandSteam } from 'tabler-icons-react';
-import { GameBookmark, GamePlatform } from '../../../../models/bookmark';
+import { GameBookmark, GamePlatform } from '../../models/bookmark';
 
 export interface GameBookmarkCardProps {
    bookmark: GameBookmark

@@ -1,12 +1,12 @@
 import { ActionIcon, Anchor, Group, Text } from '@mantine/core';
-import { BrandNetflix, Checks } from 'tabler-icons-react';
-import { ShowBookmark } from '../../../../models/bookmark';
+import { Checks, BrandNetflix } from 'tabler-icons-react';
+import { AnimeBookmark } from '../../models/bookmark';
 
-export interface ShowBookmarkCardProps {
-   bookmark: ShowBookmark
+export interface AnimeBookmarkCardProps {
+   bookmark: AnimeBookmark
 }
 
-export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
+export function AnimeBookmarkCard(props: AnimeBookmarkCardProps) {
    const bookmark = props.bookmark;
 
    return (
@@ -24,7 +24,7 @@ export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
          </Group>
          <Group position="apart">
             <Anchor href={bookmark.url} target="_blank">
-               {bookmark.imdbRating} on IMDB
+               {bookmark.myAnimeListScore} ({bookmark.myAnimeListReviewCount}) on MyAnimeList
             </Anchor>
             {bookmark.isOnNetflix &&
                <ActionIcon variant="transparent">

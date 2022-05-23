@@ -1,8 +1,8 @@
 import { Grid, Stack } from '@mantine/core';
+import { BookmarkCard } from '../../../components';
 import { Bookmark } from '../../../models';
 import { useAppSelector } from '../../../redux/hooks';
 import { WithId } from '../../../utils';
-import { BookmarkCard } from './BookmarkCard';
 
 
 export interface BoardFeedProps {

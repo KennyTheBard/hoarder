@@ -1,5 +1,5 @@
 import { Text, Center } from '@mantine/core';
-import { ArticleBookmark } from '../../../../models/bookmark';
+import { ArticleBookmark } from '../../models/bookmark';
 
 export interface ArticleBookmarkCardProps {
    bookmark: ArticleBookmark

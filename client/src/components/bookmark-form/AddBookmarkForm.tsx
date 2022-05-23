@@ -1,13 +1,13 @@
-import { Box, Button, Card, Center, Group, LoadingOverlay, ScrollArea, Select, SelectItem, SimpleGrid, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
-import { BookmarkCard } from '../../features/home/feed';
-import { BookmarkTypeSuggestion, GameDuration, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
+import { BookmarkTypeSuggestion, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
-import { BOOKMARK_TYPE_OPTIONS, isValidHttpUrl, notifyError, WithId } from '../../utils';
+import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
+import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
 
 export type AddBookmarkFormProps = {
@@ -19,7 +19,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const dispatch = useAppDispatch();
    const modals = useModals();
 
-   console.log(props.pinnedText)
    const [type, setType] = useState<string>('');
    const [title, setTitle] = useState<string>(!isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
    const [url, setUrl] = useState<string>(isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
@@ -33,19 +32,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [candidates, setCandidates] = useState<BookmarkTypeMetadata[] | null>(null);
    const [selectedCandidate, setSelectedCandidate] = useState<BookmarkTypeMetadata | null>(null);
    const [bookmarkData, setBookmarkData] = useState<WithId<Bookmark> | null>(null)
-
-   // TODO: move in utils
-   const getTypeOptions = (suggestions: BookmarkTypeSuggestion[]): SelectItem[] => {
-      const suggestionDictionary: Record<string, number> = {};
-      suggestions.forEach((suggestion) => suggestionDictionary[suggestion.type] = suggestion.confidence);
-
-      const options = [
-         ...BOOKMARK_TYPE_OPTIONS
-      ];
-
-      options.sort((option1, option2) => (suggestionDictionary[option2.value] || 0) - (suggestionDictionary[option1.value] || 0));
-      return options;
-   }
+   
 
    const debouncedGetUrlMetadata = debounce((url: string) => {
       setMetadataLoading(true);

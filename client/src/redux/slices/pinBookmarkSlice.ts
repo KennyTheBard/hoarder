@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Bookmark, BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../../models';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Bookmark } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
 
 
@@ -24,14 +24,6 @@ export const saveBookmark = createAsyncThunk(
    async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname">, thunkAPI) => {
       const { data } = await bookmarkService.saveBookmark(bookmark);
       return data;
-   }
-);
-
-export const getGameDurationCandidates = createAsyncThunk(
-   'pinBookmark/getGameDurationCandidates',
-   async (gameTitle: string, thunkAPI) => {
-      const { data } = await metadataService.getGameDurationCandidates(gameTitle);
-      return data.candidates;
    }
 );
 
