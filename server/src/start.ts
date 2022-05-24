@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, GameMetadataService, MetadataService, MovieMetadataService, ShowMetadataService, TagService } from './services';
+import { BookmarkService, GameMetadataService, MetadataService, MediaMetadataService, TagService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
@@ -39,8 +39,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
       const gameMetadataService = new GameMetadataService(db, steamClient, steamAppCache, hltbService);
       const tagService = new TagService(db);
       const typeFinderService = new TypeFinderService(bookmarkService);
-      const movieMetadataService = new MovieMetadataService(movieDbClient, omdbClient);
-      const showMetadataService = new ShowMetadataService(movieDbClient, omdbClient);
+      const mediaMetadataService = new MediaMetadataService(movieDbClient, omdbClient);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
@@ -51,7 +50,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
-      const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, movieMetadataService);
+      const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, mediaMetadataService);
       const tagController = new TagController(tagService);
 
       // init app with an websocket server

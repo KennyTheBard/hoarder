@@ -33,7 +33,7 @@ export type VideoBookmark = BaseBookmark<'video'> & Partial<{
 export type MediaBookmarkMixin = Partial<{
    isOnNetflix: boolean;
    hasPremiered: boolean;
-   releaseDate: number;
+   releaseYear: number;
 }>;
 
 export type MovieBookmark = MediaBookmarkMixin & BaseBookmark<'movie'> & Partial<{

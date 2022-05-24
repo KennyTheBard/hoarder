@@ -35,10 +35,9 @@ export type BookmarkTypeMetadata = TypeSpecificMetadata<GameBookmark, 'game'>
    | TypeSpecificMetadata<ShowBookmark, 'show'>;
 
 export type TypeSpecificMetadata<T, U extends string> = Partial<
-   Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>>
+   Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>>>
    & {
       title: string;
       url: string;
       imageUrl: string;
-   }
->;
+   };

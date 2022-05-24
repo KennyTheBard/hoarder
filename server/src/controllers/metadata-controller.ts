@@ -1,5 +1,5 @@
 import { BookmarkTypeMetadata, BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
-import { GameMetadataService, MetadataService, MovieMetadataService, TypeFinderService } from '../services';
+import { GameMetadataService, MetadataService, MediaMetadataService, TypeFinderService } from '../services';
 
 
 export class MetadataController {
@@ -8,7 +8,7 @@ export class MetadataController {
       private readonly typeFinderService: TypeFinderService,
       private readonly metadataService: MetadataService,
       private readonly gameMetadataService: GameMetadataService,
-      private readonly movieMetadataService: MovieMetadataService,
+      private readonly mediaMetadataService: MediaMetadataService,
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
@@ -42,10 +42,18 @@ export class MetadataController {
             return {
                candidates: await this.gameMetadataService.getGameMetadataCandidates(request.title)
             }
+         case 'movie':
+            return {
+               candidates: await this.mediaMetadataService.getMovieCandidates(request.title)
+            }
+         case 'show':
+            return {
+               candidates: await this.mediaMetadataService.getShowCandidates(request.title)
+            }
          default:
             return {
-               candidates: await this.movieMetadataService.getMovieDbCandidates(request.title)
-            }
+               candidates: null
+            };
       }
    }
 }

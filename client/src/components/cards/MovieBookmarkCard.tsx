@@ -12,7 +12,7 @@ export function MovieBookmarkCard(props: MovieBookmarkCardProps) {
    return (
       <>
          <Text>
-            {bookmark.title} ({bookmark.releaseDate})
+            {bookmark.title} ({bookmark.releaseYear})
          </Text>
          <Group position="apart">
             <Anchor href={bookmark.url} target="_blank">

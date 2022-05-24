@@ -1,7 +1,7 @@
 import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
 import { BookmarkTypeSuggestion, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
@@ -32,34 +32,43 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [candidates, setCandidates] = useState<BookmarkTypeMetadata[] | null>(null);
    const [selectedCandidate, setSelectedCandidate] = useState<BookmarkTypeMetadata | null>(null);
    const [bookmarkData, setBookmarkData] = useState<WithId<Bookmark> | null>(null)
-   
 
-   const debouncedGetUrlMetadata = debounce((url: string) => {
-      setMetadataLoading(true);
-      dispatch(getUrlMetadata(url))
-         .unwrap()
-         .then((data: Metadata | undefined) => {
-            if (!data) {
-               return;
-            }
-            setTitle(data.title || title);
-            setImageUrl(data.image || title);
-            setMetadata(data || null);
-            setMetadataLoading(false);
-         });
-   }, 500);
-   const debouncedGetTypeSuggestions = debounce((url: string) => {
-      dispatch(getTypeSuggestions(url))
-         .unwrap()
-         .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
-   }, 500);
-   const debouncedGetMetadataCandidates = debounce((gameTitle: string) => {
-      dispatch(getMetadataCandidates({ type: type, gameTitle }))
-         .unwrap()
-         .then((data: BookmarkTypeMetadata[] | null) => {
-            setCandidates(data);
-         });
-   }, 500);
+
+   const debouncedGetUrlMetadata = useCallback(
+      debounce((url: string) => {
+         setMetadataLoading(true);
+         dispatch(getUrlMetadata(url))
+            .unwrap()
+            .then((data: Metadata | undefined) => {
+               if (!data) {
+                  return;
+               }
+               setTitle(data.title || title);
+               setImageUrl(data.image || title);
+               setMetadata(data || null);
+               setMetadataLoading(false);
+            });
+      }, 500),
+      []
+   );
+   const debouncedGetTypeSuggestions = useCallback(
+      debounce((url: string) => {
+         dispatch(getTypeSuggestions(url))
+            .unwrap()
+            .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
+      }, 500),
+      []
+   );
+   const debouncedGetMetadataCandidates = useCallback(
+      debounce((gameTitle: string) => {
+         dispatch(getMetadataCandidates({ type: type, gameTitle }))
+            .unwrap()
+            .then((data: BookmarkTypeMetadata[] | null) => {
+               setCandidates(data);
+            });
+      }, 500),
+      []
+   );
    const metadataToBookmark = (
       type: string,
       title: string,
