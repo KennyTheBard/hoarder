@@ -17,7 +17,7 @@ export class MovieMetadataService {
       })).results;
 
       const candidates = await Promise.all(results
-         .filter(candidate => !candidate.id)
+         .filter(candidate => candidate.id)
          .map(candidate => this.movieDbClient.movieInfo({ id: candidate.id }))
       );
 
@@ -25,9 +25,9 @@ export class MovieMetadataService {
          id: result.id,
          title: result.title,
          releaseDate: result.release_date,
-         posterUrl: `https://image.tmdb.org/t/p/w300${result.poster_path}`,
+         imageUrl: `https://image.tmdb.org/t/p/w300${result.poster_path}`,
          imdbId: result.imdb_id,
-         imdbUrl: `https://www.imdb.com/title${result.imdb_id}`
+         url: `https://www.imdb.com/title/${result.imdb_id}`
       }));
    }
 

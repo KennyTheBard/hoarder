@@ -2,8 +2,8 @@
 
 export type MovieDbCandidate = {
    imdbId: string;
-   imdbUrl: string;
-   posterUrl: string;
+   url: string;
+   imageUrl: string;
    title: string;
    releaseDate: string;
 }

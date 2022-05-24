@@ -44,7 +44,7 @@ export class MetadataController {
             }
          default:
             return {
-               candidates: null
+               candidates: await this.movieMetadataService.getMovieDbCandidates(request.title)
             }
       }
    }

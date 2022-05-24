@@ -13,7 +13,7 @@ export function ShowBookmarkCard(props: ShowBookmarkCardProps) {
       <>
          <Group position="apart">
             <Text>
-               {bookmark.title} ({bookmark.premieredYear}
+               {bookmark.title} ({bookmark.releaseDate}
                {bookmark.isFinished && ` - ${bookmark.finishedYear}`})
             </Text>
             {bookmark.isFinished &&
