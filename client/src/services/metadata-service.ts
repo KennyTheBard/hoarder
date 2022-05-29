@@ -6,10 +6,10 @@ export const metadataService = {
       axios.post('http://localhost:8080/api/getUrlMetadata', {
          url
       }),
-   getMetadataCandidates: (bookmarkType: string, gameTitle: string) =>
+   getMetadataCandidates: (bookmarkType: string, title: string) =>
       axios.post('http://localhost:8080/api/getMetadataCandidates', {
          type: bookmarkType,
-         title: gameTitle
+         title: title
       }),
    getTypeSuggestions: (url: string) =>
       axios.post('http://localhost:8080/api/getTypeSuggestions', {

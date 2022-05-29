@@ -29,6 +29,10 @@ import { HowLongToBeatService } from 'howlongtobeat';
       const omdbClient = new OmdbClient({ apiKey: process.env.OMDB_API_KEY });
       const steamClient = new SteamAPI('fakekeysoitwontshowwarnings');
       const hltbService = new HowLongToBeatService();
+      // const malAccount = await Mal.auth(process.env.MY_ANIME_LIST_APP_ID).Unstable.login(
+      //    process.env.MY_ANIME_LIST_USERNAME,
+      //    process.env.MY_ANIME_LIST_PASSWORD
+      // );
 
       // init caches
       const steamAppCache = new SteamAppCache();

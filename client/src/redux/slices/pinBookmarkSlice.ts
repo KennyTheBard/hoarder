@@ -31,9 +31,9 @@ export const getMetadataCandidates = createAsyncThunk(
    'pinBookmark/getMetadataCandidates',
    async (payload: {
       type: string,
-      gameTitle: string
+      title: string
    }, thunkAPI) => {
-      const { data } = await metadataService.getMetadataCandidates(payload.type, payload.gameTitle);
+      const { data } = await metadataService.getMetadataCandidates(payload.type, payload.title);
       return data.candidates;
    }
 );

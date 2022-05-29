@@ -49,7 +49,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                setMetadataLoading(false);
             });
       }, 500),
-      []
+      [url]
    );
    const debouncedGetTypeSuggestions = useCallback(
       debounce((url: string) => {
@@ -57,17 +57,18 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             .unwrap()
             .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
       }, 500),
-      []
+      [url]
    );
    const debouncedGetMetadataCandidates = useCallback(
-      debounce((gameTitle: string) => {
-         dispatch(getMetadataCandidates({ type: type, gameTitle }))
+      debounce((title: string) => {
+         console.log(type);
+         dispatch(getMetadataCandidates({ type, title }))
             .unwrap()
             .then((data: BookmarkTypeMetadata[] | null) => {
                setCandidates(data);
             });
       }, 500),
-      []
+      [title, type]
    );
    const metadataToBookmark = (
       type: string,

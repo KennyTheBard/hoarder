@@ -50,6 +50,10 @@ export class MetadataController {
             return {
                candidates: await this.mediaMetadataService.getShowCandidates(request.title)
             }
+         case 'anime':
+            return {
+               candidates: await this.mediaMetadataService.getAnimeCandidates(request.title)
+            }
          default:
             return {
                candidates: null

@@ -1,9 +1,9 @@
 import { TvResult, ShowResponse } from './../../node_modules/moviedb-promise/dist/request-types.d';
 import { MovieResult, MovieResponse } from 'moviedb-promise/dist/request-types';
 import { MovieDb } from 'moviedb-promise';
-import { MovieBookmark, ShowBookmark, TypeSpecificMetadata } from '../models';
+import { AnimeBookmark, MovieBookmark, ShowBookmark, TypeSpecificMetadata } from '../models';
 import { Client as OmdbClient } from 'imdb-api';
-
+import axios from 'axios';
 
 export class MediaMetadataService {
 
@@ -61,25 +61,32 @@ export class MediaMetadataService {
             imdbId: result.imdb_id,
             url: `https://www.imdb.com/title/${result.imdb_id}`
          }));
+   }
 
-      // const { results } = await this.omdbClient.search({
-      //    name: searchTerm,
-      //    reqtype: 'series'
-      // })
+   public async getAnimeCandidates(searchTerm: string): Promise<TypeSpecificMetadata<AnimeBookmark, 'anime'>[]> {
+      try {
+         const candidates = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURI(searchTerm)}`);
 
-      // const candidates: Movie[] = await Promise.all(results
-      //    .map(result => this.omdbClient.get({ id: result.imdbid }))
-      // );
-
-      // return candidates
-      //    .map((candidate: Movie) => candidate as TVShow)
-      //    .map((result: TVShow) => ({
-      //       title: result.name,
-      //       releaseYear: result.year,
-      //       imageUrl: result.poster,
-      //       imdbId: result.imdbid,
-      //       url: result.imdburl
-      //    }));
+         return candidates.data.data
+            .map(candidate => ({
+               title: `${candidate.title}`,
+               url: candidate.url,
+               imageUrl: candidate.images.jpg.image_url,
+               myAnimeListScore: candidate.score,
+               isOnNetflix: false,
+               hasPremiered: candidate.airing || candidate.aired.to === null,
+               releaseYear: candidate.aired.prop.from.year ?? undefined,
+               myAnimeListReviewCount: candidate.scored_by,
+               isFinished: !candidate.airing,
+               finishedYear: candidate.aired.prop.to.year ?? undefined,
+               isAdaptation: candidate.source.toLowerCase() !== 'original',
+               episodeCount: candidate.episodes,
+            }));
+      } catch (error) {
+         console.error(error);
+         return [];
+      }
+      
    }
 
 }
