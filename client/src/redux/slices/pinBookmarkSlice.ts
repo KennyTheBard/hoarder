@@ -38,6 +38,14 @@ export const getMetadataCandidates = createAsyncThunk(
    }
 );
 
+export const getVideoDurationInSeconds = createAsyncThunk(
+   'pinBookmark/getVideoDurationInSeconds',
+   async (url: string, thunkAPI) => {
+      const { data } = await metadataService.getVideoDurationInSeconds(url);
+      return data.durationInSeconds;
+   }
+);
+
 interface PinBookmarksState {}
 
 const initialState: PinBookmarksState = {};

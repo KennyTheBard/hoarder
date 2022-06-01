@@ -6,7 +6,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, MediaMetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -86,6 +86,9 @@ import { HowLongToBeatService } from 'howlongtobeat';
       ));
       app.post('/api/getMetadataCandidates', postHandler<GetMetadataCandidatesRequest, GetMetadataCandidatesResponse>(
          metadataController.getMetadataCandidates
+      ));
+      app.post('/api/getVideoDurationInSeconds', postHandler<GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse>(
+         metadataController.getVideoDurationInSeconds
       ));
       app.post('/api/getTypeSuggestions', postHandler<GetTypeSuggestionsRequest, GetTypeSuggestionsResponse>(
          metadataController.getTypeSuggestions

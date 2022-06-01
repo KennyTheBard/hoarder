@@ -60,6 +60,13 @@ export class MetadataController {
             };
       }
    }
+
+   public getVideoDurationInSeconds = async (request: GetVideoDurationInSecondsRequest)
+      : Promise<GetVideoDurationInSecondsResponse> => {
+      return {
+         durationInSeconds: await this.mediaMetadataService.getVideoDurationInSeconds(request.url)
+      };
+   }
 }
 
 export type GetUrlMetadataRequest = {
@@ -94,4 +101,12 @@ export type GetMetadataCandidatesRequest = {
 
 export type GetMetadataCandidatesResponse = {
    candidates: BookmarkTypeMetadata[] | null;
+}
+
+export type GetVideoDurationInSecondsRequest = {
+   url: string;
+}
+
+export type GetVideoDurationInSecondsResponse = {
+   durationInSeconds: number;
 }

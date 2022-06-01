@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
 import { BookmarkTypeSuggestion, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
-import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, saveBookmark } from '../../redux/slices';
+import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, saveBookmark } from '../../redux/slices';
 import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
@@ -31,7 +31,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
    const [candidates, setCandidates] = useState<BookmarkTypeMetadata[] | null>(null);
    const [selectedCandidate, setSelectedCandidate] = useState<BookmarkTypeMetadata | null>(null);
-   const [bookmarkData, setBookmarkData] = useState<WithId<Bookmark> | null>(null)
+   const [bookmarkData, setBookmarkData] = useState<(WithId<Bookmark> & { [key: string]: any }) | null>(null)
 
 
    const debouncedGetUrlMetadata = useCallback(
@@ -118,6 +118,32 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       debouncedGetMetadataCandidates(title);
    }, [title, type]);
    useEffect(() => {
+      if (bookmarkData === null) {
+         return;
+      }
+
+      if (type !== 'video' || url.length === 0 || !isValidHttpUrl(url)) {
+         setBookmarkData({
+            ...bookmarkData,
+            durationInSeconds: undefined
+         });
+         return;
+      }
+
+      dispatch(getVideoDurationInSeconds(url))
+         .unwrap()
+         .then((durationInSeconds: number) => {
+            if (durationInSeconds === bookmarkData.durationInSeconds) {
+               return;
+            }
+            
+            setBookmarkData({
+               ...bookmarkData,
+               durationInSeconds
+            })
+         });
+   }, [type, url, bookmarkData])
+   useEffect(() => {
       setBookmarkData(
          type
             ? metadataToBookmark(
@@ -142,9 +168,15 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       if (selectedCandidate === null) {
          return;
       }
-      setTitle(selectedCandidate.title ? selectedCandidate.title : '');
-      setUrl(selectedCandidate.url ? selectedCandidate.url : '');
-      setImageUrl(selectedCandidate.imageUrl ? selectedCandidate.imageUrl : '');
+      if (title.length == 0) {
+         setTitle(selectedCandidate.title ? selectedCandidate.title : '');
+      }
+      if (url.length === 0) {
+         setUrl(selectedCandidate.url ? selectedCandidate.url : '');
+      }
+      if (imageUrl.length === 0) {
+         setImageUrl(selectedCandidate.imageUrl ? selectedCandidate.imageUrl : '');
+      }
    }, [selectedCandidate]);
 
    const getTitleLabelByType = (): string | undefined => {
@@ -172,6 +204,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             return 'MyAnimeList URL'
          case 'game':
             return 'Store page or website URL'
+         case 'video':
+            return 'Youtube URL'
          default:
             return undefined;
       }
@@ -192,7 +226,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const onBookmarkSubmit = async () => {
       setSubmitLoading(true);
-
 
       const errors = validateBookmarkData();
       if (errors === null) {

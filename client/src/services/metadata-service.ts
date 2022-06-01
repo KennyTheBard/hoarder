@@ -15,4 +15,8 @@ export const metadataService = {
       axios.post('http://localhost:8080/api/getTypeSuggestions', {
          url
       }),
+   getVideoDurationInSeconds: (url: string) =>
+      axios.post('http://localhost:8080/api/getVideoDurationInSeconds', {
+         url
+      }),
 }

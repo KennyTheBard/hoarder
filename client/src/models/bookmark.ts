@@ -27,7 +27,7 @@ export type ToolBookmark = BaseBookmark<'tool'> & Partial<{
 }>;
 
 export type VideoBookmark = BaseBookmark<'video'> & Partial<{
-   lengthInSeconds: number;
+   durationInSeconds: number;
 }>;
 
 export type MediaBookmarkMixin = Partial<{

@@ -18,7 +18,7 @@ export function VideoBookmarkCard(props: VideoBookmarkCardProps) {
                {bookmark.hostname}
             </Text>
             <Text>
-               {bookmark.lengthInSeconds} seconds
+               {bookmark.durationInSeconds} seconds
             </Text>
          </Group>
       </>

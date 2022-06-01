@@ -4,6 +4,7 @@ import { MovieDb } from 'moviedb-promise';
 import { AnimeBookmark, MovieBookmark, ShowBookmark, TypeSpecificMetadata } from '../models';
 import { Client as OmdbClient } from 'imdb-api';
 import axios from 'axios';
+import * as iso8601 from 'iso8601-duration';
 
 export class MediaMetadataService {
 
@@ -86,7 +87,13 @@ export class MediaMetadataService {
          console.error(error);
          return [];
       }
-      
+   }
+
+   public async getVideoDurationInSeconds(url: string): Promise<number> {
+      const urlObject = new URL(url);
+      const videoId = urlObject.searchParams.get('v');
+      const { data } = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${process.env.GOOGLE_API_KEY}`)
+      return iso8601.toSeconds(iso8601.parse(data.items[0].contentDetails.duration));
    }
 
 }
