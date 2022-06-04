@@ -1,7 +1,7 @@
 import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
-import { Bookmark } from '../../models/bookmark';
+import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
 import { deleteBookmark } from '../../redux/slices/bookmarkListSlice';
 import { WithId } from '../../utils/with-id';
@@ -25,34 +25,35 @@ export function BookmarkCard(props: BookmarkCardProps) {
          case 'article':
             return <ArticleBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'article',
+               type: BookmarkType.ARTICLE,
             }} />
          case 'tool':
+            // TODO: Add a ToolBookmarkCard
             return <></>
          case 'video':
             return <VideoBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'video',
+               type: BookmarkType.VIDEO,
             }} />
          case 'movie':
             return <MovieBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'movie',
+               type: BookmarkType.MOVIE,
             }} />
          case 'show':
             return <ShowBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'show',
+               type: BookmarkType.SHOW,
             }} />
          case 'anime':
             return <AnimeBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'anime',
+               type: BookmarkType.ANIME,
             }} />
          case 'game':
             return <GameBookmarkCard bookmark={{
                ...props.bookmark,
-               type: 'game',
+               type: BookmarkType.GAME,
             }} />
          default:
             return <UnknownBookmarkCard bookmark={props.bookmark} />

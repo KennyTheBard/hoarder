@@ -16,4 +16,6 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Add tag colors
 - [ ] Create configuration directory
 - [x] Have candidates include an object with overridding properties, in case they are chosen
-- [ ] Request for candidate sonly if current metadata is dropped
+- [ ] Request for candidates only if current metadata is dropped
+- [ ] Cache responses from server for metadata & candidates
+- [ ] Explicit ask for each bookmark field that would be replaced, but only if it has data already

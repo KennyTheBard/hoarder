@@ -1,4 +1,4 @@
-import { BaseBookmark, GameBookmark, MovieBookmark, ShowBookmark } from './bookmark';
+import { AnimeBookmark, ArticleBookmark, BaseBookmark, BookmarkType, GameBookmark, GameDuration, MovieBookmark, ShowBookmark, ToolBookmark, UnknownTypeBookmark, VideoBookmark } from './bookmark';
 
 export type MetadataComplete = {
    images: string[];
@@ -26,19 +26,29 @@ export interface Metadata {
 }
 
 export type BookmarkTypeSuggestion = {
-   type: string;
+   type: BookmarkType;
    confidence: number;
 };
 
-export type BookmarkTypeMetadata = TypeSpecificMetadata<GameBookmark, 'game'>
-   | TypeSpecificMetadata<MovieBookmark, 'movie'>
-   | TypeSpecificMetadata<ShowBookmark, 'show'>;
+export type GameDurationCandidate = {
+   title: string;
+   imageUrl: string;
+   duration: GameDuration;
+}
 
-export type TypeSpecificMetadata<T, U extends string> = Partial<
-   Pick<T, Exclude<keyof T, keyof BaseBookmark<U>>>
-   & {
-      title: string;
-      url: string;
-      imageUrl: string;
-   }
->;
+export type TypeSpecificMetadata<T> = Pick<T, Exclude<keyof T, keyof BaseBookmark>>
+
+export type TypeMetadata = TypeSpecificMetadata<ArticleBookmark>
+   | TypeSpecificMetadata<ToolBookmark>
+   | TypeSpecificMetadata<VideoBookmark>
+   | TypeSpecificMetadata<MovieBookmark>
+   | TypeSpecificMetadata<ShowBookmark>
+   | TypeSpecificMetadata<AnimeBookmark>
+   | TypeSpecificMetadata<GameBookmark>
+   | TypeSpecificMetadata<UnknownTypeBookmark>;
+
+export type CandidateMetadata = TypeMetadata & {
+   title?: string;
+   url?: string;
+   imageUrl?: string;
+}

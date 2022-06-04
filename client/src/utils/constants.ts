@@ -1,12 +1,13 @@
 import { SelectItem } from '@mantine/core';
+import { BookmarkType } from '../models';
 
 
 export const BOOKMARK_TYPE_OPTIONS: SelectItem[] = [
-   { value: 'article', label: 'Article' },
-   { value: 'tool', label: 'Tool' },
-   { value: 'video', label: 'Video' },
-   { value: 'movie', label: 'Movie' },
-   { value: 'show', label: 'Show' },
-   { value: 'anime', label: 'Anime' },
-   { value: 'game', label: 'Game' },
+   { value: BookmarkType.ARTICLE, label: 'Article' },
+   { value: BookmarkType.TOOL, label: 'Tool' },
+   { value: BookmarkType.VIDEO, label: 'Video' },
+   { value: BookmarkType.MOVIE, label: 'Movie' },
+   { value: BookmarkType.SHOW, label: 'Show' },
+   { value: BookmarkType.ANIME, label: 'Anime' },
+   { value: BookmarkType.GAME, label: 'Game' },
 ];

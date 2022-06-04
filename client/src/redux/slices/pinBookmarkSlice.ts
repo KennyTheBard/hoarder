@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Bookmark } from '../../models';
+import { Bookmark, BookmarkType } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
 
 
@@ -21,7 +21,7 @@ export const getTypeSuggestions = createAsyncThunk(
 
 export const saveBookmark = createAsyncThunk(
    'pinBookmark/saveBookmark',
-   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname">, thunkAPI) => {
+   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp">, thunkAPI) => {
       const { data } = await bookmarkService.saveBookmark(bookmark);
       return data;
    }
@@ -30,7 +30,7 @@ export const saveBookmark = createAsyncThunk(
 export const getMetadataCandidates = createAsyncThunk(
    'pinBookmark/getMetadataCandidates',
    async (payload: {
-      type: string,
+      type: BookmarkType,
       title: string
    }, thunkAPI) => {
       const { data } = await metadataService.getMetadataCandidates(payload.type, payload.title);

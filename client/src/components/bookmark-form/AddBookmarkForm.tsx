@@ -1,9 +1,9 @@
 import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
-import { BookmarkTypeSuggestion, Metadata, BookmarkTypeMetadata, Bookmark } from '../../models';
+import { BookmarkTypeSuggestion, Metadata, CandidateMetadata, Bookmark, BookmarkType, TypeMetadata } from '../../models';
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, saveBookmark } from '../../redux/slices';
 import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
@@ -14,90 +14,118 @@ export type AddBookmarkFormProps = {
    pinnedText: string;
 }
 
+type BookmarkFormdata = {
+   type: BookmarkType;
+   title: string;
+   note: string;
+   url: string;
+   imageUrl: string;
+   tags: string[];
+   hostname: string;
+   [key: string]: any;
+};
+
 export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const dispatch = useAppDispatch();
    const modals = useModals();
 
-   const [type, setType] = useState<string>('');
-   const [title, setTitle] = useState<string>(!isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
-   const [url, setUrl] = useState<string>(isValidHttpUrl(props.pinnedText) ? props.pinnedText : '');
-   const [tags, setTags] = useState<string[]>([]);
-   const [imageUrl, setImageUrl] = useState<string>('');
+   const defaultTitle = !isValidHttpUrl(props.pinnedText) ? props.pinnedText : '';
+   const defaultUrl = isValidHttpUrl(props.pinnedText) ? props.pinnedText : '';
+
+   const [formdata, _setFormdata] = useState<BookmarkFormdata>({
+      type: BookmarkType.UNKNOWN,
+      title: defaultTitle,
+      url: defaultUrl,
+      note: '',
+      imageUrl: '',
+      tags: [],
+      hostname: '',
+   })
+   const prevFormdataRef = useRef(formdata);
+   const setFormdata = (newFormData: BookmarkFormdata) => {
+      prevFormdataRef.current = newFormData;
+      _setFormdata(newFormData);
+   }
+   const setType = (type: BookmarkType) => {
+      console.log(type, formdata);
+      setFormdata({
+         ...formdata,
+         type
+      });
+   }
+   const setTitle = (title: string) => {
+      setFormdata({
+         ...formdata,
+         title
+      });
+   }
+   const setNote = (note: string) => {
+      setFormdata({
+         ...formdata,
+         note
+      });
+   }
+   const setUrl = (url: string) => {
+      setFormdata({
+         ...formdata,
+         url
+      });
+   }
+   const setTags = (tags: string[]) => {
+      setFormdata({
+         ...formdata,
+         tags
+      });
+   }
+
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
    const [isMetadataLoading, setMetadataLoading] = useState(false);
-   const [metadata, setMetadata] = useState<Metadata | null>(null);
+   const [isCandidateSelected, setIsCandidateSelected] = useState(false);
    const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
-   const [candidates, setCandidates] = useState<BookmarkTypeMetadata[] | null>(null);
-   const [selectedCandidate, setSelectedCandidate] = useState<BookmarkTypeMetadata | null>(null);
-   const [bookmarkData, setBookmarkData] = useState<(WithId<Bookmark> & { [key: string]: any }) | null>(null)
+   const [candidates, setCandidates] = useState<CandidateMetadata[] | null>(null);
 
-
-   const debouncedGetUrlMetadata = useCallback(
+   const debouncedOnUrlChanged = useCallback(
       debounce((url: string) => {
          setMetadataLoading(true);
          dispatch(getUrlMetadata(url))
             .unwrap()
-            .then((data: Metadata | undefined) => {
-               if (!data) {
+            .then((metadata: Metadata | undefined) => {
+               if (!metadata) {
                   return;
                }
-               setTitle(data.title || title);
-               setImageUrl(data.image || title);
-               setMetadata(data || null);
+               setFormdata({
+                  ...formdata,
+                  title: metadata.title !== null && metadata.title.length > 0 ? metadata.title : formdata.title,
+                  note: metadata.description !== null && metadata.description.length > 0 ? metadata.description : formdata.title,
+                  imageUrl: metadata.image !== null && metadata.image.length > 0 ? metadata.image : formdata.imageUrl,
+                  hostname: metadata.hostname !== null && metadata.hostname.length > 0 ? metadata.hostname : formdata.hostname
+               })
                setMetadataLoading(false);
+               dispatch(getTypeSuggestions(url))
+                  .unwrap()
+                  .then((suggestions: BookmarkTypeSuggestion[]) => setTypeSuggestions(suggestions));
             });
       }, 500),
-      [url]
-   );
-   const debouncedGetTypeSuggestions = useCallback(
-      debounce((url: string) => {
-         dispatch(getTypeSuggestions(url))
-            .unwrap()
-            .then((data: BookmarkTypeSuggestion[]) => setTypeSuggestions(data));
-      }, 500),
-      [url]
+      [formdata.url]
    );
    const debouncedGetMetadataCandidates = useCallback(
-      debounce((title: string) => {
-         console.log(type);
+      debounce((type: BookmarkType, title: string) => {
          dispatch(getMetadataCandidates({ type, title }))
             .unwrap()
-            .then((data: BookmarkTypeMetadata[] | null) => {
-               setCandidates(data);
+            .then((candidates: CandidateMetadata[] | null) => {
+               setCandidates(candidates);
             });
       }, 500),
-      [title, type]
+      [formdata.title, formdata.type]
    );
-   const metadataToBookmark = (
-      type: string,
-      title: string,
-      url: string,
-      imageUrl: string,
-      tags: string[],
-      metadata: Metadata | null,
-      candidate: BookmarkTypeMetadata = {}
-   ) => {
-      return {
-         _id: '',
-         createdTimestamp: 0,
-         updatedTimestamp: 0,
-         type,
-         title,
-         url,
-         imageUrl,
-         tags,
-         hostname: metadata !== null && metadata.hostname !== null ? metadata.hostname : undefined,
-         ...candidate,
-      } as WithId<Bookmark>;
-   }
 
    useEffect(() => {
-      if (url.length === 0) {
+      if (formdata.url.length === 0) {
          return;
       }
-      if (!isValidHttpUrl(url)) {
+      if (!isValidHttpUrl(formdata.url)) {
          setErrors({
             ...errors,
             url: 'Invalid URL'
@@ -108,93 +136,54 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          ...errors,
          url: null
       })
-      debouncedGetUrlMetadata(url);
-      debouncedGetTypeSuggestions(url);
-   }, [url]);
+      debouncedOnUrlChanged(formdata.url);
+   }, [formdata.url]);
    useEffect(() => {
-      if (title.length === 0 || type.length === 0) {
+      if (formdata.title.length === 0 || formdata.type.length === 0) {
          return;
       }
-      debouncedGetMetadataCandidates(title);
-   }, [title, type]);
+      debouncedGetMetadataCandidates(formdata.type, formdata.title);
+   }, [formdata.type, formdata.title]);
    useEffect(() => {
-      if (bookmarkData === null) {
-         return;
-      }
-
-      if (type !== 'video' || url.length === 0 || !isValidHttpUrl(url)) {
-         setBookmarkData({
-            ...bookmarkData,
+      if (formdata.type !== BookmarkType.VIDEO || formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
+         setFormdata({
+            ...formdata,
             durationInSeconds: undefined
          });
          return;
       }
 
-      dispatch(getVideoDurationInSeconds(url))
+      dispatch(getVideoDurationInSeconds(formdata.url))
          .unwrap()
          .then((durationInSeconds: number) => {
-            if (durationInSeconds === bookmarkData.durationInSeconds) {
+            if (formdata.durationInSeconds !== undefined && formdata.durationInSeconds === durationInSeconds) {
                return;
             }
-            
-            setBookmarkData({
-               ...bookmarkData,
+
+            setFormdata({
+               ...formdata,
                durationInSeconds
-            })
+            });
          });
-   }, [type, url, bookmarkData])
-   useEffect(() => {
-      setBookmarkData(
-         type
-            ? metadataToBookmark(
-               type,
-               title,
-               url,
-               imageUrl,
-               tags,
-               metadata,
-               selectedCandidate ? selectedCandidate : undefined
-            )
-            : null
-      )
-   }, [type, title, url, imageUrl, tags, metadata, selectedCandidate]);
+   }, [formdata.type, formdata.url])
    useEffect(() => {
       const guaranteeTypes = typeSuggestions.filter(suggestion => suggestion.confidence === 1);
       if (guaranteeTypes.length > 0) {
          setType(guaranteeTypes[0].type);
       }
    }, [typeSuggestions]);
-   useEffect(() => {
-      if (selectedCandidate === null) {
-         return;
-      }
-      if (title.length == 0) {
-         setTitle(selectedCandidate.title ? selectedCandidate.title : '');
-      }
-      if (url.length === 0) {
-         setUrl(selectedCandidate.url ? selectedCandidate.url : '');
-      }
-      if (imageUrl.length === 0) {
-         setImageUrl(selectedCandidate.imageUrl ? selectedCandidate.imageUrl : '');
-      }
-   }, [selectedCandidate]);
 
-   const getTitleLabelByType = (): string | undefined => {
-      switch (type) {
-         case 'game':
-         case 'tool':
-            return 'Name'
-         case 'movie':
-         case 'show':
-         case 'anime':
-            return 'International name'
-         default:
-            return undefined;
+
+   const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
+      return {
+         _id: '',
+         ...formdata,
+         createdTimestamp: new Date().getTime(),
+         updatedTimestamp: new Date().getTime()
       }
    }
-
    const getUrlLabelByType = (): string | undefined => {
-      switch (type) {
+      switch (formdata.type) {
          case 'tool':
             return 'Website or repository URL'
          case 'show':
@@ -211,35 +200,24 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }
 
-   const validateBookmarkData = (): Record<string, string | null> | null => {
-      if (bookmarkData === null) {
-         return null;
-      }
-
+   const validateFormdata = (): Record<string, string | null> => {
       return {
-         type: bookmarkData.type === '' ? 'Type is mandatory' : null,
-         title: bookmarkData.title === '' ? 'Title is mandatory' : null,
-         url: bookmarkData.url === '' ? 'URL is mandatory' : null,
-         tags: bookmarkData.tags.length === 0 ? 'Provide at minimum 1 tag' : null,
+         type: formdata.type === '' ? 'Type is mandatory' : null,
+         title: formdata.title === '' ? 'Title is mandatory' : null,
+         url: formdata.url === '' ? 'URL is mandatory' : null,
+         tags: formdata.tags.length === 0 ? 'Provide at minimum 1 tag' : null,
       };
    }
 
    const onBookmarkSubmit = async () => {
       setSubmitLoading(true);
 
-      const errors = validateBookmarkData();
-      if (errors === null) {
-         notifyError('Bookmark data is empty!');
-         return;
-      }
-
-      const ok = Object.values(errors).filter(v => v !== null).length === 0;
+      const errors = validateFormdata();
       setErrors(errors);
 
-      validateBookmarkData();
-
+      const ok = Object.values(errors).filter(v => v !== null).length === 0;
       if (ok) {
-         dispatch(saveBookmark(bookmarkData!))
+         dispatch(saveBookmark(formdata))
             .unwrap()
             .then((response) => {
                setSubmitLoading(false);
@@ -252,6 +230,17 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             });
       }
    }
+   const selectCandidate = (candidate: CandidateMetadata) => {
+      setIsCandidateSelected(true);
+      setFormdata({
+         ...formdata,
+         ...candidate,
+         // TODO: replace this mess with a function
+         title: formdata.title.length > 0 ? formdata.title : (candidate.title || ''),
+         url: formdata.url.length > 0 ? formdata.url : (candidate.url || ''),
+         imageUrl: formdata.imageUrl.length > 0 ? formdata.imageUrl : (candidate.imageUrl || ''),
+      });
+   }
 
    return (
       <>
@@ -263,24 +252,24 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   nothingFound="Nothing..."
                   searchable
                   maxDropdownHeight={400}
-                  value={type || null}
+                  value={formdata.type}
                   data={getTypeOptions(typeSuggestions)}
-                  onChange={(type: string) => setType(type)}
+                  onChange={(type: string) => setType(type as BookmarkType)}
                   error={errors.type}
                />
 
                <TextInput
                   placeholder="https://..."
                   label={getUrlLabelByType() || 'URL'}
-                  value={url || ''}
+                  value={formdata.url}
                   required
                   onChange={(event) => setUrl(event.target.value)}
                   error={errors.url}
                />
 
                <TextInput
-                  label={getTitleLabelByType() || 'Title'}
-                  value={title || ''}
+                  label={'Title or Name'}
+                  value={formdata.title}
                   required
                   onChange={(event) => setTitle(event.target.value)}
                   error={errors.title}
@@ -293,7 +282,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
                <Button
                   color="green"
-                  disabled={type === null}
+                  disabled={formdata.type === null}
                   loading={isSubmitLoading}
                   leftIcon={<Pin size={14} />}
                   onClick={onBookmarkSubmit}
@@ -303,30 +292,22 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             </Stack>
             <Card>
                <LoadingOverlay visible={isMetadataLoading} />
-               {bookmarkData &&
-                  <BookmarkCard bookmark={bookmarkData} viewOnly={true} />
+               {formdata &&
+                  <BookmarkCard bookmark={formdataToBookmark(formdata)} viewOnly={true} />
                }
             </Card>
          </Group>
          <Space h="lg" />
-         {!selectedCandidate && candidates && candidates.length > 0 &&
+         {!isCandidateSelected && candidates && candidates.length > 0 &&
             <SimpleGrid cols={2}>
-               {candidates.map((candidate: BookmarkTypeMetadata) => (
+               {candidates.map((candidate: CandidateMetadata) => (
                   <Stack key={candidate.url}>
                      <BookmarkCard
-                        bookmark={metadataToBookmark(
-                           type,
-                           title,
-                           url,
-                           candidate.imageUrl ? candidate.imageUrl : '',
-                           tags,
-                           metadata,
-                           candidate
-                        )}
+                        bookmark={formdataToBookmark(formdata)}
                         viewOnly={true}
                      />
                      <Button
-                        onClick={() => setSelectedCandidate(candidate)}
+                        onClick={() => selectCandidate(candidate)}
                      >
                         Use this one!
                      </Button>
