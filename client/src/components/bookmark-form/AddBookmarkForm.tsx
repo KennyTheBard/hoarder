@@ -228,6 +228,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   notifyError(response.error);
                }
             });
+      } else {
+         setSubmitLoading(false);
       }
    }
    const selectCandidate = (candidate: CandidateMetadata) => {
@@ -303,7 +305,10 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                {candidates.map((candidate: CandidateMetadata) => (
                   <Stack key={candidate.url}>
                      <BookmarkCard
-                        bookmark={formdataToBookmark(formdata)}
+                        bookmark={formdataToBookmark({
+                           ...formdata,
+                           ...candidate
+                        })}
                         viewOnly={true}
                      />
                      <Button
