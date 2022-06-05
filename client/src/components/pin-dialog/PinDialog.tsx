@@ -38,7 +38,7 @@ export function PinDialog() {
                      centered: true,
                      onClose: () => setOpenedAddBookmarkModal(false),
                      children: (
-                        <AddBookmarkForm pinnedText={url}/>
+                        <AddBookmarkForm origin="pin_dialog" pinnedText={url}/>
                      )
                   });
                }}

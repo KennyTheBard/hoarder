@@ -47,8 +47,10 @@ export type TypeMetadata = TypeSpecificMetadata<ArticleBookmark>
    | TypeSpecificMetadata<GameBookmark>
    | TypeSpecificMetadata<UnknownTypeBookmark>;
 
-export type CandidateMetadata = TypeMetadata & {
+export type TypeAgnosticMetadata = {
    title?: string;
    url?: string;
    imageUrl?: string;
-}
+};
+
+export type CandidateMetadata = TypeMetadata & TypeAgnosticMetadata;

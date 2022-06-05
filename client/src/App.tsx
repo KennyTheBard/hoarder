@@ -13,6 +13,7 @@ import { store } from './redux/store';
 import { NotificationsProvider } from '@mantine/notifications';
 import { AppHeader, PinDialog } from './components';
 import './App.css';
+import { DataTool } from './features/data-tool/DataTool';
 
 export default function App() {
 
@@ -30,6 +31,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/tags" element={<TagList />} />
+                  <Route path="/data-tool" element={<DataTool />} />
                 </Routes>
               </AppShell>
             </Router>

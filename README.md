@@ -19,3 +19,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Request for candidates only if current metadata is dropped
 - [ ] Cache responses from server for metadata & candidates
 - [ ] Explicit ask for each bookmark field that would be replaced, but only if it has data already
+- [ ] Replace delete with archive and add an arhive page

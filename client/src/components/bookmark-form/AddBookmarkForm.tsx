@@ -11,7 +11,12 @@ import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
 
 export type AddBookmarkFormProps = {
+   origin: 'pin_dialog';
    pinnedText: string;
+} | {
+   origin: 'import_tool';
+   url?: string;
+   note?: string;
 }
 
 type BookmarkFormdata = {
@@ -25,22 +30,41 @@ type BookmarkFormdata = {
    [key: string]: any;
 };
 
+function getInputOverrides(props: AddBookmarkFormProps): Partial<BookmarkFormdata> {
+   if (props.origin === 'pin_dialog') {
+      return isValidHttpUrl(props.pinnedText) ? {
+         url: props.pinnedText
+      } : {
+         title: props.pinnedText
+      };
+   }
+
+   if (props.origin === 'import_tool') {
+      const ret: Partial<BookmarkFormdata> = {};
+      if (props.url) ret.url = props.url;
+      if (props.note) ret.note = props.note;
+      return ret;
+   }
+
+   return {};
+}
+
 export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const dispatch = useAppDispatch();
    const modals = useModals();
 
-   const defaultTitle = !isValidHttpUrl(props.pinnedText) ? props.pinnedText : '';
-   const defaultUrl = isValidHttpUrl(props.pinnedText) ? props.pinnedText : '';
+   const inputOverrides = getInputOverrides(props);
 
    const [formdata, _setFormdata] = useState<BookmarkFormdata>({
       type: BookmarkType.UNKNOWN,
-      title: defaultTitle,
-      url: defaultUrl,
+      title: '',
+      url: '',
       note: '',
       imageUrl: '',
       tags: [],
       hostname: '',
+      ...inputOverrides
    })
    const prevFormdataRef = useRef(formdata);
    const setFormdata = (newFormData: BookmarkFormdata) => {

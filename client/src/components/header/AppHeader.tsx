@@ -34,6 +34,9 @@ export function AppHeader() {
                <Button component={Link} to="/tags">
                   Tags
                </Button>
+               <Button component={Link} to="/data-tool">
+                  Data tool
+               </Button>
             </Group>
          </Group>
       </Header>
