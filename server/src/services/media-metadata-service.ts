@@ -13,7 +13,7 @@ export class MediaMetadataService {
       private readonly omdbClient: OmdbClient,
    ) { }
 
-   public async getMovieCandidates(searchTerm: string): Promise<TypeSpecificMetadata<MovieBookmark, 'movie'>[]> {
+   public async getMovieCandidates(searchTerm: string): Promise<TypeSpecificMetadata<MovieBookmark>[]> {
       const results: MovieResult[] = (await this.movieDbClient.searchMovie({
          query: searchTerm
       })).results;
@@ -25,16 +25,18 @@ export class MediaMetadataService {
 
       return candidates
          .filter((result: MovieResponse) => result.imdb_id && result.poster_path)
+         .sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0))
          .map((result: MovieResponse) => ({
             title: result.title,
             releaseYear: parseInt(result.release_date.split('-')[0]),
             imageUrl: `https://image.tmdb.org/t/p/w300${result.poster_path}`,
             imdbId: result.imdb_id,
-            url: `https://www.imdb.com/title/${result.imdb_id}`
+            url: `https://www.imdb.com/title/${result.imdb_id}`,
+            imdbRating: result.vote_average
          }));
    }
 
-   public async getShowCandidates(searchTerm: string): Promise<TypeSpecificMetadata<ShowBookmark, 'show'>[]> {
+   public async getShowCandidates(searchTerm: string): Promise<TypeSpecificMetadata<ShowBookmark>[]> {
       const results: TvResult[] = (await this.movieDbClient.searchTv({
          query: searchTerm
       })).results;
@@ -64,7 +66,7 @@ export class MediaMetadataService {
          }));
    }
 
-   public async getAnimeCandidates(searchTerm: string): Promise<TypeSpecificMetadata<AnimeBookmark, 'anime'>[]> {
+   public async getAnimeCandidates(searchTerm: string): Promise<TypeSpecificMetadata<AnimeBookmark>[]> {
       try {
          const candidates = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURI(searchTerm)}`);
 

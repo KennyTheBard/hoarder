@@ -1,5 +1,5 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { Bookmark } from '../models';
+import { Bookmark, BookmarkType } from '../models';
 
 
 export class BookmarkService {
@@ -45,7 +45,7 @@ export class BookmarkService {
       }
    }
 
-   public async getTypeCountByHostname(hostname: string): Promise<Record<string, number>> {
+   public async getTypeCountByHostname(hostname: string): Promise<Record<BookmarkType, number>> {
       const results = await this.collection.aggregate([{
          $match: { "hostname": hostname }
       }, {

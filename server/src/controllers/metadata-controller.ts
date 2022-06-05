@@ -1,4 +1,4 @@
-import { BookmarkTypeMetadata, BookmarkTypeSuggestion, GameDurationCandidate, Metadata } from '../models';
+import { BookmarkTypeSuggestion, CandidateMetadata, GameDurationCandidate, Metadata } from '../models';
 import { GameMetadataService, MetadataService, MediaMetadataService, TypeFinderService } from '../services';
 
 
@@ -100,7 +100,7 @@ export type GetMetadataCandidatesRequest = {
 }
 
 export type GetMetadataCandidatesResponse = {
-   candidates: BookmarkTypeMetadata[] | null;
+   candidates: CandidateMetadata[] | null;
 }
 
 export type GetVideoDurationInSecondsRequest = {

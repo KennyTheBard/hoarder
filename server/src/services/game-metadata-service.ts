@@ -1,5 +1,5 @@
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
-import { BookmarkTypeMetadata, GameBookmark, GameDurationCandidate, GamePlatform, TypeSpecificMetadata } from '../models';
+import { GameBookmark, GameDurationCandidate, GamePlatform, TypeAgnosticMetadata, TypeSpecificMetadata } from '../models';
 import SteamAPI from 'steamapi';
 import { Collection, Db } from 'mongodb';
 import _ from 'lodash';
@@ -75,7 +75,7 @@ export class GameMetadataService {
       return data.applist.apps;
    }
 
-   public async getGameMetadataCandidates(title: string): Promise<TypeSpecificMetadata<GameBookmark, 'game'>[]> {
+   public async getGameMetadataCandidates(title: string): Promise<TypeSpecificMetadata<GameBookmark>[]> {
       const suggestions = await this.getSteamGameSuggestions(title);
 
       return Promise.all(
@@ -83,7 +83,7 @@ export class GameMetadataService {
       );
    }
 
-   public async getGameMetadataByAppId(title: string, appid: number): Promise<TypeSpecificMetadata<GameBookmark, 'game'>> {
+   public async getGameMetadataByAppId(title: string, appid: number): Promise<TypeSpecificMetadata<GameBookmark> & TypeAgnosticMetadata> {
       const details = await this.getSteamAppDetails(appid);
       const reviews = await this.getSteamAppReviews(appid);
       const durationCandidates = await this.getGameDurationCandidates(title);

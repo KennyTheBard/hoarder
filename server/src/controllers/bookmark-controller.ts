@@ -1,5 +1,5 @@
 import { BookmarkService } from '../services';
-import { Bookmark } from '../models';
+import { Bookmark, BookmarkType } from '../models';
 import { getHostnameForUrl } from '../utils';
 
 export class BookmarkController {
@@ -41,7 +41,7 @@ export class BookmarkController {
 }
 
 export type AddBookmarkRequest = {
-   type: string,
+   type: BookmarkType,
    title: string,
    note: string;
    url: string;

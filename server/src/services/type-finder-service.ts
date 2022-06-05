@@ -1,18 +1,18 @@
 import { BookmarkService } from '.';
-import { BookmarkTypeSuggestion } from '../models';
+import { BookmarkType, BookmarkTypeSuggestion } from '../models';
 import { getHostnameForUrl, isValidHttpUrl } from '../utils';
 
 
 const hostnameToTypeDictionary = {
-   'store.steampowered.com': 'game',
-   'www.gog.com': 'game',
-   'store.epicgames.com': 'game',
-   'medium.com': 'article',
-   'myanimelist.net': 'anime',
-   'github.com': 'tool',
-   'www.npmjs.com': 'tool',
-   'www.producthunt.com': 'tool',
-   'www.youtube.com': 'video',
+   'store.steampowered.com': BookmarkType.GAME,
+   'www.gog.com': BookmarkType.GAME,
+   'store.epicgames.com': BookmarkType.GAME,
+   'medium.com': BookmarkType.ARTICLE,
+   'myanimelist.net': BookmarkType.ANIME,
+   'github.com': BookmarkType.TOOL,
+   'www.npmjs.com': BookmarkType.TOOL,
+   'www.producthunt.com': BookmarkType.TOOL,
+   'www.youtube.com': BookmarkType.VIDEO,
 }
 
 export class TypeFinderService {
@@ -41,18 +41,19 @@ export class TypeFinderService {
       }
 
       const suggestions = await this.bookmarkService.getTypeCountByHostname(hostname);
-      if (suggestions.length === 0) {
+      if (Object.keys(suggestions).length === 0) {
          return [];
       }
 
       const total = Object.values(suggestions).reduce((total: number, count: number) => total + count, 0);
-      return Object.keys(suggestions).map((type) => ({
-         type,
-         confidence: suggestions[type] / total 
-      }));
+      return Object.keys(suggestions)
+         .map((type: BookmarkType) => ({
+            type,
+            confidence: suggestions[type] / total
+         }));
    }
 
-   private getTypeByHostname(hostname: string): string | undefined {
+   private getTypeByHostname(hostname: string): BookmarkType | undefined {
       return hostnameToTypeDictionary[hostname];
    }
 }
