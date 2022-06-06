@@ -8,12 +8,13 @@ export class BookmarkController {
       private readonly bookmarkService: BookmarkService
    ) { }
 
-   public addBookmark = async (request: AddBookmarkRequest): Promise<AddBookmarkResponse> => {
+   public addBookmark = async (request: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname" | "isArchived">): Promise<AddBookmarkResponse> => {
       const now = new Date().getTime();
       const hostname = getHostnameForUrl(request.url);
       const savedId = await this.bookmarkService.addBookmark({
          ...request,
          hostname,
+         isArchived: false,
          createdTimestamp: now,
          updatedTimestamp: now
       });
@@ -30,6 +31,14 @@ export class BookmarkController {
       }
    }
 
+   public getArchivedBookmarks = async (request: GetBookmarksRequest): Promise<GetBookmarksResponse> => {
+      const bookmarks = await this.bookmarkService.getAllArchivedBookmarks();
+      return {
+         count: bookmarks.length,
+         bookmarks
+      }
+   }
+
    public updateBookmark = async (request: UpdateBookmarkRequest): Promise<void> => {
       await this.bookmarkService.updateBookmark(request.id, request.bookmark);
    }
@@ -38,6 +47,9 @@ export class BookmarkController {
       await this.bookmarkService.deleteBookmark(request.id);
    }
 
+   public updateIsArchivedForBookmark = async (request: UpdateIsArchivedForBookmarkRequest): Promise<void> => {
+      await this.bookmarkService.archiveBookmark(request.id, request.isArchived);
+   }
 }
 
 export type AddBookmarkRequest = {
@@ -70,4 +82,9 @@ export type UpdateBookmarkRequest = {
 
 export type DeleteBookmarkRequest = {
    id: string;
+};
+
+export type UpdateIsArchivedForBookmarkRequest = {
+   id: string;
+   isArchived: boolean;
 };

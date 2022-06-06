@@ -26,7 +26,6 @@ type BookmarkFormdata = {
    url: string;
    imageUrl: string;
    tags: string[];
-   hostname: string;
    [key: string]: any;
 };
 
@@ -63,7 +62,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       note: '',
       imageUrl: '',
       tags: [],
-      hostname: '',
       ...inputOverrides
    })
    const prevFormdataRef = useRef(formdata);
@@ -202,6 +200,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       return {
          _id: '',
          ...formdata,
+         hostname: '',
+         isArchived: false,
          createdTimestamp: new Date().getTime(),
          updatedTimestamp: new Date().getTime()
       }

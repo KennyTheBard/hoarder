@@ -31,6 +31,7 @@ export type BaseBookmark = {
    imageUrl?: string;
    tags: string[];
    hostname: string;
+   isArchived: boolean;
    createdTimestamp: number;
    updatedTimestamp: number;
 }

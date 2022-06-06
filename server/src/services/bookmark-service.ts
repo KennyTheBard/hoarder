@@ -21,14 +21,21 @@ export class BookmarkService {
    }
 
    public async getAllBookmarks(): Promise<Bookmark[]> {
-      return await this.collection.find().toArray();
+      return await this.collection.find({
+         isArchived: false
+      }).toArray();
+   }
+
+   public async getAllArchivedBookmarks(): Promise<Bookmark[]> {
+      return await this.collection.find({
+         isArchived: true
+      }).toArray();
    }
 
    public async updateBookmark(id: string, bookmark: Partial<Bookmark>): Promise<void> {
       const result = await this.collection.updateOne(
          { _id: new ObjectId(id) },
-         { $set: { ...bookmark } },
-         { upsert: true }
+         { $set: { ...bookmark } }
       );
       if (!result.acknowledged) {
          throw new Error(`Could not update bookmark with id '${id}'`);
@@ -42,6 +49,19 @@ export class BookmarkService {
       const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
       if (!result.acknowledged || result.deletedCount === 0) {
          throw new Error(`Could not delete bookmark with id '${id}'`);
+      }
+   }
+
+   public async archiveBookmark(id: string, isArchived: boolean): Promise<void> {
+      const result = await this.collection.updateOne(
+         { _id: new ObjectId(id) },
+         { $set: { isArchived } }
+      );
+      if (!result.acknowledged) {
+         throw new Error(`Could not archive bookmark with id '${id}'`);
+      }
+      if (result.matchedCount === 0) {
+         throw new Error(`There is no bookmark with id '${id}'`);
       }
    }
 

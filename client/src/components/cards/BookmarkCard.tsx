@@ -3,10 +3,10 @@ import { useModals } from '@mantine/modals';
 import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
-import { deleteBookmark } from '../../redux/slices/bookmarkListSlice';
 import { WithId } from '../../utils/with-id';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
+import { updateIsArchivedForBookmark } from '../../redux/slices';
 
 
 export interface BookmarkCardProps {
@@ -62,16 +62,19 @@ export function BookmarkCard(props: BookmarkCardProps) {
 
    const openDeleteModal = () =>
       modals.openConfirmModal({
-         title: 'Delete bookmark',
+         title: 'Archive bookmark',
          centered: true,
          children: (
             <Text size="sm">
-               This action is destructive and you will not be able to undo it!
+               If you wish to undo this action, you will have to do it manually from the "Archived" section.
             </Text>
          ),
-         labels: { confirm: 'Delete', cancel: 'Cancel' },
+         labels: { confirm: 'Archive', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(deleteBookmark(props.bookmark._id))
+         onConfirm: () => dispatch(updateIsArchivedForBookmark({
+            bookmarkId: props.bookmark._id, 
+            isArchived: true
+         }))
       });
 
    return (

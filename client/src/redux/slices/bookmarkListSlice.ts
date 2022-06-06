@@ -20,6 +20,17 @@ export const deleteBookmark = createAsyncThunk(
    }
 );
 
+export const updateIsArchivedForBookmark = createAsyncThunk(
+   'bookmark/updateIsArchivedForBookmark',
+   async (payload: {
+      bookmarkId: string,
+      isArchived: boolean
+   }, thunkAPI) => {
+      await bookmarkService.updateIsArchivedForBookmark(payload.bookmarkId, payload.isArchived);
+      thunkAPI.dispatch(getBookmarks())
+   }
+);
+
 interface BookmarksListState {
    bookmarks: WithId<Bookmark>[];
 }

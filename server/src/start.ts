@@ -6,7 +6,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, MediaMetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -72,11 +72,18 @@ import { HowLongToBeatService } from 'howlongtobeat';
       app.post('/api/getBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
          bookmarkController.getBookmarks
       ));
+      // TODO: merge this one into the previous endpoint
+      app.post('/api/getArchivedBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
+         bookmarkController.getArchivedBookmarks
+      ));
       app.post('/api/updateBookmark', postHandler<UpdateBookmarkRequest, void>(
          bookmarkController.updateBookmark
       ));
       app.post('/api/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
          bookmarkController.deleteBookmark
+      ));
+      app.post('/api/updateIsArchivedForBookmark', postHandler<UpdateIsArchivedForBookmarkRequest, void>(
+         bookmarkController.updateIsArchivedForBookmark
       ));
       app.post('/api/getUrlMetadata', postHandler<GetUrlMetadataRequest, GetUrlMetadataResponse>(
          metadataController.getUrlMetadata
