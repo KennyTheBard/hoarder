@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Bookmark, BookmarkType } from '../../models';
+import { AnonymousBookmark, Bookmark, BookmarkType } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
 
 
@@ -21,7 +21,7 @@ export const getTypeSuggestions = createAsyncThunk(
 
 export const saveBookmark = createAsyncThunk(
    'pinBookmark/saveBookmark',
-   async (bookmark: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname" | "isArchived">, thunkAPI) => {
+   async (bookmark: AnonymousBookmark, thunkAPI) => {
       const { data } = await bookmarkService.saveBookmark(bookmark);
       return data;
    }

@@ -1,5 +1,5 @@
 import { BookmarkService } from '../services';
-import { Bookmark, BookmarkType } from '../models';
+import { AnonymousBookmark, Bookmark, BookmarkType } from '../models';
 import { getHostnameForUrl, WithCount, WithId } from '../utils';
 
 export class BookmarkController {
@@ -8,7 +8,7 @@ export class BookmarkController {
       private readonly bookmarkService: BookmarkService
    ) { }
 
-   public addBookmark = async (request: Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname" | "isArchived">): Promise<AddBookmarkResponse> => {
+   public addBookmark = async (request: AnonymousBookmark): Promise<AddBookmarkResponse> => {
       const now = new Date().getTime();
       const hostname = getHostnameForUrl(request.url);
       const savedId = await this.bookmarkService.addBookmark({

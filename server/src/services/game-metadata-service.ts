@@ -93,6 +93,7 @@ export class GameMetadataService {
          title: details.name,
          url: this.steamAppIdToSteamUrl(appid),
          imageUrl: details.header_image,
+         candidateId: appid,
          steamReviews: reviews,
          platforms: [
             ...(details.platforms.windows ? [GamePlatform.WINDOWS] : []),

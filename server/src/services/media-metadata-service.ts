@@ -28,6 +28,7 @@ export class MediaMetadataService {
          .sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0))
          .map((result: MovieResponse) => ({
             title: result.title,
+            candidateId: result.id,
             releaseYear: parseInt(result.release_date.split('-')[0]),
             imageUrl: `https://image.tmdb.org/t/p/w300${result.poster_path}`,
             imdbId: result.imdb_id,
@@ -59,6 +60,7 @@ export class MediaMetadataService {
          .filter(result => result.imdb_id && result.poster_path)
          .map(result => ({
             title: result.name,
+            candidateId: result.id,
             releaseYear: parseInt(result.first_air_date.split('-')[0]),
             imageUrl: `https://image.tmdb.org/t/p/w300${result.poster_path}`,
             imdbId: result.imdb_id,
@@ -75,6 +77,7 @@ export class MediaMetadataService {
                title: `${candidate.title}`,
                url: candidate.url,
                imageUrl: candidate.images.jpg.image_url,
+               candidateId: candidate.mal_id,
                myAnimeListScore: candidate.score,
                isOnNetflix: false,
                hasPremiered: candidate.airing || candidate.aired.to === null,

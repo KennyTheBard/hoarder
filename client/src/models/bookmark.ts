@@ -13,7 +13,7 @@ export enum BookmarkType {
    UNKNOWN = ''
 }
 
-export type Bookmark =( ArticleBookmark
+export type Bookmark = (ArticleBookmark
    | ToolBookmark
    | VideoBookmark
    | MovieBookmark
@@ -32,9 +32,12 @@ export type BaseBookmark = {
    tags: string[];
    hostname: string;
    isArchived: boolean;
+   candidateId?: string;
    createdTimestamp: number;
    updatedTimestamp: number;
 }
+
+export type AnonymousBookmark = Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname" | "isArchived">
 
 export type UnknownTypeBookmark = BaseBookmark & Partial<{
    type: BookmarkType.UNKNOWN;

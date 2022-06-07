@@ -51,6 +51,7 @@ export type TypeAgnosticMetadata = {
    title?: string;
    url?: string;
    imageUrl?: string;
+   candidateId?: string | number;
 };
 
 export type CandidateMetadata = TypeMetadata & TypeAgnosticMetadata;
