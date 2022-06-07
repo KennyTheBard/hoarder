@@ -107,7 +107,7 @@ export class GameMetadataService {
    }
 
    private async getSteamGameSuggestions(searchTerm: string): Promise<SteamAppEntry[]> {
-      const { data } = await axios.get(`https://store.steampowered.com/search/suggest?term=${searchTerm}&cc=EN`)
+      const { data } = await axios.get(`https://store.steampowered.com/search/suggest?term=${encodeURI(searchTerm)}&cc=EN`)
       const suggestions = data
          .replaceAll('<ul>', '')
          .replaceAll('</ul>', '')
