@@ -1,7 +1,9 @@
-import { Anchor, Button, Group, Header, Image, Text } from '@mantine/core'
-import { Link } from 'react-router-dom';
+import { Anchor, Button, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
+import { Link, useNavigate } from 'react-router-dom';
+import { Home, Tags, Archive, Menu2, DatabaseImport, DatabaseExport } from 'tabler-icons-react';
 
 export function AppHeader() {
+   const navigate = useNavigate();
 
    return (
       <Header height={75} p="xs" sx={(theme) => ({
@@ -16,27 +18,63 @@ export function AppHeader() {
                      alt="Hoarder logo"
                      width={50} height={50} />
 
-                     <Text color="white"
-                        style={{
-                           fontWeight: 1000,
-                           fontSize: 32
-                        }}
-                     >
-                        Hoarder
-                     </Text>
+                  <Text color="white"
+                     style={{
+                        fontWeight: 1000,
+                        fontSize: 32
+                     }}
+                  >
+                     Hoarder
+                  </Text>
                </Group>
             </Anchor>
 
             <Group position="right">
-               <Button component={Link} to="/">
-                  Home
-               </Button>
-               <Button component={Link} to="/tags">
-                  Tags
-               </Button>
-               <Button component={Link} to="/data-tool">
-                  Data tool
-               </Button>
+               <Menu
+                  mr="14px"
+                  control={<ActionIcon variant="transparent">
+                     <Menu2
+                        size={64}
+                        strokeWidth={2}
+                        color={'white'}
+                     />
+                  </ActionIcon>}
+               >
+                  <Menu.Label>Application</Menu.Label>
+                  <Menu.Item
+                     icon={<Home size={14} />}
+                     onClick={() => navigate('/')}
+                  >
+                     Home
+                  </Menu.Item>
+                  <Menu.Item
+                     icon={<Tags size={14} />}
+                     onClick={() => navigate('/tags')}
+                  >
+                     Tags
+                  </Menu.Item>
+                  <Menu.Item
+                     icon={<Archive size={14} />}
+                     onClick={() => navigate('/archive')}
+                  >
+                     Archive
+                  </Menu.Item>
+                  <Divider />
+
+                  <Menu.Label>Data Tools</Menu.Label>
+                  <Menu.Item
+                     icon={<DatabaseImport size={14} />}
+                     onClick={() => navigate('/import')}
+                  >
+                     Data Import
+                  </Menu.Item>
+                  <Menu.Item
+                     icon={<DatabaseExport size={14} />}
+                     onClick={() => navigate('/export')}
+                  >
+                     Data Export
+                  </Menu.Item>
+               </Menu>
             </Group>
          </Group>
       </Header>

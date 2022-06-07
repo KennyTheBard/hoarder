@@ -1,9 +1,9 @@
 import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Edit, Settings, Share, Trash } from 'tabler-icons-react';
+import { Archive, Edit, Settings, Share, Trash } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch } from '../../redux/hooks';
-import { WithId } from '../../utils/with-id';
+import { WithId } from '../../utils/support-types';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
 import { updateIsArchivedForBookmark } from '../../redux/slices';
@@ -124,10 +124,10 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
                      <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
                      <Menu.Item color="red"
-                        icon={<Trash size={14} />}
+                        icon={<Archive size={14} />}
                         onClick={openDeleteModal}
                      >
-                        Delete
+                        Archive
                      </Menu.Item>
                   </Menu>
                }

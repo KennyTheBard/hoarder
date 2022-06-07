@@ -1,6 +1,6 @@
 import { BookmarkService } from '../services';
 import { Bookmark, BookmarkType } from '../models';
-import { getHostnameForUrl } from '../utils';
+import { getHostnameForUrl, WithCount, WithId } from '../utils';
 
 export class BookmarkController {
 
@@ -24,18 +24,18 @@ export class BookmarkController {
    }
 
    public getBookmarks = async (request: GetBookmarksRequest): Promise<GetBookmarksResponse> => {
-      const bookmarks = await this.bookmarkService.getAllBookmarks();
+      const entries = await this.bookmarkService.getAllBookmarks();
       return {
-         count: bookmarks.length,
-         bookmarks
+         count: entries.length,
+         entries
       }
    }
 
    public getArchivedBookmarks = async (request: GetBookmarksRequest): Promise<GetBookmarksResponse> => {
-      const bookmarks = await this.bookmarkService.getAllArchivedBookmarks();
+      const entries = await this.bookmarkService.getAllArchivedBookmarks();
       return {
-         count: bookmarks.length,
-         bookmarks
+         count: entries.length,
+         entries
       }
    }
 
@@ -70,10 +70,7 @@ export type GetBookmarksRequest = Partial<{
    tags: string[];
 }>;
 
-export type GetBookmarksResponse = {
-   count: number;
-   bookmarks: Bookmark[];
-};
+export type GetBookmarksResponse = WithCount<WithId<Bookmark>>;
 
 export type UpdateBookmarkRequest = {
    id: string;

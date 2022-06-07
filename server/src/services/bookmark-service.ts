@@ -1,5 +1,6 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 import { Bookmark, BookmarkType } from '../models';
+import { WithId } from '../utils';
 
 
 export class BookmarkService {
@@ -20,16 +21,28 @@ export class BookmarkService {
       return result.insertedId.toString();
    }
 
-   public async getAllBookmarks(): Promise<Bookmark[]> {
-      return await this.collection.find({
-         isArchived: false
-      }).toArray();
+   public async getAllBookmarks(): Promise<WithId<Bookmark>[]> {
+      return (await this.collection
+         .find({
+            isArchived: false
+         })
+         .toArray()
+      ).map(entry => ({
+         ...entry,
+         _id: entry._id.toString()
+      }));
    }
 
-   public async getAllArchivedBookmarks(): Promise<Bookmark[]> {
-      return await this.collection.find({
-         isArchived: true
-      }).toArray();
+   public async getAllArchivedBookmarks(): Promise<WithId<Bookmark>[]> {
+      return (await this.collection
+         .find({
+            isArchived: true
+         })
+         .toArray()
+      ).map(entry => ({
+         ...entry,
+         _id: entry._id.toString()
+      }));
    }
 
    public async updateBookmark(id: string, bookmark: Partial<Bookmark>): Promise<void> {

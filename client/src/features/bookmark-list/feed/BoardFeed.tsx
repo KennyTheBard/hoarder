@@ -1,18 +1,18 @@
 import { Grid, Stack } from '@mantine/core';
 import { BookmarkCard } from '../../../components';
 import { Bookmark } from '../../../models';
-import { useAppSelector } from '../../../redux/hooks';
 import { WithId } from '../../../utils';
 
 
 export interface BoardFeedProps {
+   bookmarks: WithId<Bookmark>[];
    columnCount: number;
 }
 
 export function BoardFeed(props: BoardFeedProps) {
 
    const entriesPerColumn: WithId<Bookmark>[][] = Array.from(Array(props.columnCount).keys()).map(() => []);
-   const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
+   const bookmarks = props.bookmarks;
    bookmarks.forEach((entry: WithId<Bookmark>, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
 
    return (

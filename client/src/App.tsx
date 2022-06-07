@@ -7,7 +7,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
-import { Home } from './features/home/Home';
+import { BookmarkList } from './features/bookmark-list/BookmarkList';
 import { TagList } from './features/tag-list/TagList';
 import { store } from './redux/store';
 import { NotificationsProvider } from '@mantine/notifications';
@@ -29,8 +29,9 @@ export default function App() {
                 header={<AppHeader />}
               >
                 <Routes>
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={<BookmarkList />} />
                   <Route path="/tags" element={<TagList />} />
+                  <Route path="/archive" element={<BookmarkList isArchive={true}/>} />
                   <Route path="/data-tool" element={<DataTool />} />
                 </Routes>
               </AppShell>

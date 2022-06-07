@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Bookmark } from '../../models/bookmark';
-import { WithId } from '../../utils/with-id';
+import { WithId } from '../../utils/support-types';
 import { bookmarkService } from '../../services';
 
 
@@ -8,7 +8,15 @@ export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (thunkAPI) => {
       const { data } = await bookmarkService.getBookmarks();
-      return data.bookmarks;
+      return data.entries;
+   }
+);
+
+export const getArchivedBookmarks = createAsyncThunk(
+   'bookmark/getArchivedBookmarks',
+   async (thunkAPI) => {
+      const { data } = await bookmarkService.getArchivedBookmarks();
+      return data.entries;
    }
 );
 
@@ -31,22 +39,14 @@ export const updateIsArchivedForBookmark = createAsyncThunk(
    }
 );
 
-interface BookmarksListState {
-   bookmarks: WithId<Bookmark>[];
-}
+interface BookmarksListState {}
 
-const initialState: BookmarksListState = {
-   bookmarks: []
-};
+const initialState: BookmarksListState = {};
 
 export const bookmarkListSlice = createSlice({
    name: 'bookmarkList',
    initialState,
-   reducers: {},
-   extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarksListState, action: PayloadAction<WithId<Bookmark>[]>) => {
-         state.bookmarks = action.payload;
-      })
+   reducers: {}
 });
 
 export const bookmarkListReducer = bookmarkListSlice.reducer;

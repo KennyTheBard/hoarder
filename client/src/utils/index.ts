@@ -1,4 +1,4 @@
-export * from './with-id';
+export * from './support-types';
 export * from './url';
 export * from './notify';
 export * from './constants';
