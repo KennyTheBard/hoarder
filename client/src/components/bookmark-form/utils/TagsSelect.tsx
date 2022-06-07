@@ -1,4 +1,4 @@
-import { MultiSelect } from '@mantine/core';
+import { MultiSelect, Sx } from '@mantine/core';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { addTag, getTags } from '../../../redux/slices';
@@ -7,6 +7,7 @@ export type TagsSelectProps = {
    disabled?: boolean;
    error?: string | null;
    onChange?: (value: string[]) => void;
+   sx?: Sx | Sx[];
 };
 
 export function TagsSelect(props: TagsSelectProps) {
@@ -36,6 +37,7 @@ export function TagsSelect(props: TagsSelectProps) {
          onCreate={(query) => dispatch(addTag(query))}
          error={props.error}
          onChange={props.onChange}
+         sx={props.sx}
       />
    </>)
 }

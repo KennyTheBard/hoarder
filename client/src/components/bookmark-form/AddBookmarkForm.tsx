@@ -268,6 +268,12 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       });
    }
 
+   const style = {
+      sx: {
+         width: 350
+      }
+   };
+
    return (
       <>
          <Group direction="row" position="apart" spacing="xl" grow>
@@ -282,6 +288,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   data={getTypeOptions(typeSuggestions)}
                   onChange={(type: string) => setType(type as BookmarkType)}
                   error={errors.type}
+                  {...style}
                />
 
                <TextInput
@@ -291,6 +298,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   required
                   onChange={(event) => setUrl(event.target.value)}
                   error={errors.url}
+                  {...style}
                />
 
                <TextInput
@@ -299,6 +307,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   required
                   onChange={(event) => setTitle(event.target.value)}
                   error={errors.title}
+                  {...style}
                />
 
                <Textarea
@@ -309,11 +318,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   value={formdata.note}
                   onChange={(event) => setNote(event.target.value)}
                   error={errors.note}
+                  {...style}
                />
 
                <TagsSelect
                   error={errors.tags}
                   onChange={(tags: string[]) => setTags(tags)}
+                  {...style}
                />
 
                <Button
@@ -354,7 +365,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                ))}
             </SimpleGrid>
          }
-         <Space h="lg" />
       </>
    );
 }

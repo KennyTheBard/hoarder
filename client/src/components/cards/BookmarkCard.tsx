@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box } from '@mantine/core';
+import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box, Spoiler } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { Archive, Edit, Settings, Share, Trash } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
@@ -72,7 +72,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          labels: { confirm: 'Archive', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
          onConfirm: () => dispatch(updateIsArchivedForBookmark({
-            bookmarkId: props.bookmark._id, 
+            bookmarkId: props.bookmark._id,
             isArchived: true
          }))
       });
@@ -90,7 +90,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
             })}
          >
             <Card.Section>
-               <Center>
+               <Center mb="15px">
                   {props.bookmark.imageUrl &&
                      <Image
                         radius="md" fit="contain" width={260}
@@ -99,18 +99,16 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      />
                   }
                </Center>
-               <Stack>
-                  <Space />
+               <Stack mb="15px">
                   {getCardContentByBookmarkType()}
                </Stack>
             </Card.Section>
 
-            <Group>
-               {props.bookmark.tags
-                  ? props.bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)
-                  : 'Missing tags'
-               }
-            </Group>
+            <Spoiler maxHeight={22} showLabel="More" hideLabel="Less">
+               <Group mb="15px" spacing="xs">
+                  {props.bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)}
+               </Group>
+            </Spoiler>
             <Group position="apart">
                <Text size="xs">
                   {props.bookmark.createdTimestamp
