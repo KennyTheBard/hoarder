@@ -1,11 +1,9 @@
 import { Button, Center, Container, Input, Space, Stack } from '@mantine/core';
 import { Search } from 'tabler-icons-react';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getArchivedBookmarks, getBookmarks } from '../../redux/slices';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BoardFeed } from './feed';
-import { WithCount, WithId } from '../../utils';
-import { Bookmark } from '../../models';
 
 export type BookmarkListProps = {
    isArchive?: boolean
@@ -14,13 +12,13 @@ export type BookmarkListProps = {
 export function BookmarkList(props: BookmarkListProps) {
 
    const dispatch = useAppDispatch();
-   const [bookmarks, setBookmarks] = useState<WithId<Bookmark>[]>([]);
+
+   const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
 
    const refreshData = () => {
-      (props.isArchive ? dispatch(getArchivedBookmarks()) : dispatch(getBookmarks()))
-         .unwrap()
-         .then((bookmarks: WithId<Bookmark>[]) => setBookmarks(bookmarks));
+      dispatch(props.isArchive ? getArchivedBookmarks() : getBookmarks());
    };
+
    useEffect(refreshData, [props.isArchive]);
 
    return (

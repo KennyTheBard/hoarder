@@ -39,14 +39,25 @@ export const updateIsArchivedForBookmark = createAsyncThunk(
    }
 );
 
-interface BookmarksListState {}
+interface BookmarksState {
+   bookmarks: WithId<Bookmark>[];
+}
 
-const initialState: BookmarksListState = {};
+const initialState: BookmarksState = {
+   bookmarks: []
+};
 
 export const bookmarkListSlice = createSlice({
    name: 'bookmarkList',
    initialState,
-   reducers: {}
+   reducers: {},
+   extraReducers: (builder) => builder
+      .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
+         state.bookmarks = action.payload;
+      })
+      .addCase(getArchivedBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
+         state.bookmarks = action.payload;
+      })
 });
 
 export const bookmarkListReducer = bookmarkListSlice.reducer;
