@@ -8,7 +8,7 @@ import { AddBookmarkForm } from '../bookmark-form';
 export function PinDialog() {
    const modals = useModals();
 
-   const [url, setUrl] = useState<string>('')
+   const [text, setText] = useState('')
    const [openedAddBookmarkModal, setOpenedAddBookmarkModal] = useState(false);
 
    return (
@@ -23,9 +23,9 @@ export function PinDialog() {
 
          <Group align="flex-end">
             <TextInput
-               value={url}
+               value={text}
                placeholder="Something... OR http://..." style={{ flex: 1 }}
-               onChange={(event) => setUrl(event.target.value)}
+               onChange={(event) => setText(event.target.value)}
             />
             <Button
                color="dark"
@@ -36,9 +36,12 @@ export function PinDialog() {
                      padding: "md",
                      size: "xl",
                      centered: true,
-                     onClose: () => setOpenedAddBookmarkModal(false),
+                     onClose: () => {
+                        setText('');
+                        setOpenedAddBookmarkModal(false);
+                     },
                      children: (
-                        <AddBookmarkForm origin="pin_dialog" pinnedText={url}/>
+                        <AddBookmarkForm origin="pin_dialog" pinnedText={text}/>
                      )
                   });
                }}

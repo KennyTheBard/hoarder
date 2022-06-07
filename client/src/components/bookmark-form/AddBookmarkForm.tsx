@@ -1,4 +1,4 @@
-import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, TextInput } from '@mantine/core';
+import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -228,7 +228,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       return {
          type: formdata.type === '' ? 'Type is mandatory' : null,
          title: formdata.title === '' ? 'Title is mandatory' : null,
-         url: formdata.url === '' ? 'URL is mandatory' : null,
+         url: formdata.type !== BookmarkType.PLAINTEXT && formdata.url === '' ? 'URL is mandatory' : null,
          tags: formdata.tags.length === 0 ? 'Provide at minimum 1 tag' : null,
       };
    }
@@ -294,11 +294,21 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                />
 
                <TextInput
-                  label={'Title or Name'}
+                  label="Title or Name"
                   value={formdata.title}
                   required
                   onChange={(event) => setTitle(event.target.value)}
                   error={errors.title}
+               />
+
+               <Textarea
+                  placeholder="Something that might be worth mentioning..."
+                  label="Note"
+                  autosize
+                  minRows={2}
+                  value={formdata.note}
+                  onChange={(event) => setNote(event.target.value)}
+                  error={errors.note}
                />
 
                <TagsSelect

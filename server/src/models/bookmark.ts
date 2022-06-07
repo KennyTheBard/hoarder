@@ -2,6 +2,7 @@ import { SteamAppReviews } from './steam';
 
 
 export enum BookmarkType {
+   PLAINTEXT = 'plaintext',
    ARTICLE = 'article',
    TOOL = 'tool',
    VIDEO = 'video',
@@ -21,12 +22,13 @@ export type Bookmark = (ArticleBookmark
    | AnimeBookmark
    | GameBookmark
    | UnknownTypeBookmark
+   | PlainTextBookmark
 ) & BaseBookmark;
 
 export type BaseBookmark = {
    type: BookmarkType;
    title: string;
-   note?: string;
+   note: string;
    url: string;
    imageUrl?: string;
    tags: string[];
@@ -38,10 +40,6 @@ export type BaseBookmark = {
 }
 
 export type AnonymousBookmark = Omit<Bookmark, "createdTimestamp" | "updatedTimestamp" | "hostname" | "isArchived" | "candidateId">
-
-export type UnknownTypeBookmark = BaseBookmark & Partial<{
-   type: BookmarkType.UNKNOWN;
-}>;
 
 export type ArticleBookmark = BaseBookmark & Partial<{
    type: BookmarkType.ARTICLE;
@@ -98,6 +96,14 @@ export type GameBookmark = BaseBookmark & Partial<{
    steamReviews: SteamAppReviews;
    gogReviews: GogReviews;
    duration: GameDuration;
+}>;
+
+export type UnknownTypeBookmark = BaseBookmark & Partial<{
+   type: BookmarkType.UNKNOWN;
+}>;
+
+export type PlainTextBookmark = BaseBookmark & Partial<{
+   type: BookmarkType.PLAINTEXT;
 }>;
 
 export enum GamePlatform {
