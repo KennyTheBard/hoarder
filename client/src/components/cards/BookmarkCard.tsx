@@ -7,6 +7,7 @@ import { WithId } from '../../utils/support-types';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
 import { updateIsArchivedForBookmark } from '../../redux/slices';
+import { isValidHttpUrl } from '../../utils';
 
 
 export interface BookmarkCardProps {
@@ -91,7 +92,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          >
             <Card.Section>
                <Center mb="15px">
-                  {props.bookmark.imageUrl &&
+                  {props.bookmark.imageUrl && isValidHttpUrl(props.bookmark.imageUrl) &&
                      <Image
                         radius="md" fit="contain" width={260}
                         src={props.bookmark.imageUrl!}
@@ -99,6 +100,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      />
                   }
                </Center>
+
                <Stack mb="15px">
                   {getCardContentByBookmarkType()}
                </Stack>

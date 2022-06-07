@@ -1,6 +1,6 @@
 import { Modal, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { AddBookmarkForm, AddBookmarkFormProps } from '../../../components';
+import { AddBookmarkForm, AddBookmarkFormProps } from '../../components';
 import { GeneralDropzone } from './GeneralDropzone';
 
 

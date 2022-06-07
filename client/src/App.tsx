@@ -13,7 +13,8 @@ import { store } from './redux/store';
 import { NotificationsProvider } from '@mantine/notifications';
 import { AppHeader, PinDialog } from './components';
 import './App.css';
-import { DataTool } from './features/data-tool/DataTool';
+import { Export } from './features/export';
+import { Import } from './features/import';
 
 export default function App() {
 
@@ -32,7 +33,8 @@ export default function App() {
                   <Route path="/" element={<BookmarkList />} />
                   <Route path="/tags" element={<TagList />} />
                   <Route path="/archive" element={<BookmarkList isArchive={true}/>} />
-                  <Route path="/data-tool" element={<DataTool />} />
+                  <Route path="/import" element={<Import />} />
+                  <Route path="/export" element={<Export />} />
                 </Routes>
               </AppShell>
             </Router>

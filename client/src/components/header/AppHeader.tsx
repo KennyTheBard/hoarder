@@ -1,6 +1,6 @@
 import { Anchor, Button, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Tags, Archive, Menu2, DatabaseImport, DatabaseExport } from 'tabler-icons-react';
+import { Home, Tags, Archive, Menu2, DatabaseImport, DatabaseExport, Settings } from 'tabler-icons-react';
 
 export function AppHeader() {
    const navigate = useNavigate();
@@ -40,39 +40,45 @@ export function AppHeader() {
                      />
                   </ActionIcon>}
                >
-                  <Menu.Label>Application</Menu.Label>
+                  <Menu.Label>Pages</Menu.Label>
                   <Menu.Item
-                     icon={<Home size={14} />}
+                     icon={<Home size={24} />}
                      onClick={() => navigate('/')}
                   >
-                     Home
+                     <Text size="lg">Home</Text>
                   </Menu.Item>
                   <Menu.Item
-                     icon={<Tags size={14} />}
+                     icon={<Tags size={24} />}
                      onClick={() => navigate('/tags')}
                   >
-                     Tags
+                     <Text size="lg">Tags</Text>
                   </Menu.Item>
                   <Menu.Item
-                     icon={<Archive size={14} />}
+                     icon={<Archive size={24} />}
                      onClick={() => navigate('/archive')}
                   >
-                     Archive
+                     <Text size="lg">Archive</Text>
                   </Menu.Item>
                   <Divider />
 
-                  <Menu.Label>Data Tools</Menu.Label>
+                  <Menu.Label>Tools</Menu.Label>
                   <Menu.Item
-                     icon={<DatabaseImport size={14} />}
+                     icon={<DatabaseImport size={24} />}
                      onClick={() => navigate('/import')}
                   >
-                     Data Import
+                     <Text size="lg">Import</Text>
                   </Menu.Item>
                   <Menu.Item
-                     icon={<DatabaseExport size={14} />}
+                     icon={<DatabaseExport size={24} />}
                      onClick={() => navigate('/export')}
                   >
-                     Data Export
+                     <Text size="lg">Export</Text>
+                  </Menu.Item>
+                  <Menu.Item
+                     icon={<Settings size={24} />}
+                     onClick={() => navigate('/')}
+                  >
+                     <Text size="lg">Settings</Text>
                   </Menu.Item>
                </Menu>
             </Group>
