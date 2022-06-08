@@ -75,11 +75,11 @@ export function BookmarkCard(props: BookmarkCardProps) {
          centered: true,
          children: (
             <Text size="sm">
-               If you wish to undo this action, you will have to do it manually from the "Archived" section.
+               This action cannot be reverted and will result in data loss.
             </Text>
          ),
-         labels: { confirm: 'Archive', cancel: 'Cancel' },
-         confirmProps: { color: 'red' },
+         labels: { confirm: 'Delete', cancel: 'Cancel' },
+         confirmProps: { color: 'red', rightIcon: <TrashX/>  },
          onConfirm: () => dispatch(deleteBookmark(bookmark._id))
       });
 
@@ -100,6 +100,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                <Center mb="15px">
                   {bookmark.imageUrl && isValidHttpUrl(bookmark.imageUrl) &&
                      <Image
+                        onClick={() => window.open(bookmark.url)}
                         radius="md" fit="contain" width={260}
                         src={bookmark.imageUrl!}
                         alt="Preview"
