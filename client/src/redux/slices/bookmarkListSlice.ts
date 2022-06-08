@@ -20,22 +20,27 @@ export const getArchivedBookmarks = createAsyncThunk(
    }
 );
 
-export const deleteBookmark = createAsyncThunk(
-   'bookmark/deleteBookmark',
+export const archiveBookmark = createAsyncThunk(
+   'bookmark/archiveBookmark',
    async (bookmarkId: string, thunkAPI) => {
-      await bookmarkService.deleteBookmark(bookmarkId);
+      await bookmarkService.updateIsArchivedForBookmark(bookmarkId, true);
       thunkAPI.dispatch(getBookmarks())
    }
 );
 
-export const updateIsArchivedForBookmark = createAsyncThunk(
-   'bookmark/updateIsArchivedForBookmark',
-   async (payload: {
-      bookmarkId: string,
-      isArchived: boolean
-   }, thunkAPI) => {
-      await bookmarkService.updateIsArchivedForBookmark(payload.bookmarkId, payload.isArchived);
-      thunkAPI.dispatch(getBookmarks())
+export const restoreBookmark = createAsyncThunk(
+   'bookmark/restoreBookmark',
+   async (bookmarkId: string, thunkAPI) => {
+      await bookmarkService.updateIsArchivedForBookmark(bookmarkId, false);
+      thunkAPI.dispatch(getArchivedBookmarks())
+   }
+);
+
+export const deleteBookmark = createAsyncThunk(
+   'bookmark/deleteBookmark',
+   async (bookmarkId: string, thunkAPI) => {
+      await bookmarkService.deleteBookmark(bookmarkId);
+      thunkAPI.dispatch(getArchivedBookmarks())
    }
 );
 

@@ -1,8 +1,8 @@
 import { NotificationProps, showNotification } from '@mantine/notifications';
 import { v4 as uuid } from 'uuid';
-import { AlertCircle, CircleCheck, CircleX, InfoCircle } from 'tabler-icons-react';
+import { AlertCircle, Archive, CircleCheck, CircleX, InfoCircle } from 'tabler-icons-react';
 
-function notify(payload: NotificationProps): string {
+export function notify(payload: NotificationProps): string {
    const id = uuid();
    showNotification({
       id,

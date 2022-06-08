@@ -8,6 +8,11 @@ export function isValidHttpUrl(s: string) {
 }
 
 export function getHostnameForUrl(url: string): string {
-   const { hostname } = new URL(url);
-   return hostname;
+   try {
+      const { hostname } = new URL(url);
+      return hostname;
+   } catch (err) {
+      console.error(err);
+      return '';
+   }
 }

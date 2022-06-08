@@ -208,28 +208,46 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    }
    const getUrlLabelByType = (): string | undefined => {
       switch (formdata.type) {
-         case 'tool':
+         case BookmarkType.TOOL:
             return 'Website or repository URL'
-         case 'show':
-         case 'movie':
+         case BookmarkType.SHOW:
+         case BookmarkType.MOVIE:
             return 'IMDB URL'
-         case 'anime':
+         case BookmarkType.ANIME:
             return 'MyAnimeList URL'
-         case 'game':
+         case BookmarkType.GAME:
             return 'Store page or website URL'
-         case 'video':
+         case BookmarkType.VIDEO:
             return 'Youtube URL'
          default:
             return undefined;
       }
    }
 
+   const getRequiredFields = (): Record<string, 'required' | 'hidden'> => {
+      switch (formdata.type) {
+         case BookmarkType.PLAINTEXT:
+            return {
+               url: 'hidden',
+               note: 'required'
+            };
+         default:
+            return {
+               title: 'required',
+               url: 'required',
+            };
+      }
+   }
+
    const validateFormdata = (): Record<string, string | null> => {
+      const requiredFields = getRequiredFields();
       return {
          type: formdata.type === '' ? 'Type is mandatory' : null,
-         title: formdata.title === '' ? 'Title is mandatory' : null,
-         url: formdata.type !== BookmarkType.PLAINTEXT && formdata.url === '' ? 'URL is mandatory' : null,
          tags: formdata.tags.length === 0 ? 'Provide at minimum 1 tag' : null,
+
+         title: requiredFields.title === 'required' && formdata.title === '' ? 'Title is mandatory' : null,
+         url: requiredFields.url === 'required' && formdata.url === '' ? 'URL is mandatory' : null,
+         note: requiredFields.note === 'required' && formdata.note === '' ? 'Note is mandatory' : null,
       };
    }
 
@@ -283,6 +301,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   placeholder="Pick one"
                   nothingFound="Nothing..."
                   searchable
+                  required
                   maxDropdownHeight={400}
                   value={formdata.type}
                   data={getTypeOptions(typeSuggestions)}
@@ -291,35 +310,42 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   {...style}
                />
 
-               <TextInput
-                  placeholder="https://..."
-                  label={getUrlLabelByType() || 'URL'}
-                  value={formdata.url}
-                  required
-                  onChange={(event) => setUrl(event.target.value)}
-                  error={errors.url}
-                  {...style}
-               />
+               {getRequiredFields().url !== 'hidden' &&
+                  <TextInput
+                     placeholder="https://..."
+                     label={getUrlLabelByType() || 'URL'}
+                     value={formdata.url}
+                     required={getRequiredFields().url === 'required'}
+                     onChange={(event) => setUrl(event.target.value)}
+                     error={errors.url}
+                     {...style}
+                  />
+               }
 
-               <TextInput
-                  label="Title or Name"
-                  value={formdata.title}
-                  required
-                  onChange={(event) => setTitle(event.target.value)}
-                  error={errors.title}
-                  {...style}
-               />
+               {getRequiredFields().title !== 'hidden' &&
+                  <TextInput
+                     label="Title or Name"
+                     value={formdata.title}
+                     required={getRequiredFields().title === 'required'}
+                     onChange={(event) => setTitle(event.target.value)}
+                     error={errors.title}
+                     {...style}
+                  />
+               }
 
-               <Textarea
-                  placeholder="Something that might be worth mentioning..."
-                  label="Note"
-                  autosize
-                  minRows={2}
-                  value={formdata.note}
-                  onChange={(event) => setNote(event.target.value)}
-                  error={errors.note}
-                  {...style}
-               />
+               {getRequiredFields().note !== 'hidden' &&
+                  <Textarea
+                     placeholder="Something that might be worth mentioning..."
+                     label="Note"
+                     autosize
+                     required={getRequiredFields().note === 'required'}
+                     minRows={2}
+                     value={formdata.note}
+                     onChange={(event) => setNote(event.target.value)}
+                     error={errors.note}
+                     {...style}
+                  />
+               }
 
                <TagsSelect
                   error={errors.tags}
