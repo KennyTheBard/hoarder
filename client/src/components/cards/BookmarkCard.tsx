@@ -79,7 +79,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
             </Text>
          ),
          labels: { confirm: 'Delete', cancel: 'Cancel' },
-         confirmProps: { color: 'red', rightIcon: <TrashX/>  },
+         confirmProps: { color: 'red' },
          onConfirm: () => dispatch(deleteBookmark(bookmark._id))
       });
 

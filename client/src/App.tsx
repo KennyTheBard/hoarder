@@ -32,7 +32,6 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<BookmarkList />} />
                   <Route path="/tags" element={<TagList />} />
-                  <Route path="/archive" element={<BookmarkList isArchive={true}/>} />
                   <Route path="/import" element={<Import />} />
                   <Route path="/export" element={<Export />} />
                 </Routes>

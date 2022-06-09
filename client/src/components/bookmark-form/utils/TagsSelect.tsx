@@ -31,6 +31,7 @@ export function TagsSelect(props: TagsSelectProps) {
          placeholder="Select tags"
          searchable
          creatable
+         clearable
          disabled={props.disabled}
          maxDropdownHeight={160}
          getCreateLabel={(query) => `Create tag: ${query}`}

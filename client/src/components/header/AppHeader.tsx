@@ -53,12 +53,6 @@ export function AppHeader() {
                   >
                      <Text size="lg">Tags</Text>
                   </Menu.Item>
-                  <Menu.Item
-                     icon={<Archive size={24} />}
-                     onClick={() => navigate('/archive')}
-                  >
-                     <Text size="lg">Archive</Text>
-                  </Menu.Item>
                   <Divider />
 
                   <Menu.Label>Tools</Menu.Label>

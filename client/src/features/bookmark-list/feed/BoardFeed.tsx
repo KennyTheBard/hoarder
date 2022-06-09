@@ -16,7 +16,7 @@ export function BoardFeed(props: BoardFeedProps) {
    bookmarks.forEach((entry: WithId<Bookmark>, index: number) => entriesPerColumn[index % props.columnCount].push(entry));
 
    return (
-      <Grid columns={props.columnCount} justify="center">
+      <Grid columns={props.columnCount} justify="center" mb="100px">
          {entriesPerColumn.map((entries, idx) =>
             <Grid.Col key={idx} span={1}>
                <Stack>
