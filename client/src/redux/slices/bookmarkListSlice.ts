@@ -1,21 +1,18 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
 import { Bookmark } from '../../models/bookmark';
 import { WithId } from '../../utils/support-types';
 import { bookmarkService } from '../../services';
+import { RootState } from '../store';
+
 
 
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
-   async (thunkAPI) => {
-      const { data } = await bookmarkService.getBookmarks();
-      return data.entries;
-   }
-);
-
-export const getArchivedBookmarks = createAsyncThunk(
-   'bookmark/getArchivedBookmarks',
-   async (thunkAPI) => {
-      const { data } = await bookmarkService.getArchivedBookmarks();
+   async (_, thunkAPI) => {
+      const state = thunkAPI.getState() as RootState;
+      const searchForm = state.searchForm.searchForm;
+      const showArchived = state.searchForm.showArchived;
+      const { data } = await (showArchived ? bookmarkService.getArchivedBookmarks(searchForm) : bookmarkService.getBookmarks(searchForm));
       return data.entries;
    }
 );
@@ -24,7 +21,7 @@ export const archiveBookmark = createAsyncThunk(
    'bookmark/archiveBookmark',
    async (bookmarkId: string, thunkAPI) => {
       await bookmarkService.updateIsArchivedForBookmark(bookmarkId, true);
-      thunkAPI.dispatch(getBookmarks())
+      thunkAPI.dispatch(getBookmarks());
    }
 );
 
@@ -32,7 +29,7 @@ export const restoreBookmark = createAsyncThunk(
    'bookmark/restoreBookmark',
    async (bookmarkId: string, thunkAPI) => {
       await bookmarkService.updateIsArchivedForBookmark(bookmarkId, false);
-      thunkAPI.dispatch(getArchivedBookmarks())
+      thunkAPI.dispatch(getBookmarks());
    }
 );
 
@@ -40,16 +37,16 @@ export const deleteBookmark = createAsyncThunk(
    'bookmark/deleteBookmark',
    async (bookmarkId: string, thunkAPI) => {
       await bookmarkService.deleteBookmark(bookmarkId);
-      thunkAPI.dispatch(getArchivedBookmarks())
+      thunkAPI.dispatch(getBookmarks())
    }
 );
 
-interface BookmarksState {
+interface BookmarkListState {
    bookmarks: WithId<Bookmark>[];
 }
 
-const initialState: BookmarksState = {
-   bookmarks: []
+const initialState: BookmarkListState = {
+   bookmarks: [],
 };
 
 export const bookmarkListSlice = createSlice({
@@ -57,13 +54,9 @@ export const bookmarkListSlice = createSlice({
    initialState,
    reducers: {},
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
-         state.bookmarks = action.payload;
-      })
-      .addCase(getArchivedBookmarks.fulfilled, (state: BookmarksState, action: PayloadAction<WithId<Bookmark>[]>) => {
+      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithId<Bookmark>[]>) => {
          state.bookmarks = action.payload;
       })
 });
 
-export const bookmarkListReducer = bookmarkListSlice.reducer;
-
+export const bookmarkListReducer: Reducer<typeof initialState> = bookmarkListSlice.reducer;

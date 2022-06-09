@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkListReducer, pinBookmarkReducer, tagsReducer } from './slices';
+import { bookmarkListReducer, pinBookmarkReducer, searchFormReducer, tagsReducer } from './slices';
 
 
 export const store = configureStore({
@@ -7,6 +7,7 @@ export const store = configureStore({
       bookmarkList: bookmarkListReducer,
       pinBookmark: pinBookmarkReducer,
       tags: tagsReducer,
+      searchForm: searchFormReducer,
    },
    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
       .concat(({ dispatch, getState }) => next => action => {

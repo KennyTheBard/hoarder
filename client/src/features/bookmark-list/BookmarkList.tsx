@@ -1,29 +1,23 @@
 import { Button, Center, Checkbox, Container, Group, Input, MultiSelect, Space, Stack } from '@mantine/core';
 import { Refresh, Search } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getArchivedBookmarks, getBookmarks } from '../../redux/slices';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { getBookmarks, setSearchTermAndUpdate, setShowArchivedAndUpdate, setTypesAndUpdate } from '../../redux/slices';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType } from '../../models';
 
-
-export type BookmarkSearchForm = {
-   searchTerm?: string;
-   types?: BookmarkType[];
-}
 
 export function BookmarkList() {
 
    const dispatch = useAppDispatch();
 
    const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
-
-   const [searchForm, setSearchForm] = useState<BookmarkSearchForm>({});
-   const [showArchived, setShowArchived] = useState<boolean>(false);
+   const showArchived = useAppSelector((state) => state.searchForm.showArchived);
+   const searchForm = useAppSelector((state) => state.searchForm.searchForm);
 
    const refreshData = () => {
-      dispatch(showArchived ? getArchivedBookmarks() : getBookmarks());
+      dispatch(getBookmarks());
    };
 
    useEffect(refreshData, [showArchived]);
@@ -37,26 +31,22 @@ export function BookmarkList() {
                      <Input
                         icon={<Search size={16} />}
                         placeholder="Search..."
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchForm({
-                           ...searchForm,
-                           searchTerm: event.target.value.length > 0 ? event.target.value : undefined
-                        })}
+                        value={searchForm.searchTerm}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => dispatch(setSearchTermAndUpdate(event.target.value))}
                      />
                      <MultiSelect
                         data={getTypeOptions()}
+                        value={searchForm.types}
                         placeholder="Filter types..."
                         maxDropdownHeight={160}
                         clearable
-                        onChange={(types: BookmarkType[]) => setSearchForm({
-                           ...searchForm,
-                           types: types.length > 0 ? types : undefined
-                        })}
+                        onChange={(types: BookmarkType[]) => dispatch(setTypesAndUpdate(types))}
                         sx={{ width: 350 }}
                      />
                      <Checkbox
                         label="Archived"
                         checked={showArchived}
-                        onChange={(event) => setShowArchived(event.currentTarget.checked)}
+                        onChange={(event) => dispatch(setShowArchivedAndUpdate(event.currentTarget.checked))}
                      />
                      <Button
                         leftIcon={<Refresh size={16} />}
