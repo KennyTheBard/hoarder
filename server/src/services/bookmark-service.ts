@@ -1,7 +1,13 @@
-import { Collection, Db, ObjectId } from 'mongodb';
+import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { Bookmark, BookmarkType } from '../models';
 import { WithId } from '../utils';
 
+
+export type BookmarkSearchForm = {
+   searchTerm?: string;
+   types?: BookmarkType[];
+   tags?: string[];
+}
 
 export class BookmarkService {
 
@@ -21,23 +27,9 @@ export class BookmarkService {
       return result.insertedId.toString();
    }
 
-   public async getAllBookmarks(): Promise<WithId<Bookmark>[]> {
+   public async getAllBookmarks(isArchived: boolean, form?: BookmarkSearchForm): Promise<WithId<Bookmark>[]> {
       return (await this.collection
-         .find({
-            isArchived: false
-         })
-         .toArray()
-      ).map(entry => ({
-         ...entry,
-         _id: entry._id.toString()
-      }));
-   }
-
-   public async getAllArchivedBookmarks(): Promise<WithId<Bookmark>[]> {
-      return (await this.collection
-         .find({
-            isArchived: true
-         })
+         .find(this.searchFormToMongoFilter(isArchived, form))
          .toArray()
       ).map(entry => ({
          ...entry,
@@ -91,5 +83,29 @@ export class BookmarkService {
       const typeCountDictionary: Record<string, number> = {};
       results.forEach(result => typeCountDictionary[result._id.type] = result.count);
       return typeCountDictionary;
+   }
+
+   private searchFormToMongoFilter(isArchived: boolean, form?: BookmarkSearchForm): Filter<Bookmark> {
+      const filter = {
+         isArchived
+      };
+      if (!form) {
+         return filter;
+      }
+
+      if (form.searchTerm && form.searchTerm.length > 0) {
+         filter['$or'] = [
+            { title: new RegExp(form.searchTerm, 'i') },
+            { note: new RegExp(form.searchTerm, 'i') }
+         ];
+      }
+      if (form.types && form.types.length > 0) {
+         filter['type'] = { $in: form.types };
+      }
+      if (form.tags && form.tags.length > 0) {
+         filter['tag'] = { $in: form.tags };
+      }
+
+      return filter;
    }
 }

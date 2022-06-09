@@ -12,7 +12,7 @@ export const getBookmarks = createAsyncThunk(
       const state = thunkAPI.getState() as RootState;
       const searchForm = state.searchForm.searchForm;
       const showArchived = state.searchForm.showArchived;
-      const { data } = await (showArchived ? bookmarkService.getArchivedBookmarks(searchForm) : bookmarkService.getBookmarks(searchForm));
+      const { data } = await bookmarkService.getBookmarks(showArchived, searchForm);
       return data.entries;
    }
 );

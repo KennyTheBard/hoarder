@@ -25,14 +25,6 @@ export const setTypesAndUpdate = createAsyncThunk(
    }
 );
 
-export const setShowArchivedAndUpdate = createAsyncThunk(
-   'searchForm/setShowArchivedAndUpdate',
-   async (showArchived: boolean, thunkAPI) => {
-      thunkAPI.dispatch(setShowArchived(showArchived));
-      debouncedGetBookmarks(thunkAPI);
-   }
-);
-
 interface SearchFormState {
    searchForm: BookmarkSearchForm;
    showArchived: boolean;
@@ -62,4 +54,5 @@ export const searchFormSlice = createSlice({
 });
 
 const { setSearchTerm, setTypes, setShowArchived } = searchFormSlice.actions
+export { setShowArchived };
 export const searchFormReducer: Reducer<typeof initialState> = searchFormSlice.reducer;

@@ -72,10 +72,6 @@ import { HowLongToBeatService } from 'howlongtobeat';
       app.post('/api/getBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
          bookmarkController.getBookmarks
       ));
-      // TODO: merge this one into the previous endpoint
-      app.post('/api/getArchivedBookmarks', postHandler<GetBookmarksRequest, GetBookmarksResponse>(
-         bookmarkController.getArchivedBookmarks
-      ));
       app.post('/api/updateBookmark', postHandler<UpdateBookmarkRequest, void>(
          bookmarkController.updateBookmark
       ));

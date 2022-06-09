@@ -5,10 +5,11 @@ import { AnonymousBookmark, BookmarkSearchForm } from '../models';
 export const bookmarkService = {
    saveBookmark: (bookmark: AnonymousBookmark) =>
       axios.post('http://localhost:8080/api/addBookmark', bookmark),
-   getBookmarks: (searchForm: BookmarkSearchForm) =>
-      axios.post('http://localhost:8080/api/getBookmarks', searchForm),
-   getArchivedBookmarks: (searchForm: BookmarkSearchForm) =>
-      axios.post('http://localhost:8080/api/getArchivedBookmarks', searchForm),
+   getBookmarks: (showArchived: boolean, searchForm?: BookmarkSearchForm) =>
+      axios.post('http://localhost:8080/api/getBookmarks', {
+         isArchived: showArchived,
+         searchForm
+      }),
    deleteBookmark: (bookmarkId: string) =>
       axios.post('http://localhost:8080/api/deleteBookmark', {
          id: bookmarkId

@@ -1,7 +1,7 @@
 import { Button, Center, Checkbox, Container, Group, Input, MultiSelect, Space, Stack } from '@mantine/core';
 import { Refresh, Search } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, setSearchTermAndUpdate, setShowArchivedAndUpdate, setTypesAndUpdate } from '../../redux/slices';
+import { getBookmarks, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
@@ -36,7 +36,6 @@ export function BookmarkList() {
                      />
                      <MultiSelect
                         data={getTypeOptions()}
-                        value={searchForm.types}
                         placeholder="Filter types..."
                         maxDropdownHeight={160}
                         clearable
@@ -46,7 +45,7 @@ export function BookmarkList() {
                      <Checkbox
                         label="Archived"
                         checked={showArchived}
-                        onChange={(event) => dispatch(setShowArchivedAndUpdate(event.currentTarget.checked))}
+                        onChange={(event) => dispatch(setShowArchived(event.currentTarget.checked))}
                      />
                      <Button
                         leftIcon={<Refresh size={16} />}
