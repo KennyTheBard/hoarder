@@ -9,6 +9,7 @@ import { RootState } from '../store';
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (_, thunkAPI) => {
+      thunkAPI.dispatch(loading());
       const state = thunkAPI.getState() as RootState;
       const searchForm = state.searchForm.searchForm;
       const showArchived = state.searchForm.showArchived;
@@ -43,20 +44,28 @@ export const deleteBookmark = createAsyncThunk(
 
 interface BookmarkListState {
    bookmarks: WithId<Bookmark>[];
+   loading: boolean;
 }
 
 const initialState: BookmarkListState = {
    bookmarks: [],
+   loading: false,
 };
 
 export const bookmarkListSlice = createSlice({
    name: 'bookmarkList',
    initialState,
-   reducers: {},
+   reducers: {
+      loading(state: BookmarkListState) {
+         state.loading = true;
+      }
+   },
    extraReducers: (builder) => builder
       .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithId<Bookmark>[]>) => {
          state.bookmarks = action.payload;
+         state.loading = false;
       })
 });
 
+const { loading } = bookmarkListSlice.actions
 export const bookmarkListReducer: Reducer<typeof initialState> = bookmarkListSlice.reducer;

@@ -1,13 +1,6 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
-import { Bookmark, BookmarkType } from '../models';
+import { Bookmark, BookmarkSearchForm, BookmarkType } from '../models';
 import { WithId } from '../utils';
-
-
-export type BookmarkSearchForm = {
-   searchTerm?: string;
-   types?: BookmarkType[];
-   tags?: string[];
-}
 
 export class BookmarkService {
 

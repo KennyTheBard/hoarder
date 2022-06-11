@@ -1,5 +1,5 @@
-import { Button, Center, Checkbox, Container, Group, Input, MultiSelect, Space, Stack } from '@mantine/core';
-import { Refresh, Search } from 'tabler-icons-react';
+import { Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text } from '@mantine/core';
+import { MoodSad, Refresh, Search } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ export function BookmarkList() {
    const dispatch = useAppDispatch();
 
    const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
+   const loading = useAppSelector((state) => state.bookmarkList.loading);
    const showArchived = useAppSelector((state) => state.searchForm.showArchived);
    const searchForm = useAppSelector((state) => state.searchForm.searchForm);
 
@@ -57,8 +58,15 @@ export function BookmarkList() {
 
                </Center>
                <Space h={20} />
-               <BoardFeed bookmarks={bookmarks} columnCount={4} />
-               {/* TODO: add loading more spinner or "that's all" */}
+
+               {loading
+                  ? <Center><Loader color="red" size="xl" variant="dots" /></Center>
+                  : bookmarks.length > 0
+                     ? <BoardFeed bookmarks={bookmarks} columnCount={4} />
+                     : <Center>
+                        <Text size="xl" color="grey" weight="lighter" ml="20px">No bookmarks found</Text>
+                     </Center>
+               }
             </Stack>
          </Container>
       </>

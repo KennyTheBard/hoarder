@@ -1,5 +1,5 @@
-import { BookmarkSearchForm, BookmarkService } from '../services';
-import { AnonymousBookmark, Bookmark, BookmarkType } from '../models';
+import { BookmarkService } from '../services';
+import { AnonymousBookmark, Bookmark, BookmarkSearchForm, BookmarkType } from '../models';
 import { getHostnameForUrl, WithCount, WithId } from '../utils';
 
 export class BookmarkController {
