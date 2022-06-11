@@ -55,7 +55,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
       const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, mediaMetadataService);
-      const tagController = new TagController(tagService);
+      const tagController = new TagController(tagService, bookmarkService);
 
       // init app with an websocket server
       const app = express();

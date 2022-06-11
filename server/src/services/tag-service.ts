@@ -32,6 +32,10 @@ export class TagService {
       return await this.collection.find().toArray();
    }
 
+   public async getTagById(id: string): Promise<Tag> {
+      return await this.collection.findOne({ _id: new ObjectId(id) });
+   }
+
    public async updateTag(id: string, tag: Partial<Tag>): Promise<void> {
       const extistingTag = await this.collection.findOne({
          name: tag.name

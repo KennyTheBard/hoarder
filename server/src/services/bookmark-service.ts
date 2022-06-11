@@ -43,6 +43,16 @@ export class BookmarkService {
       }
    }
 
+   public async removeTagFromAllBookmarks(tag: string): Promise<void> {
+      const result = await this.collection.updateMany(
+         { tags: tag },
+         { $pull: { tags: tag } }
+      );
+      if (!result.acknowledged) {
+         throw new Error(`Could not remove tag '${tag}' from bookmarks`);
+      }
+   }
+
    public async deleteBookmark(id: string): Promise<void> {
       const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
       if (!result.acknowledged || result.deletedCount === 0) {

@@ -1,11 +1,11 @@
 import { Tag } from '../models';
-import { TagService } from '../services';
-import { WithId } from '../utils';
+import { BookmarkService, TagService } from '../services';
 
 export class TagController {
 
    constructor(
       private readonly tagService: TagService,
+      private readonly bookmarkService: BookmarkService,
    ) {}
 
    public getTags = async (): Promise<GetTagsResponse> => {
@@ -28,7 +28,9 @@ export class TagController {
    }
 
    public deleteTag = async (request: DeleteTagRequest): Promise<void> => {
+      const tag = await this.tagService.getTagById(request.id);
       await this.tagService.deleteTag(request.id);
+      await this.bookmarkService.removeTagFromAllBookmarks(tag.name);
    }  
 }
 
