@@ -1,10 +1,19 @@
 import axios from 'axios';
-import { AnonymousBookmark, BookmarkSearchForm } from '../models';
+import { AnonymousBookmark, Bookmark, BookmarkSearchForm } from '../models';
+import { WithId } from '../utils';
 
 
 export const bookmarkService = {
    saveBookmark: (bookmark: AnonymousBookmark) =>
       axios.post('http://localhost:8080/api/addBookmark', bookmark),
+   updateBookmark: (bookmark: WithId<Bookmark>) =>
+      axios.post('http://localhost:8080/api/updateBookmark', {
+         id: bookmark._id,
+         bookmark: {
+            ...bookmark,
+            _id: undefined
+         }
+      }),
    getBookmarks: (showArchived: boolean, searchForm?: BookmarkSearchForm) =>
       axios.post('http://localhost:8080/api/getBookmarks', {
          isArchived: showArchived,

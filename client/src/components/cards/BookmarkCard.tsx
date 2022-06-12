@@ -11,6 +11,7 @@ import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, isValidHttpUrl, notify } from '
 import { PlainTextBookmarkCard } from './PlainTextBookmarkCard';
 import { TagBadge } from '../tag-badge';
 import { Tag } from '../../models';
+import { AddBookmarkForm } from '../bookmark-form';
 
 
 export interface BookmarkCardProps {
@@ -88,6 +89,18 @@ export function BookmarkCard(props: BookmarkCardProps) {
          onConfirm: () => dispatch(deleteBookmark(bookmark._id))
       });
 
+   const onEdit = () => {
+      modals.openModal({
+         title: "Add bookmark",
+         padding: "md",
+         size: "xl",
+         centered: true,
+         children: (
+            <AddBookmarkForm origin="edit_button" bookmark={bookmark} />
+         )
+      });
+   }
+
 
    return (
       <Card
@@ -143,8 +156,18 @@ export function BookmarkCard(props: BookmarkCardProps) {
                {!props.viewOnly &&
                   <Menu position="right"
                      control={<ActionIcon><Settings /></ActionIcon>}>
-                     <Menu.Item icon={<Share size={14} />}>Share</Menu.Item>
-                     <Menu.Item icon={<Edit size={14} />}>Edit</Menu.Item>
+                     <Menu.Item
+                        disabled={true}
+                        icon={<Share size={14} />}
+                     >
+                        Share
+                     </Menu.Item>
+                     <Menu.Item
+                        icon={<Edit size={14} />}
+                        onClick={onEdit}
+                     >
+                        Edit
+                     </Menu.Item>
                      {bookmark.isArchived &&
                         <Menu.Item color="blue"
                            icon={<ArchiveOff size={14} />}

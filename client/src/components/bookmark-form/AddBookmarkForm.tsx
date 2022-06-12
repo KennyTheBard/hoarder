@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
 import { BookmarkTypeSuggestion, Metadata, CandidateMetadata, Bookmark, BookmarkType, TypeMetadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, saveBookmark } from '../../redux/slices';
+import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, saveBookmark, updateBookmark } from '../../redux/slices';
 import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
@@ -17,6 +17,9 @@ export type AddBookmarkFormProps = {
    origin: 'import_tool';
    url?: string;
    note?: string;
+} | {
+   origin: 'edit_button';
+   bookmark: WithId<Bookmark>;
 }
 
 type BookmarkFormdata = {
@@ -30,22 +33,24 @@ type BookmarkFormdata = {
 };
 
 function getInputOverrides(props: AddBookmarkFormProps): Partial<BookmarkFormdata> {
+   const ret: Partial<BookmarkFormdata> = {};
+
    if (props.origin === 'pin_dialog') {
-      return isValidHttpUrl(props.pinnedText) ? {
-         url: props.pinnedText
-      } : {
-         title: props.pinnedText
-      };
+      ret[isValidHttpUrl(props.pinnedText) ? 'url' : 'title'] = props.pinnedText;
    }
 
    if (props.origin === 'import_tool') {
-      const ret: Partial<BookmarkFormdata> = {};
       if (props.url) ret.url = props.url;
       if (props.note) ret.note = props.note;
-      return ret;
    }
 
-   return {};
+   if (props.origin === 'edit_button') {
+      for (const key of Object.keys(props.bookmark)) {
+         ret[key] = props.bookmark[key as keyof WithId<Bookmark>];
+      }
+   }
+
+   return ret;
 }
 
 export function AddBookmarkForm(props: AddBookmarkFormProps) {
@@ -243,7 +248,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       const requiredFields = getRequiredFields();
       return {
          type: formdata.type === '' ? 'Type is mandatory' : null,
-         tags: formdata.tags.length === 0 ? 'Provide at minimum 1 tag' : null,
 
          title: requiredFields.title === 'required' && formdata.title === '' ? 'Title is mandatory' : null,
          url: requiredFields.url === 'required' && formdata.url === '' ? 'URL is mandatory' : null,
@@ -258,21 +262,25 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       setErrors(errors);
 
       const ok = Object.values(errors).filter(v => v !== null).length === 0;
-      if (ok) {
-         dispatch(saveBookmark(formdata))
-            .unwrap()
-            .then((response) => {
-               setSubmitLoading(false);
-               if (response.success) {
-                  dispatch(getBookmarks());
-                  modals.closeAll();
-               } else {
-                  notifyError(response.error);
-               }
-            });
-      } else {
+      if (!ok) {
          setSubmitLoading(false);
+         return;
       }
+
+      dispatch(props.origin === 'edit_button' ? updateBookmark({
+         ...props.bookmark,
+         ...formdata
+      }) : saveBookmark(formdata))
+         .unwrap()
+         .then((response) => {
+            setSubmitLoading(false);
+            if (response.success) {
+               dispatch(getBookmarks());
+               modals.closeAll();
+            } else {
+               notifyError(response.error);
+            }
+         });
    }
    const selectCandidate = (candidate: CandidateMetadata) => {
       setIsCandidateSelected(true);

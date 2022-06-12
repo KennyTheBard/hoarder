@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AnonymousBookmark, Bookmark, BookmarkType } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
+import { WithId } from '../../utils';
 
 
 export const getUrlMetadata = createAsyncThunk(
@@ -23,6 +24,14 @@ export const saveBookmark = createAsyncThunk(
    'pinBookmark/saveBookmark',
    async (bookmark: AnonymousBookmark, thunkAPI) => {
       const { data } = await bookmarkService.saveBookmark(bookmark);
+      return data;
+   }
+);
+
+export const updateBookmark = createAsyncThunk(
+   'pinBookmark/updateBookmark',
+   async (bookmark: WithId<Bookmark>, thunkAPI) => {
+      const { data } = await bookmarkService.updateBookmark(bookmark);
       return data;
    }
 );
