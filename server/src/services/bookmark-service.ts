@@ -1,6 +1,6 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { Bookmark, BookmarkSearchForm, BookmarkType } from '../models';
-import { WithId } from '../utils';
+import { Id, WithId } from '../utils';
 
 export class BookmarkService {
 
@@ -43,13 +43,13 @@ export class BookmarkService {
       }
    }
 
-   public async removeTagFromAllBookmarks(tag: string): Promise<void> {
+   public async removeTagFromAllBookmarks(tagId: Id): Promise<void> {
       const result = await this.collection.updateMany(
-         { tags: tag },
-         { $pull: { tags: tag } }
+         { tags: tagId },
+         { $pull: { tags: tagId } }
       );
       if (!result.acknowledged) {
-         throw new Error(`Could not remove tag '${tag}' from bookmarks`);
+         throw new Error(`Could not remove tag '${tagId}' from bookmarks`);
       }
    }
 

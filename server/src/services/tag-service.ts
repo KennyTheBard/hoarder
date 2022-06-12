@@ -28,26 +28,22 @@ export class TagService {
       return result.insertedId.toString();
    }
 
-   public async getAllTags(): Promise<Tag[]> {
-      return await this.collection.find().toArray();
+   public async getAllTags(): Promise<WithId<Tag>[]> {
+      return (await this.collection.find().toArray())
+         .map(entry => ({
+            ...entry,
+            _id: entry._id.toString()
+         }));
    }
 
    public async getTagById(id: string): Promise<Tag> {
       return await this.collection.findOne({ _id: new ObjectId(id) });
    }
 
-   public async updateTag(id: string, tag: Partial<Tag>): Promise<void> {
-      const extistingTag = await this.collection.findOne({
-         name: tag.name
-      });
-      if (extistingTag && !extistingTag._id.equals(id)) {
-         throw new Error(`Another tag with the name '${tag.name}' already exists`);
-      }
-
+   public async updateTag(id: string, tag: Tag): Promise<void> {
       const result = await this.collection.updateOne(
          { _id: new ObjectId(id) },
          { $set: { ...tag } },
-         { upsert: true }
       );
       if (!result.acknowledged) {
          throw new Error(`Could not update tag with id '${id}'`);

@@ -11,7 +11,7 @@ export const tagService = {
       axios.post('http://localhost:8080/api/getTags'),
    updateTag: (payload: {
       id: string,
-      tag: Partial<Tag>
+      tag: Tag
    }) =>
       axios.post('http://localhost:8080/api/updateTag', payload),
    deleteTag: (id: string) =>

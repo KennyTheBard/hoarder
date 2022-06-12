@@ -349,7 +349,10 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
                <TagsSelect
                   error={errors.tags}
-                  onChange={(tags: string[]) => setTags(tags)}
+                  onChange={(tags: string[]) => {
+                     console.log(tags)
+                     setTags(tags);
+                  }}
                   {...style}
                />
 

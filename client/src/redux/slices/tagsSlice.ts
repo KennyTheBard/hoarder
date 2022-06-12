@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tag } from '../../models';
 import { tagService } from '../../services';
-import { WithId } from '../../utils';
+import { Id, WithId } from '../../utils';
+import { getBookmarks } from './bookmarkListSlice';
 
 
 export const getTags = createAsyncThunk(
    'tags/getTags',
-   async (thunkAPI) => {
+   async (_, thunkAPI) => {
+      thunkAPI.dispatch(loading());
       const { data } = await tagService.getTags();
       return data.tags;
    }
@@ -21,15 +23,13 @@ export const addTag = createAsyncThunk(
 );
 
 
-export const updateTagName = createAsyncThunk(
-   'tags/updateTagName',
-   async (tag: WithId<Pick<Tag, 'name'>>, thunkAPI) => {
-      const { data } = await tagService.updateTag({
-         id: tag._id,
-         tag: {
-            name: tag.name
-         }
-      })
+export const updateTag = createAsyncThunk(
+   'tags/updateTag',
+   async (payload: {
+      id: string,
+      tag: Tag
+   }, thunkAPI) => {
+      const { data } = await tagService.updateTag(payload)
       thunkAPI.dispatch(getTags());
       return data;
    }
@@ -41,26 +41,39 @@ export const deleteTag = createAsyncThunk(
    async (id: string, thunkAPI) => {
       await tagService.deleteTag(id);
       thunkAPI.dispatch(getTags());
+      thunkAPI.dispatch(getBookmarks());
    }
 );
 
 interface TagsState {
-   tags: WithId<Tag>[];
+   tags: Record<Id, WithId<Tag>>;
+   loading: boolean;
 }
 
 const initialState: TagsState = {
-   tags: []
+   tags: {},
+   loading: false
 };
 
 export const TagsSlice = createSlice({
    name: 'tags',
    initialState,
-   reducers: {},
+   reducers: {
+      loading(state: TagsState) {
+         state.loading = true;
+      }
+   },
    extraReducers: (builder) => builder
       .addCase(getTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
-         state.tags = action.payload;
+         const tags: Record<Id, WithId<Tag>> = {};
+         for (const tag of action.payload) {
+            tags[tag._id] = tag;
+         }
+         state.tags = tags;
+         state.loading = false;
       })
 });
 
+const { loading } = TagsSlice.actions
 export const tagsReducer = TagsSlice.reducer;
 

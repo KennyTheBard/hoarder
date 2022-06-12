@@ -31,10 +31,6 @@ export function BookmarkTypesChecklist() {
       />
    ));
 
-   useEffect(() => {
-      console.log(values);
-   }, [values]);
-
    return (
       <>
          <Checkbox

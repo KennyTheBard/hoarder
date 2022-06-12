@@ -2,17 +2,20 @@ import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack
 import { useModals } from '@mantine/modals';
 import { Archive, ArchiveOff, Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { WithId } from '../../utils/support-types';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
 import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
-import { isValidHttpUrl, notify } from '../../utils';
+import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, isValidHttpUrl, notify } from '../../utils';
 import { PlainTextBookmarkCard } from './PlainTextBookmarkCard';
+import { TagBadge } from '../tag-badge';
+import { Tag } from '../../models';
 
 
 export interface BookmarkCardProps {
    bookmark: WithId<Bookmark>;
+   tempTags?: Tag[];
    viewOnly?: boolean;
    onClick?: () => void;
 }
@@ -22,6 +25,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
 
    const dispatch = useAppDispatch();
    const modals = useModals();
+
+   const tagsMap = useAppSelector((state) => state.tags.tags);
 
    const getCardContentByBookmarkType = () => {
       switch (bookmark.type) {
@@ -113,9 +118,19 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Stack>
             </Card.Section>
 
-            <Spoiler maxHeight={22} showLabel="More" hideLabel="Less">
+            <Spoiler maxHeight={27} showLabel="More" hideLabel="Less">
                <Group mb="15px" spacing="xs">
-                  {bookmark.tags.map((tag: string) => <Badge key={tag}>{tag}</Badge>)}
+                  {bookmark.tags
+                     .map((tagId: string) => tagsMap[tagId])
+                     .map((tag: WithId<Tag>) =>
+                        <TagBadge
+                           key={tag._id}
+                           size="lg"
+                           name={tag.name}
+                           variant={tag.variant ? tag.variant : DEFAULT_TAG_VARIANT}
+                           color={tag.color ? tag.color : DEFAULT_TAG_COLOR}
+                        />
+                     )}
                </Group>
             </Spoiler>
             <Group position="apart">

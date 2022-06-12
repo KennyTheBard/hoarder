@@ -1,9 +1,10 @@
 
+export type Id = string;
 
 export type WithId<T> = {
    [P in keyof T]: T[P];
 } & {
-   _id: string;
+   _id: Id;
 };
 
 export type WithCount<T> = {

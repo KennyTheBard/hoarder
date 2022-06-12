@@ -1,7 +1,7 @@
 import { Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text } from '@mantine/core';
 import { MoodSad, Refresh, Search } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
+import { getBookmarks, getTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
@@ -19,6 +19,7 @@ export function BookmarkList() {
 
    const refreshData = () => {
       dispatch(getBookmarks());
+      dispatch(getTags());
    };
 
    useEffect(refreshData, [showArchived]);

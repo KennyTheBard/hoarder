@@ -1,5 +1,6 @@
 import { Tag } from '../models';
 import { BookmarkService, TagService } from '../services';
+import { WithId } from '../utils';
 
 export class TagController {
 
@@ -8,7 +9,7 @@ export class TagController {
       private readonly bookmarkService: BookmarkService,
    ) {}
 
-   public getTags = async (): Promise<GetTagsResponse> => {
+   public getAllTags = async (): Promise<GetTagsResponse> => {
       const tags = await this.tagService.getAllTags();
       return {
          count: tags.length,
@@ -28,15 +29,14 @@ export class TagController {
    }
 
    public deleteTag = async (request: DeleteTagRequest): Promise<void> => {
-      const tag = await this.tagService.getTagById(request.id);
       await this.tagService.deleteTag(request.id);
-      await this.bookmarkService.removeTagFromAllBookmarks(tag.name);
+      await this.bookmarkService.removeTagFromAllBookmarks(request.id);
    }  
 }
 
 export type GetTagsResponse = {
    count: number;
-   tags: Tag[];
+   tags: WithId<Tag>[];
 }
 
 export type AddTagRequest = Tag;
@@ -47,7 +47,7 @@ export type AddTagResponse = {
 
 export type UpdateTagRequest = {
    id: string;
-   tag: Partial<Tag>;
+   tag: Tag;
 };
 
 export type DeleteTagRequest = {

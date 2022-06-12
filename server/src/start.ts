@@ -100,7 +100,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
          tagController.addTag
       ));
       app.post('/api/getTags', postHandler<void, GetTagsResponse>(
-         tagController.getTags
+         tagController.getAllTags
       ));
       app.post('/api/updateTag', postHandler<UpdateTagRequest, void>(
          tagController.updateTag

@@ -1,33 +1,46 @@
 import { MultiSelect, Sx } from '@mantine/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { addTag, getTags } from '../../../redux/slices';
+import { notifySuccess } from '../../../utils';
 
 export type TagsSelectProps = {
+   onChange: (value: string[]) => void;
    disabled?: boolean;
    error?: string | null;
-   onChange?: (value: string[]) => void;
    sx?: Sx | Sx[];
 };
 
 export function TagsSelect(props: TagsSelectProps) {
    const dispatch = useAppDispatch();
-   const tags = useAppSelector((state) => state.tags.tags);
+
+   const tagMap = useAppSelector((state) => state.tags.tags);
+
+   const [value, setValue] = useState<string[]>([]);
 
    const updateTags = () => {
       dispatch(getTags());
    }
    useEffect(updateTags, []);
 
+   const onTagCreate = (tagName: string) => {
+      dispatch(addTag(tagName))
+         .unwrap()
+         .then(() => {
+            updateTags();
+            notifySuccess(`Tag '${tagName}' created.`);
+         })
+   }
+
    return (<>
       <MultiSelect
          label="Tags"
-         data={tags
-            .map(tag => tag.name)
-            .map((tagName) => ({
-               value: tagName,
-               label: tagName
+         data={Object.values(tagMap)
+            .map((tag) => ({
+               value: tag._id,
+               label: tag.name
             }))}
+         value={value}
          placeholder="Select tags"
          searchable
          creatable
@@ -35,9 +48,16 @@ export function TagsSelect(props: TagsSelectProps) {
          disabled={props.disabled}
          maxDropdownHeight={160}
          getCreateLabel={(query) => `Create tag: ${query}`}
-         onCreate={(query) => dispatch(addTag(query))}
+         onCreate={(query) => onTagCreate(query)}
+         filter={(value, selected, item) =>
+            !selected && !!item.label && item.label.toLowerCase().includes(value.toLowerCase().trim())
+         }
          error={props.error}
-         onChange={props.onChange}
+         onChange={(value: string[]) => {
+            const existingTags = value.filter(tagId => tagMap[tagId]);
+            setValue(existingTags);
+            props.onChange(existingTags);
+         }}
          sx={props.sx}
       />
    </>)
