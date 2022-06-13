@@ -1,14 +1,13 @@
-import { ActionIcon, Badge, Image, Card, Center, Group, Menu, Space, Text, Stack, Box, Spoiler } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, Settings, Share, Trash, TrashX } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, Settings, Share, TrashX } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { WithId } from '../../utils/support-types';
-import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard } from '.';
+import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
 import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, isValidHttpUrl, notify } from '../../utils';
-import { PlainTextBookmarkCard } from './PlainTextBookmarkCard';
 import { TagBadge } from '../tag-badge';
 import { Tag } from '../../models';
 import { AddBookmarkForm } from '../bookmark-form';
@@ -48,6 +47,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
             return <GameBookmarkCard bookmark={bookmark} />
          case BookmarkType.PLAINTEXT:
             return <PlainTextBookmarkCard bookmark={bookmark} />
+         case BookmarkType.RESOURCE:
+            return <ResourceBookmarkCard bookmark={bookmark} />
          default:
             return <UnknownBookmarkCard bookmark={bookmark} />
       }
