@@ -9,7 +9,7 @@ export function Import() {
 
    const [filesToImport, setFilesToImport] = useState<File[] | null>(null);
    const [dataToImport, setDataToImport] = useState<Partial<Bookmark>[]>([]);
-   
+
    useEffect(() => {
       if (!filesToImport) {
          return;
@@ -32,7 +32,7 @@ export function Import() {
          ])
       );
    }, [filesToImport]);
-   
+
    return (
       <Stack align="center" justify="flex-start">
          <Modal

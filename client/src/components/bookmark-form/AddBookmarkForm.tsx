@@ -61,7 +61,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const inputOverrides = getInputOverrides(props);
 
-   const [formdata, _setFormdata] = useState<BookmarkFormdata>({
+   const [formdata, setFormdata] = useState<BookmarkFormdata>({
       type: BookmarkType.UNKNOWN,
       title: '',
       url: '',
@@ -71,42 +71,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       tags: [],
       ...inputOverrides
    })
-   const prevFormdataRef = useRef(formdata);
-   const setFormdata = (newFormData: BookmarkFormdata) => {
-      prevFormdataRef.current = newFormData;
-      _setFormdata(newFormData);
-   }
-   const setType = (type: BookmarkType) => {
-      setFormdata({
-         ...formdata,
-         type
-      });
-   }
-   const setTitle = (title: string) => {
-      setFormdata({
-         ...formdata,
-         title
-      });
-   }
-   const setNote = (note: string) => {
-      setFormdata({
-         ...formdata,
-         note
-      });
-   }
-   const setUrl = (url: string) => {
-      setFormdata({
-         ...formdata,
-         url
-      });
-   }
-   const setTags = (tags: string[]) => {
-      setFormdata({
-         ...formdata,
-         tags
-      });
-   }
-
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
    const [isMetadataLoading, setMetadataLoading] = useState(false);
@@ -160,6 +124,37 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       [formdata.title, formdata.type]
    );
 
+   const setType = (type: BookmarkType) => {
+      setFormdata({
+         ...formdata,
+         type
+      });
+   }
+   const setTitle = (title: string) => {
+      setFormdata({
+         ...formdata,
+         title
+      });
+   }
+   const setNote = (note: string) => {
+      setFormdata({
+         ...formdata,
+         note
+      });
+   }
+   const setUrl = (url: string) => {
+      setFormdata({
+         ...formdata,
+         url
+      });
+   }
+   const setTags = (tags: string[]) => {
+      setFormdata({
+         ...formdata,
+         tags
+      });
+   }
+   
    useEffect(() => {
       if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
          return;

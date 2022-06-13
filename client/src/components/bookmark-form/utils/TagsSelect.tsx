@@ -18,16 +18,15 @@ export function TagsSelect(props: TagsSelectProps) {
 
    const [value, setValue] = useState<string[]>([]);
 
-   const updateTags = () => {
+   useEffect(() => {      
       dispatch(getTags());
-   }
-   useEffect(updateTags, []);
+   }, []);
 
    const onTagCreate = (tagName: string) => {
       dispatch(addTag(tagName))
          .unwrap()
          .then(() => {
-            updateTags();
+            dispatch(getTags());
             notifySuccess(`Tag '${tagName}' created.`);
          })
    }

@@ -13,10 +13,9 @@ export function TagList() {
    const tags = useAppSelector((state) => Object.values(state.tags.tags));
    const loading = useAppSelector((state) => state.tags.loading);
 
-   const updateTags = () => {
+   useEffect(() => {
       dispatch(getTags());
-   }
-   useEffect(updateTags, []);
+   }, []);
 
    return (
       <Container size="xl">
