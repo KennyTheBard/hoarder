@@ -1,8 +1,8 @@
-import { Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pin } from 'tabler-icons-react';
+import { ExternalLink, Pin } from 'tabler-icons-react';
 import { BookmarkTypeSuggestion, Metadata, CandidateMetadata, Bookmark, BookmarkType, TypeMetadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
@@ -15,8 +15,8 @@ export type AddBookmarkFormProps = {
    pinnedText: string;
 } | {
    origin: 'import_tool';
-   url?: string;
-   note?: string;
+   bookmark: Partial<Bookmark>;
+   onCompleted?: () => void;
 } | {
    origin: 'edit_button';
    bookmark: WithId<Bookmark>;
@@ -40,8 +40,9 @@ function getInputOverrides(props: AddBookmarkFormProps): Partial<BookmarkFormdat
    }
 
    if (props.origin === 'import_tool') {
-      if (props.url) ret.url = props.url;
-      if (props.note) ret.note = props.note;
+      for (const key of Object.keys(props.bookmark)) {
+         ret[key] = props.bookmark[key as keyof Partial<Bookmark>];
+      }
    }
 
    if (props.origin === 'edit_button') {
@@ -157,12 +158,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }, 500),
       [formdata.title, formdata.type]
    );
-   const checkUrlUniqueness = async (url: string): Promise<boolean> => new Promise<boolean>((resolve, reject) => {
-      dispatch(isUrlAlreadyBookmarked(url))
-         .unwrap()
-         .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
-         .catch(error => reject(error));
-   })
 
    useEffect(() => {
       if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
@@ -171,27 +166,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       debouncedOnUrlChanged(formdata.url);
    }, [formdata.url]);
    useEffect(() => {
-      const newErrors: Record<string, string | null> = {};
-      const requiredFields = getRequiredFields();
-      newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
-      newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
-      newErrors['url'] = formdata.url.length === 0 && requiredFields.url === 'required' ? 'URL is mandatory' : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null);
-      newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
-
-      if (newErrors['url']) {
-         setErrors({
-            ...errors,
-            ...newErrors
-         });
-         return;
-      }
-
-      checkUrlUniqueness(formdata.url)
-         .then((alreadyBookmarked: boolean) => setErrors({
-            ...errors,
-            ...newErrors,
-            url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
-         }));
+     validateFormdata();
    }, [formdata.type, formdata.title, formdata.url, formdata.note]);
    useEffect(() => {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
@@ -228,7 +203,34 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }, [typeSuggestions]);
 
+   const validateFormdata = async () => {
+      const newErrors: Record<string, string | null> = {};
+      const requiredFields = getRequiredFields();
+      newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
+      newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
+      newErrors['url'] = formdata.url.length === 0 && requiredFields.url === 'required' ? 'URL is mandatory' : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null);
+      newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
 
+      if (newErrors['url']) {
+         setErrors({
+            ...errors,
+            ...newErrors
+         });
+         return;
+      }
+
+      const alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
+         dispatch(isUrlAlreadyBookmarked(formdata.url))
+            .unwrap()
+            .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
+            .catch(error => reject(error));
+      }));
+      setErrors({
+         ...errors,
+         ...newErrors,
+         url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
+      });
+   }
    const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
       return {
          _id: '',
@@ -274,6 +276,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const onBookmarkSubmit = async () => {
       setSubmitLoading(true);
 
+      await validateFormdata();
+
       const ok = Object.values(errors).filter(v => v !== null).length === 0;
       if (!ok) {
          setSubmitLoading(false);
@@ -292,6 +296,9 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             setSubmitLoading(false);
             if (response.success) {
                dispatch(getBookmarks());
+               if (props.origin === 'import_tool' && props.onCompleted) {
+                  props.onCompleted();
+               }
                modals.closeAll();
             } else {
                notifyError(response.error);
@@ -336,15 +343,24 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                />
 
                {getRequiredFields().url !== 'hidden' &&
-                  <TextInput
-                     placeholder="https://..."
-                     label={getUrlLabelByType() || 'URL'}
-                     value={formdata.url}
-                     required={getRequiredFields().url === 'required'}
-                     onChange={(event) => setUrl(event.target.value)}
-                     error={errors.url}
-                     {...style}
-                  />
+                  <>
+                     <TextInput
+                        placeholder="https://..."
+                        rightSection={<ActionIcon<'button'>
+                           component="button"
+                           disabled={!!errors.url}
+                           onClick={() => window.open(formdata.url)}
+                        >
+                           <ExternalLink/>
+                        </ActionIcon>}
+                        label={getUrlLabelByType() || 'URL'}
+                        value={formdata.url}
+                        required={getRequiredFields().url === 'required'}
+                        onChange={(event) => setUrl(event.target.value)}
+                        error={errors.url}
+                        {...style}
+                     />
+                  </>
                }
 
                {getRequiredFields().title !== 'hidden' &&

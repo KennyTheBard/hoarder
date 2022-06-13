@@ -1,25 +1,14 @@
 import { Modal, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { AddBookmarkForm, AddBookmarkFormProps } from '../../components';
+import { AddBookmarkForm } from '../../components';
+import { Bookmark } from '../../models';
 import { GeneralDropzone } from './GeneralDropzone';
 
-
-
-function entryToAddBookmarkFormProps(entry: { [key: string]: any }): AddBookmarkFormProps {
-   const props: AddBookmarkFormProps = {
-      origin: 'import_tool'
-   };
-
-   if (entry.url) props.url = entry.url;
-   if (entry.note) props.note = entry.note;
-
-   return props;
-}
 
 export function Import() {
 
    const [filesToImport, setFilesToImport] = useState<File[] | null>(null);
-   const [dataToImport, setDataToImport] = useState<AddBookmarkFormProps[]>([]);
+   const [dataToImport, setDataToImport] = useState<Partial<Bookmark>[]>([]);
    
    useEffect(() => {
       if (!filesToImport) {
@@ -32,14 +21,14 @@ export function Import() {
                const data = JSON.parse(fileContent);
                // TODO: validate data format
                resolve(
-                  data.map((entry: { [key: string]: any; }) => entryToAddBookmarkFormProps(entry))
+                  data.map((entry: { [key: string]: any; }) => entry as Partial<Bookmark>)
                );
             }))
          )
       ).then(
          (propsLists: unknown[]) => setDataToImport([
             ...dataToImport,
-            ...(propsLists.flat(1) as AddBookmarkFormProps[])
+            ...(propsLists.flat(1) as Partial<Bookmark>[])
          ])
       );
    }, [filesToImport]);
@@ -57,7 +46,7 @@ export function Import() {
                console.log(dataToImport)
                setDataToImport(dataToImport.slice(1));
             }}>
-            <AddBookmarkForm {...dataToImport[0]} />
+            <AddBookmarkForm origin="import_tool" bookmark={dataToImport[0]} onCompleted={() => setDataToImport(dataToImport.slice(1))} />
          </Modal>
          <GeneralDropzone
             onDrop={(files) => setFilesToImport(files)}
