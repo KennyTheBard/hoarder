@@ -1,6 +1,6 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineColor, MantineTheme } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, Settings, Share, TrashX } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, News, Settings, Share, TrashX } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { WithId } from '../../utils/support-types';
@@ -51,6 +51,31 @@ export function BookmarkCard(props: BookmarkCardProps) {
             return <ResourceBookmarkCard bookmark={bookmark} />
          default:
             return <UnknownBookmarkCard bookmark={bookmark} />
+      }
+   }
+
+   const getColorByBookmarkType = (theme: MantineTheme) => {
+      switch (bookmark.type) {
+         case BookmarkType.ARTICLE:
+            return theme.colors.blue;
+         case BookmarkType.TOOL:
+            return theme.colors.teal;
+         case BookmarkType.VIDEO:
+            return theme.colors.red;
+         case BookmarkType.MOVIE:
+            return theme.colors.indigo;
+         case BookmarkType.SHOW:
+            return theme.colors.grape;
+         case BookmarkType.ANIME:
+            return theme.colors.pink;
+         case BookmarkType.GAME:
+            return theme.colors.green;
+         case BookmarkType.PLAINTEXT:
+            return theme.colors.yellow;
+         case BookmarkType.RESOURCE:
+            return theme.colors.dark;
+         default:
+            return theme.colors.grey;
       }
    }
 
@@ -107,10 +132,20 @@ export function BookmarkCard(props: BookmarkCardProps) {
       <Card
          shadow="sm"
          radius={6}
-         p="xl"
+         p="0px"
          component="div"
       >
+         <Box sx={(theme: MantineTheme) => ({
+            backgroundColor: getColorByBookmarkType(theme)
+         })}>
+            <Group position="right" mr="10px">
+               <Text color="white" weight="bold">
+                  {bookmark.type}
+               </Text>
+            </Group>
+         </Box>
          <Box
+            p="20px"
             sx={(theme) => ({
                padding: theme.spacing.xs,
             })}
