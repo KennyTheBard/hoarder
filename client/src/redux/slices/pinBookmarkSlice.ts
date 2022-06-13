@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AnonymousBookmark, Bookmark, BookmarkType } from '../../models';
 import { bookmarkService, metadataService } from '../../services';
+import { validationService } from '../../services/validation-service';
 import { WithId } from '../../utils';
 
 
@@ -52,6 +53,14 @@ export const getVideoDurationInSeconds = createAsyncThunk(
    async (url: string, thunkAPI) => {
       const { data } = await metadataService.getVideoDurationInSeconds(url);
       return data.durationInSeconds;
+   }
+);
+
+export const isUrlAlreadyBookmarked = createAsyncThunk(
+   'pinBookmark/isUrlAlreadyBookmarked',
+   async (url: string, thunkAPI) => {
+      const { data } = await validationService.isUrlAlreadyBookmarked(url);
+      return data.alreadyBookmarked;
    }
 );
 

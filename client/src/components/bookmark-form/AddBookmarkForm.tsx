@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pin } from 'tabler-icons-react';
 import { BookmarkTypeSuggestion, Metadata, CandidateMetadata, Bookmark, BookmarkType, TypeMetadata } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, saveBookmark, updateBookmark } from '../../redux/slices';
+import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
 import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
@@ -75,7 +75,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       _setFormdata(newFormData);
    }
    const setType = (type: BookmarkType) => {
-      console.log(type, formdata);
       setFormdata({
          ...formdata,
          type
@@ -114,26 +113,37 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [candidates, setCandidates] = useState<CandidateMetadata[] | null>(null);
 
    const debouncedOnUrlChanged = useCallback(
-      debounce((url: string) => {
-         setMetadataLoading(true);
-         dispatch(getUrlMetadata(url))
-            .unwrap()
-            .then((metadata: Metadata | undefined) => {
-               if (!metadata) {
-                  return;
-               }
-               setFormdata({
-                  ...formdata,
-                  title: metadata.title !== null && metadata.title.length > 0 ? metadata.title : formdata.title,
-                  note: metadata.description !== null && metadata.description.length > 0 ? metadata.description : formdata.title,
-                  imageUrl: metadata.image !== null && metadata.image.length > 0 ? metadata.image : formdata.imageUrl,
-                  hostname: metadata.hostname !== null && metadata.hostname.length > 0 ? metadata.hostname : formdata.hostname
+      debounce(async (url: string) => {
+         await new Promise<void>((resolve, reject) => {
+            setMetadataLoading(true);
+            dispatch(getUrlMetadata(url))
+               .unwrap()
+               .then((metadata: Metadata | undefined) => {
+                  if (!metadata) {
+                     return;
+                  }
+                  setFormdata({
+                     ...formdata,
+                     title: metadata.title !== null && metadata.title.length > 0 ? metadata.title : formdata.title,
+                     note: metadata.description !== null && metadata.description.length > 0 ? metadata.description : formdata.title,
+                     imageUrl: metadata.image !== null && metadata.image.length > 0 ? metadata.image : formdata.imageUrl,
+                     hostname: metadata.hostname !== null && metadata.hostname.length > 0 ? metadata.hostname : formdata.hostname
+                  })
+                  setMetadataLoading(false);
+                  resolve();
                })
-               setMetadataLoading(false);
-               dispatch(getTypeSuggestions(url))
-                  .unwrap()
-                  .then((suggestions: BookmarkTypeSuggestion[]) => setTypeSuggestions(suggestions));
-            });
+               .catch(error => reject(error));
+         });
+
+         await new Promise<void>((resolve, reject) => {
+            dispatch(getTypeSuggestions(url))
+               .unwrap()
+               .then((suggestions: BookmarkTypeSuggestion[]) => {
+                  setTypeSuggestions(suggestions);
+                  resolve();
+               })
+               .catch(error => reject(error));
+         });
       }, 500),
       [formdata.url]
    );
@@ -147,24 +157,42 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }, 500),
       [formdata.title, formdata.type]
    );
+   const checkUrlUniqueness = async (url: string): Promise<boolean> => new Promise<boolean>((resolve, reject) => {
+      dispatch(isUrlAlreadyBookmarked(url))
+         .unwrap()
+         .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
+         .catch(error => reject(error));
+   })
 
    useEffect(() => {
-      if (formdata.url.length === 0) {
+      if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
          return;
       }
-      if (!isValidHttpUrl(formdata.url)) {
-         setErrors({
-            ...errors,
-            url: 'Invalid URL'
-         })
-         return;
-      }
-      setErrors({
-         ...errors,
-         url: null
-      })
       debouncedOnUrlChanged(formdata.url);
    }, [formdata.url]);
+   useEffect(() => {
+      const newErrors: Record<string, string | null> = {};
+      const requiredFields = getRequiredFields();
+      newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
+      newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
+      newErrors['url'] = formdata.url.length === 0 && requiredFields.url === 'required' ? 'URL is mandatory' : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null);
+      newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
+
+      if (newErrors['url']) {
+         setErrors({
+            ...errors,
+            ...newErrors
+         });
+         return;
+      }
+
+      checkUrlUniqueness(formdata.url)
+         .then((alreadyBookmarked: boolean) => setErrors({
+            ...errors,
+            ...newErrors,
+            url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
+         }));
+   }, [formdata.type, formdata.title, formdata.url, formdata.note]);
    useEffect(() => {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
          return;
@@ -228,7 +256,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             return undefined;
       }
    }
-
    const getRequiredFields = (): Record<string, 'required' | 'hidden'> => {
       switch (formdata.type) {
          case BookmarkType.PLAINTEXT:
@@ -244,33 +271,22 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }
 
-   const validateFormdata = (): Record<string, string | null> => {
-      const requiredFields = getRequiredFields();
-      return {
-         type: formdata.type === '' ? 'Type is mandatory' : null,
-
-         title: requiredFields.title === 'required' && formdata.title === '' ? 'Title is mandatory' : null,
-         url: requiredFields.url === 'required' && formdata.url === '' ? 'URL is mandatory' : null,
-         note: requiredFields.note === 'required' && formdata.note === '' ? 'Note is mandatory' : null,
-      };
-   }
-
    const onBookmarkSubmit = async () => {
       setSubmitLoading(true);
-
-      const errors = validateFormdata();
-      setErrors(errors);
 
       const ok = Object.values(errors).filter(v => v !== null).length === 0;
       if (!ok) {
          setSubmitLoading(false);
+         notifyError('Cannot pin this bookmark. There are still unsolved errors!');
          return;
       }
 
-      dispatch(props.origin === 'edit_button' ? updateBookmark({
-         ...props.bookmark,
-         ...formdata
-      }) : saveBookmark(formdata))
+      dispatch(props.origin === 'edit_button'
+         ? updateBookmark({
+            ...props.bookmark,
+            ...formdata
+         })
+         : saveBookmark(formdata))
          .unwrap()
          .then((response) => {
             setSubmitLoading(false);
@@ -282,6 +298,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             }
          });
    }
+
    const selectCandidate = (candidate: CandidateMetadata) => {
       setIsCandidateSelected(true);
       setFormdata({
@@ -357,10 +374,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
                <TagsSelect
                   error={errors.tags}
-                  onChange={(tags: string[]) => {
-                     console.log(tags)
-                     setTags(tags);
-                  }}
+                  onChange={(tags: string[]) => setTags(tags)}
                   {...style}
                />
 

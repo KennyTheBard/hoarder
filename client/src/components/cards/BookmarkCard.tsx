@@ -138,7 +138,6 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      .map((tag: WithId<Tag>) =>
                         <TagBadge
                            key={tag._id}
-                           size="lg"
                            name={tag.name}
                            variant={tag.variant ? tag.variant : DEFAULT_TAG_VARIANT}
                            color={tag.color ? tag.color : DEFAULT_TAG_COLOR}

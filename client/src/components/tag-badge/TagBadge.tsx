@@ -14,6 +14,7 @@ export function TagBadge(props: TagBadgeProps) {
          size={props.size ? props.size : "md"}
          variant={props.variant}
          color={props.color}
+         sx={{ textTransform: "none" }}
       >
          {props.name}
       </Badge>

@@ -6,7 +6,7 @@ import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
 import { BookmarkService, GameMetadataService, MetadataService, MediaMetadataService, TagService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -56,6 +56,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
       const bookmarkController = new BookmarkController(bookmarkService);
       const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, mediaMetadataService);
       const tagController = new TagController(tagService, bookmarkService);
+      const validationController = new ValidationController(bookmarkService);
 
       // init app with an websocket server
       const app = express();
@@ -108,6 +109,9 @@ import { HowLongToBeatService } from 'howlongtobeat';
       app.post('/api/deleteTag', postHandler<DeleteTagRequest, void>(
          tagController.deleteTag
       ));
+      app.post('/api/isUrlAlreadyBookmarked', postHandler<IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse>(
+         validationController.isUrlAlreadyBookmarked
+      ))
       
       // start server
       const port = process.env.PORT;

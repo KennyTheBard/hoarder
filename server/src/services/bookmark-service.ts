@@ -88,6 +88,21 @@ export class BookmarkService {
       return typeCountDictionary;
    }
 
+   public async getBookmarkByUrl(url: string): Promise<WithId<Bookmark> | null> {
+      const bookmark = await this.collection.findOne({
+         url
+      });
+
+      if (!bookmark) {
+         return null;
+      }
+
+      return {
+         ...bookmark,
+         _id: bookmark._id.toString()
+      };
+   }
+
    private searchFormToMongoFilter(isArchived: boolean, form?: BookmarkSearchForm): Filter<Bookmark> {
       const filter = {
          isArchived
