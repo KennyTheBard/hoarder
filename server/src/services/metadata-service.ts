@@ -7,12 +7,24 @@ import { getHostnameForUrl } from '../utils';
 export class MetadataService {
 
    public async getMetadata(url: string): Promise<Metadata> {
-      const result = (await parser(url, {
-         headers: {
-            'Accept-Encoding': 'gzip,deflate,br',
-         },
-      })) as MetadataComplete;
-      return this.metadataCompleteToMetadata(url, result);
+      try {
+         const result = (await parser(url, {
+            headers: {
+               'Accept-Encoding': 'gzip,deflate,br',
+            },
+         })) as MetadataComplete;
+         return this.metadataCompleteToMetadata(url, result);
+      } catch (error) {
+         console.error(error);
+         return {
+            url: '',
+            title: null,
+            description: null,
+            image: null,
+            siteName: null,
+            hostname: null
+         }
+      }
    };
 
    private metadataCompleteToMetadata(url: string, metadata: MetadataComplete): Metadata {

@@ -67,6 +67,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       url: '',
       note: '',
       imageUrl: '',
+      hostname: '',
       tags: [],
       ...inputOverrides
    })
@@ -125,10 +126,10 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   }
                   setFormdata({
                      ...formdata,
-                     title: metadata.title !== null && metadata.title.length > 0 ? metadata.title : formdata.title,
-                     note: metadata.description !== null && metadata.description.length > 0 ? metadata.description : formdata.title,
-                     imageUrl: metadata.image !== null && metadata.image.length > 0 ? metadata.image : formdata.imageUrl,
-                     hostname: metadata.hostname !== null && metadata.hostname.length > 0 ? metadata.hostname : formdata.hostname
+                     title: metadata.title !== null && metadata.title.length > 0 && formdata.title.length === 0 ? metadata.title : formdata.title,
+                     note: metadata.description !== null && metadata.description.length > 0 && formdata.note.length === 0 ? metadata.description : formdata.note,
+                     imageUrl: metadata.image !== null && metadata.image.length > 0 && formdata.imageUrl.length === 0 ? metadata.image : formdata.imageUrl,
+                     hostname: metadata.hostname !== null && metadata.hostname.length > 0 && formdata.hostname.length === 0 ? metadata.hostname : formdata.hostname
                   })
                   setMetadataLoading(false);
                   resolve();
@@ -166,7 +167,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       debouncedOnUrlChanged(formdata.url);
    }, [formdata.url]);
    useEffect(() => {
-     validateFormdata();
+      validateFormdata();
    }, [formdata.type, formdata.title, formdata.url, formdata.note]);
    useEffect(() => {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
@@ -202,13 +203,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          setType(guaranteeTypes[0].type);
       }
    }, [typeSuggestions]);
-
    const validateFormdata = async () => {
       const newErrors: Record<string, string | null> = {};
       const requiredFields = getRequiredFields();
       newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
       newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
-      newErrors['url'] = formdata.url.length === 0 && requiredFields.url === 'required' ? 'URL is mandatory' : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null);
+      newErrors['url'] =  requiredFields.url === 'required'
+         ? (formdata.url.length === 0 ? 'URL is mandatory' : null)
+         : (formdata.url.length === 0 ? null : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null));
       newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
 
       if (newErrors['url']) {
@@ -217,6 +219,16 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             ...newErrors
          });
          return;
+      }
+
+      const hiddenProperties = Object.keys(requiredFields)
+         .filter(key => requiredFields[key] === 'hidden')
+         .reduce((acc, key) => acc = { ...acc, [key]: '' }, {});
+      if (Object.keys(hiddenProperties).length > 0) {
+         setFormdata({
+            ...formdata,
+            ...hiddenProperties
+         })
       }
 
       const alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
@@ -281,7 +293,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       const ok = Object.values(errors).filter(v => v !== null).length === 0;
       if (!ok) {
          setSubmitLoading(false);
-         notifyError('Cannot pin this bookmark. There are still unsolved errors!');
+         notifyError(`Cannot pin this bookmark. There are still unsolved errors!\n${Object.entries(errors).filter(e => e[1]).map(e => `${e[0]}:${e[1]}\n`)}`);
          return;
       }
 
@@ -351,7 +363,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                            disabled={!!errors.url}
                            onClick={() => window.open(formdata.url)}
                         >
-                           <ExternalLink/>
+                           <ExternalLink />
                         </ActionIcon>}
                         label={getUrlLabelByType() || 'URL'}
                         value={formdata.url}
