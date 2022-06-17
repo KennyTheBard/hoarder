@@ -1,6 +1,6 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineColor, MantineTheme } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineColor, MantineTheme, Button, UnstyledButton, Tooltip } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, News, Settings, Share, TrashX } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, ExternalLink, News, Settings, Share, TrashX } from 'tabler-icons-react';
 import { Bookmark, BookmarkType } from '../../models/bookmark';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { WithId } from '../../utils/support-types';
@@ -127,7 +127,6 @@ export function BookmarkCard(props: BookmarkCardProps) {
       });
    }
 
-
    return (
       <Card
          shadow="sm"
@@ -152,12 +151,12 @@ export function BookmarkCard(props: BookmarkCardProps) {
          >
             <Card.Section>
                <Center mb="15px">
-                  {bookmark.imageUrl && isValidHttpUrl(bookmark.imageUrl) &&
+                  {bookmark.url !== '' &&
                      <Image
                         onClick={() => window.open(bookmark.url)}
                         radius="md" fit="contain" width={260}
                         src={bookmark.imageUrl!}
-                        alt="Preview"
+                        alt=""
                      />
                   }
                </Center>
@@ -188,37 +187,53 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      : ''
                   }
                </Text>
-               {!props.viewOnly &&
-                  <Menu position="right"
-                     control={<ActionIcon><Settings /></ActionIcon>}>
-                     <Menu.Item
-                        disabled={true}
-                        icon={<Share size={14} />}
-                     >
-                        Share
-                     </Menu.Item>
-                     <Menu.Item
-                        icon={<Edit size={14} />}
-                        onClick={onEdit}
-                     >
-                        Edit
-                     </Menu.Item>
-                     {bookmark.isArchived &&
-                        <Menu.Item color="blue"
-                           icon={<ArchiveOff size={14} />}
-                           onClick={onRestoreFromArchive}
+               <Group position="right">
+                  {bookmark.url !== '' &&
+                     <Tooltip label="Open URL">
+                        <UnstyledButton
+                           onClick={() => window.open(bookmark.url)}
                         >
-                           Restore
-                        </Menu.Item>
-                     }
-                     <Menu.Item color="red"
-                        icon={bookmark.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
-                        onClick={bookmark.isArchived ? onDelete : onArchive}
-                     >
-                        {bookmark.isArchived ? 'Delete' : 'Archive'}
-                     </Menu.Item>
-                  </Menu>
-               }
+                           <ActionIcon >
+                              <ExternalLink />
+                           </ActionIcon>
+                        </UnstyledButton>
+                     </Tooltip>
+                  }
+                  {!props.viewOnly &&
+                     <Tooltip label="Settings">
+                        <Menu position="right"
+                           control={<ActionIcon><Settings /></ActionIcon>}>
+                           <Menu.Item
+                              disabled={true}
+                              icon={<Share size={14} />}
+                           >
+                              Share
+                           </Menu.Item>
+                           <Menu.Item
+                              icon={<Edit size={14} />}
+                              onClick={onEdit}
+                           >
+                              Edit
+                           </Menu.Item>
+                           {bookmark.isArchived &&
+                              <Menu.Item color="blue"
+                                 icon={<ArchiveOff size={14} />}
+                                 onClick={onRestoreFromArchive}
+                              >
+                                 Restore
+                              </Menu.Item>
+                           }
+                           <Menu.Item color="red"
+                              icon={bookmark.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
+                              onClick={bookmark.isArchived ? onDelete : onArchive}
+                           >
+                              {bookmark.isArchived ? 'Delete' : 'Archive'}
+                           </Menu.Item>
+                        </Menu>
+                     </Tooltip>
+                  }
+               </Group>
+
             </Group>
          </Box>
       </Card>
