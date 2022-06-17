@@ -1,6 +1,4 @@
 import { BookmarkService } from '../services';
-import { AnonymousBookmark, Bookmark, BookmarkSearchForm, BookmarkType } from '../models';
-import { getHostnameForUrl, WithCount, WithId } from '../utils';
 
 export class ValidationController {
 

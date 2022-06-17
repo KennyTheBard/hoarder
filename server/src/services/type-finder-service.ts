@@ -1,6 +1,5 @@
 import { BookmarkService } from '.';
-import { BookmarkType, BookmarkTypeSuggestion } from '../models';
-import { getHostnameForUrl, isValidHttpUrl } from '../utils';
+import { BookmarkType, BookmarkTypeSuggestion, getHostnameForUrl, isValidHttpUrl } from 'common';
 
 
 const hostnameToTypeDictionary = {

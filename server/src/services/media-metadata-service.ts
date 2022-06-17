@@ -1,10 +1,10 @@
 import { TvResult, ShowResponse } from './../../node_modules/moviedb-promise/dist/request-types.d';
 import { MovieResult, MovieResponse } from 'moviedb-promise/dist/request-types';
 import { MovieDb } from 'moviedb-promise';
-import { AnimeBookmark, MovieBookmark, ShowBookmark, TypeSpecificMetadata } from '../models';
 import { Client as OmdbClient } from 'imdb-api';
 import axios from 'axios';
 import * as iso8601 from 'iso8601-duration';
+import { TypeSpecificMetadata, MovieBookmark, ShowBookmark, AnimeBookmark } from 'common';
 
 export class MediaMetadataService {
 

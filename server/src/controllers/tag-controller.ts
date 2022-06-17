@@ -1,6 +1,5 @@
-import { Tag } from '../models';
+import { Tag, WithId } from 'common';
 import { BookmarkService, TagService } from '../services';
-import { WithId } from '../utils';
 
 export class TagController {
 

@@ -1,7 +1,7 @@
 import { Alert, Kbd, Spoiler, Stack, Text } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 import { AlertCircle } from 'tabler-icons-react';
-import { Bookmark } from '../../models/bookmark';
+import { Bookmark } from 'common';
 
 export interface UnknownBookmarkCardProps {
    bookmark: Bookmark

@@ -1,9 +1,9 @@
 import { Spoiler, Text } from '@mantine/core';
-import { Bookmark } from '../../models/bookmark';
+import { PlainTextBookmark } from 'common';
 
 
 export interface PlainTextBookmarkCardProps {
-   bookmark: Bookmark
+   bookmark: PlainTextBookmark
 }
 
 export function PlainTextBookmarkCard(props: PlainTextBookmarkCardProps) {

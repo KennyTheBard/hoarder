@@ -1,7 +1,5 @@
 import parser from 'html-metadata-parser';
-import { Metadata, MetadataComplete } from '../models';
-import { getHostnameForUrl } from '../utils';
-
+import { Metadata, MetadataComplete, getHostnameForUrl } from 'common';
 
 
 export class MetadataService {

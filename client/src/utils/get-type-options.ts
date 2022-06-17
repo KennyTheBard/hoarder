@@ -1,5 +1,5 @@
 import { SelectItem } from '@mantine/core';
-import { BookmarkTypeSuggestion } from '../models';
+import { BookmarkTypeSuggestion } from 'common';
 import { BOOKMARK_TYPE_OPTIONS } from './constants';
 
 export function getTypeOptions(suggestions: BookmarkTypeSuggestion[] = []): SelectItem[] {

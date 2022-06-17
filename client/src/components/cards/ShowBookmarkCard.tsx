@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Group, Text } from '@mantine/core';
 import { BrandNetflix, Checks } from 'tabler-icons-react';
-import { ShowBookmark } from '../../models/bookmark';
+import { ShowBookmark } from 'common';
 
 export interface ShowBookmarkCardProps {
    bookmark: ShowBookmark

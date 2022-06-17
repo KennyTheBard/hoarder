@@ -1,5 +1,5 @@
+import { Tag } from 'common';
 import axios from 'axios';
-import { Tag } from '../models';
 
 
 export const tagService = {

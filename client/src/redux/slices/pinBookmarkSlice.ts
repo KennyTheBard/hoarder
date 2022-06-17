@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AnonymousBookmark, Bookmark, BookmarkType } from '../../models';
-import { bookmarkService, metadataService } from '../../services';
-import { validationService } from '../../services/validation-service';
-import { WithId } from '../../utils';
+import { AnonymousBookmark, WithId, Bookmark, BookmarkType } from 'common';
+import { bookmarkService, metadataService, validationService } from '../../services';
 
 
 export const getUrlMetadata = createAsyncThunk(

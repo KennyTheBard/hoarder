@@ -1,7 +1,6 @@
 import { Checkbox } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
-import { useEffect } from 'react';
-import { BookmarkType } from '../../models';
+import { BookmarkType } from 'common';
 
 
 const initialValues = [

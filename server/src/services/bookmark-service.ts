@@ -1,6 +1,5 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
-import { Bookmark, BookmarkSearchForm, BookmarkType } from '../models';
-import { Id, WithId } from '../utils';
+import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithId } from 'common';
 
 export class BookmarkService {
 

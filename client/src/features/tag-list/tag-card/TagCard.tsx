@@ -1,12 +1,12 @@
 import { Button, Group, Paper, Badge, Text, TextInput, ColorSwatch, MantineColor, useMantineTheme, Stack, Select } from '@mantine/core';
 import { useModals } from '@mantine/modals';
+import { WithId, Tag } from 'common';
 import { useState } from 'react';
 import { Check, Edit, Trash, X } from 'tabler-icons-react';
 import { TagBadge } from '../../../components';
-import { Tag } from '../../../models';
 import { useAppDispatch } from '../../../redux/hooks';
 import { deleteTag, updateTag } from '../../../redux/slices';
-import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notifyError, notifySuccess, WithId } from '../../../utils';
+import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notifyError, notifySuccess } from '../../../utils';
 
 export type TagCardProps = {
    tag: WithId<Tag>;

@@ -1,12 +1,11 @@
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
-import { GameBookmark, GameDurationCandidate, GamePlatform, TypeAgnosticMetadata, TypeSpecificMetadata } from '../models';
 import SteamAPI from 'steamapi';
 import { Collection, Db } from 'mongodb';
 import _ from 'lodash';
 import axios from 'axios';
-import { SteamAppDetails, SteamAppEntry, SteamAppReviews } from '../models/steam';
 import { SteamAppCache } from '../cache';
 import levenshtein from 'fast-levenshtein';
+import { GameDurationCandidate, SteamAppEntry, TypeSpecificMetadata, GameBookmark, TypeAgnosticMetadata, GamePlatform, SteamAppDetails, SteamAppReviews } from 'common';
 
 export class GameMetadataService {
    private readonly collection: Collection<SteamAPI.App>;

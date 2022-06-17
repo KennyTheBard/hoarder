@@ -1,10 +1,9 @@
 import { Stack, Container, Center, Loader, Text } from '@mantine/core';
-import { Tag } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getTags } from '../../redux/slices';
-import { WithId } from '../../utils';
-import { useEffect } from "react";
+import { useEffect } from 'react';
 import { TagCard } from './tag-card';
+import { WithId, Tag } from 'common';
 
 export function TagList() {
 

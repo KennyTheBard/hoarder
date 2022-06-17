@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
-import { BookmarkType } from '../../models/bookmark';
-import { BookmarkSearchForm } from '../../models';
 import { getBookmarks } from './bookmarkListSlice';
 import debounce from 'lodash.debounce';
+import { BookmarkType, BookmarkSearchForm } from 'common';
 
 
 const debouncedGetBookmarks = debounce((thunkAPI) => {

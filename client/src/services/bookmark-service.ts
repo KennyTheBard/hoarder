@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { AnonymousBookmark, Bookmark, BookmarkSearchForm } from '../models';
-import { WithId } from '../utils';
+import { AnonymousBookmark, WithId, Bookmark, BookmarkSearchForm } from 'common';
 
 
 export const bookmarkService = {

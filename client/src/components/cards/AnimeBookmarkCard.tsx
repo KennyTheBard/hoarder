@@ -1,6 +1,6 @@
 import { ActionIcon, Anchor, Group, Text } from '@mantine/core';
 import { Checks, BrandNetflix } from 'tabler-icons-react';
-import { AnimeBookmark } from '../../models/bookmark';
+import { AnimeBookmark } from 'common';
 
 export interface AnimeBookmarkCardProps {
    bookmark: AnimeBookmark

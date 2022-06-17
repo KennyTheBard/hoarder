@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
-import { Bookmark } from '../../models/bookmark';
-import { WithId } from '../../utils/support-types';
+import { WithId, Bookmark } from 'common';
 import { bookmarkService } from '../../services';
 import { RootState } from '../store';
 

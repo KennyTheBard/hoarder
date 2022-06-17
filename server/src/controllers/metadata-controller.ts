@@ -1,4 +1,4 @@
-import { BookmarkTypeSuggestion, CandidateMetadata, GameDurationCandidate, Metadata } from '../models';
+import { Metadata, BookmarkTypeSuggestion, GameDurationCandidate, CandidateMetadata } from 'common';
 import { GameMetadataService, MetadataService, MediaMetadataService, TypeFinderService } from '../services';
 
 

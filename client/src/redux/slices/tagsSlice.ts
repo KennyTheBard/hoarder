@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Tag } from '../../models';
+import { Id, Tag, WithId } from 'common';
 import { tagService } from '../../services';
-import { Id, WithId } from '../../utils';
 import { getBookmarks } from './bookmarkListSlice';
 
 

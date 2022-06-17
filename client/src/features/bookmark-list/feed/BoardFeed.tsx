@@ -1,7 +1,6 @@
 import { Grid, Stack } from '@mantine/core';
+import { Bookmark, WithId } from 'common';
 import { BookmarkCard } from '../../../components';
-import { Bookmark } from '../../../models';
-import { WithId } from '../../../utils';
 
 
 export interface BoardFeedProps {

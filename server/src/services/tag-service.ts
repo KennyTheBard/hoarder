@@ -1,6 +1,5 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { Tag } from '../models';
-import { WithId } from '../utils';
+import { Tag, WithId } from 'common';
 
 export class TagService {
 

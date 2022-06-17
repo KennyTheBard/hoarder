@@ -1,9 +1,9 @@
 import { Spoiler, Text } from '@mantine/core';
-import { Bookmark } from '../../models/bookmark';
+import { ResourceBookmark } from 'common';
 
 
 export interface ResourceBookmarkCardProps {
-   bookmark: Bookmark
+   bookmark: ResourceBookmark;
 }
 
 export function ResourceBookmarkCard(props: ResourceBookmarkCardProps) {

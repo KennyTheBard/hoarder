@@ -1,5 +1,5 @@
 import { Group, Text } from '@mantine/core';
-import { VideoBookmark } from '../../models/bookmark';
+import { VideoBookmark } from 'common';
 
 export interface VideoBookmarkCardProps {
    bookmark: VideoBookmark

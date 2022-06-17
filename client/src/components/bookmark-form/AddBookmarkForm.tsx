@@ -1,12 +1,12 @@
 import { ActionIcon, Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ExternalLink, Pin } from 'tabler-icons-react';
-import { BookmarkTypeSuggestion, Metadata, CandidateMetadata, Bookmark, BookmarkType, TypeMetadata } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata } from 'common';
+import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
-import { getTypeOptions, isValidHttpUrl, notifyError, WithId } from '../../utils';
+import { notifyError, getTypeOptions } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
 

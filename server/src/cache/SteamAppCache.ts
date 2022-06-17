@@ -1,4 +1,4 @@
-import { SteamAppEntry } from '../models/steam';
+import { SteamAppEntry } from 'common';
 
 
 export class SteamAppCache {

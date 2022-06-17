@@ -1,5 +1,4 @@
-import { BookmarkType } from './../../../server/src/models/bookmark';
-
+import { BookmarkType } from './bookmark';
 
 export type BookmarkSearchForm = {
    searchTerm?: string;
