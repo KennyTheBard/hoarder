@@ -9,6 +9,7 @@ import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notify } from '../../utils';
 import { TagBadge } from '../tag-badge';
 import { AddBookmarkForm } from '../bookmark-form';
 import { WithId, Bookmark, Tag, BookmarkType } from 'common';
+import ReactTimeAgo from 'react-time-ago';
 
 
 export interface BookmarkCardProps {
@@ -179,13 +180,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Group>
             </Spoiler>
             <Group position="apart">
-               <Text size="xs">
-                  {bookmark.createdTimestamp
-                     ? new Date(bookmark.createdTimestamp).toLocaleString('ro')
-                     : ''
-                  }
-               </Text>
-               <Group position="right">
+               <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(bookmark.createdTimestamp)} />
+               <Group position="right" spacing="xs">
                   {bookmark.url !== '' &&
                      <Tooltip label="Open URL">
                         <UnstyledButton
