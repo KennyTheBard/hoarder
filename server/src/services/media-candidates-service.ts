@@ -1,4 +1,4 @@
-import { TvResult, ShowResponse } from './../../node_modules/moviedb-promise/dist/request-types.d';
+import { TvResult, ShowResponse } from 'moviedb-promise/dist/request-types';
 import { MovieResult, MovieResponse } from 'moviedb-promise/dist/request-types';
 import { MovieDb } from 'moviedb-promise';
 import { Client as OmdbClient } from 'imdb-api';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as iso8601 from 'iso8601-duration';
 import { TypeSpecificMetadata, MovieBookmark, ShowBookmark, AnimeBookmark } from 'common';
 
-export class MediaMetadataService {
+export class MediaCandidatesService {
 
    constructor(
       private readonly movieDbClient: MovieDb,

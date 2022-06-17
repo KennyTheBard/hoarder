@@ -11,6 +11,8 @@ export enum BookmarkType {
    GAME = 'game',
    PLAINTEXT = 'plaintext',
    RESOURCE = 'resource',
+   BOOK = 'book',
+   // TODO: add comics
 
    UNKNOWN = ''
 }
@@ -25,6 +27,7 @@ export type Bookmark = (ArticleBookmark
    | UnknownTypeBookmark
    | PlainTextBookmark
    | ResourceBookmark
+   | BookBookmark
 ) & BaseBookmark;
 
 export type BaseBookmark = {
@@ -110,6 +113,16 @@ export type PlainTextBookmark = BaseBookmark & Partial<{
 
 export type ResourceBookmark = BaseBookmark & Partial<{
    type: BookmarkType.RESOURCE;
+}>;
+
+export type BookBookmark = BaseBookmark & Partial<{
+   type: BookmarkType.BOOK;
+   title: string;
+   subtitle?: string;
+   authors: string[];
+   amazonUrl?: string;
+   publishYear: number;
+   isbn: string;
 }>;
 
 export enum GamePlatform {

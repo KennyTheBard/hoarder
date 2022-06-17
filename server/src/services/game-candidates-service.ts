@@ -7,7 +7,7 @@ import { SteamAppCache } from '../cache';
 import levenshtein from 'fast-levenshtein';
 import { GameDurationCandidate, SteamAppEntry, TypeSpecificMetadata, GameBookmark, TypeAgnosticMetadata, GamePlatform, SteamAppDetails, SteamAppReviews } from 'common';
 
-export class GameMetadataService {
+export class GameCandidatesService {
    private readonly collection: Collection<SteamAPI.App>;
 
    constructor(

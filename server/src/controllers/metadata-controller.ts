@@ -1,5 +1,5 @@
 import { Metadata, BookmarkTypeSuggestion, GameDurationCandidate, CandidateMetadata } from 'common';
-import { GameMetadataService, MetadataService, MediaMetadataService, TypeFinderService } from '../services';
+import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService } from '../services';
 
 
 export class MetadataController {
@@ -7,8 +7,8 @@ export class MetadataController {
    constructor(
       private readonly typeFinderService: TypeFinderService,
       private readonly metadataService: MetadataService,
-      private readonly gameMetadataService: GameMetadataService,
-      private readonly mediaMetadataService: MediaMetadataService,
+      private readonly gameMetadataService: GameCandidatesService,
+      private readonly mediaMetadataService: MediaCandidatesService,
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)

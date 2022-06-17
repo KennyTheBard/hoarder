@@ -1,17 +1,17 @@
 import { SteamAppCache } from '../cache';
-import { GameMetadataService } from '../services';
+import { GameCandidatesService } from '../services';
 
 
 export class RefreshSteamAppCacheCron {
 
    constructor(
-      private readonly gameMetadataService: GameMetadataService,
+      private readonly gameMetadataService: GameCandidatesService,
       private readonly steamAppCache: SteamAppCache
    ) { }
 
    public static async createAndInit(
       intervalInMs: number,
-      gameMetadataService: GameMetadataService,
+      gameMetadataService: GameCandidatesService,
       steamAppCache: SteamAppCache
    ): Promise<RefreshSteamAppCacheCron> {
       const cron = new RefreshSteamAppCacheCron(

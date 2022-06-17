@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, GameMetadataService, MetadataService, MediaMetadataService, TagService } from './services';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache } from './cache';
@@ -13,6 +13,7 @@ import { RefreshSteamAppCacheCron } from './cron';
 import { Client as OmdbClient } from 'imdb-api';
 import SteamAPI from 'steamapi';
 import { HowLongToBeatService } from 'howlongtobeat';
+import { OpenLibraryService } from './services/open-library-service';
 
 (async () => {
    try {
@@ -29,32 +30,29 @@ import { HowLongToBeatService } from 'howlongtobeat';
       const omdbClient = new OmdbClient({ apiKey: process.env.OMDB_API_KEY });
       const steamClient = new SteamAPI('fakekeysoitwontshowwarnings');
       const hltbService = new HowLongToBeatService();
-      // const malAccount = await Mal.auth(process.env.MY_ANIME_LIST_APP_ID).Unstable.login(
-      //    process.env.MY_ANIME_LIST_USERNAME,
-      //    process.env.MY_ANIME_LIST_PASSWORD
-      // );
 
       // init caches
       const steamAppCache = new SteamAppCache();
 
       // init services
-      const bookmarkService = new BookmarkService(db);
+      const openLibraryService = new OpenLibraryService();
       const metadataService = new MetadataService();
-      const gameMetadataService = new GameMetadataService(db, steamClient, steamAppCache, hltbService);
+      const bookmarkService = new BookmarkService(db);
       const tagService = new TagService(db);
+      const gameCandidatesService = new GameCandidatesService(db, steamClient, steamAppCache, hltbService);
+      const mediaCandidatesService = new MediaCandidatesService(movieDbClient, omdbClient);
       const typeFinderService = new TypeFinderService(bookmarkService);
-      const mediaMetadataService = new MediaMetadataService(movieDbClient, omdbClient);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
          60 * 60 * 1000,
-         gameMetadataService,
+         gameCandidatesService,
          steamAppCache
       );
 
       // init controllers
       const bookmarkController = new BookmarkController(bookmarkService);
-      const metadataController = new MetadataController(typeFinderService, metadataService, gameMetadataService, mediaMetadataService);
+      const metadataController = new MetadataController(typeFinderService, metadataService, gameCandidatesService, mediaCandidatesService);
       const tagController = new TagController(tagService, bookmarkService);
       const validationController = new ValidationController(bookmarkService);
 
@@ -112,7 +110,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
       app.post('/api/isUrlAlreadyBookmarked', postHandler<IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse>(
          validationController.isUrlAlreadyBookmarked
       ))
-      
+
       // start server
       const port = process.env.PORT;
       app.listen(port, () => {
