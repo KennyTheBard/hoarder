@@ -117,7 +117,6 @@ export type ResourceBookmark = BaseBookmark & Partial<{
 
 export type BookBookmark = BaseBookmark & Partial<{
    type: BookmarkType.BOOK;
-   title: string;
    subtitle?: string;
    authors: string[];
    amazonUrl?: string;

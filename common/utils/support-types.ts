@@ -11,3 +11,5 @@ export type WithCount<T> = {
    count: number;
    entries: T[];
 }
+
+export type Fn = () => void;

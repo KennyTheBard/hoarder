@@ -1,5 +1,5 @@
 import { Metadata, BookmarkTypeSuggestion, GameDurationCandidate, CandidateMetadata } from 'common';
-import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService } from '../services';
+import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService, OpenLibraryService } from '../services';
 
 
 export class MetadataController {
@@ -9,6 +9,7 @@ export class MetadataController {
       private readonly metadataService: MetadataService,
       private readonly gameMetadataService: GameCandidatesService,
       private readonly mediaMetadataService: MediaCandidatesService,
+      private readonly openLibraryService: OpenLibraryService,
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
@@ -53,6 +54,10 @@ export class MetadataController {
          case 'anime':
             return {
                candidates: await this.mediaMetadataService.getAnimeCandidates(request.title)
+            }
+         case 'book':
+            return {
+               candidates: await this.openLibraryService.getBookCandidates(request.title)
             }
          default:
             return {

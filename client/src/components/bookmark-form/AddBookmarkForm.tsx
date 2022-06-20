@@ -1,9 +1,9 @@
 import { ActionIcon, Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Pin } from 'tabler-icons-react';
-import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata } from 'common';
+import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata, Fn } from 'common';
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
 import { notifyError, getTypeOptions } from '../../utils';
@@ -78,11 +78,11 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
    const [candidates, setCandidates] = useState<CandidateMetadata[] | null>(null);
 
-   const debouncedOnUrlChanged = useCallback(
-      debounce(async (url: string) => {
+   const debouncedOnUrlChanged = useMemo(() =>
+      debounce(async () => {
          await new Promise<void>((resolve, reject) => {
             setMetadataLoading(true);
-            dispatch(getUrlMetadata(url))
+            dispatch(getUrlMetadata(formdata.url))
                .unwrap()
                .then((metadata: Metadata | undefined) => {
                   if (!metadata) {
@@ -102,7 +102,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          });
 
          await new Promise<void>((resolve, reject) => {
-            dispatch(getTypeSuggestions(url))
+            dispatch(getTypeSuggestions(formdata.url))
                .unwrap()
                .then((suggestions: BookmarkTypeSuggestion[]) => {
                   setTypeSuggestions(suggestions);
@@ -111,17 +111,20 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                .catch(error => reject(error));
          });
       }, 500),
-      [formdata.url]
+      []
    );
-   const debouncedGetMetadataCandidates = useCallback(
-      debounce((type: BookmarkType, title: string) => {
-         dispatch(getMetadataCandidates({ type, title }))
-            .unwrap()
+   // TODO : fix this shit; it makes calls for each change because formdata is always changing
+   const debouncedGetMetadataCandidates = useMemo(() =>
+      debounce(() => {
+         dispatch(getMetadataCandidates({
+            type: formdata.type,
+            title: formdata.title
+         })).unwrap()
             .then((candidates: CandidateMetadata[] | null) => {
                setCandidates(candidates);
             });
       }, 500),
-      [formdata.title, formdata.type]
+      [formdata.type, formdata.title]
    );
 
    const setType = (type: BookmarkType) => {
@@ -154,12 +157,12 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          tags
       });
    }
-   
+
    useEffect(() => {
       if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
          return;
       }
-      debouncedOnUrlChanged(formdata.url);
+      debouncedOnUrlChanged();
    }, [formdata.url]);
    useEffect(() => {
       validateFormdata();
@@ -168,7 +171,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
          return;
       }
-      debouncedGetMetadataCandidates(formdata.type, formdata.title);
+      debouncedGetMetadataCandidates();
    }, [formdata.type, formdata.title]);
    useEffect(() => {
       if (formdata.type !== BookmarkType.VIDEO || formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
@@ -203,7 +206,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       const requiredFields = getRequiredFields();
       newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
       newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
-      newErrors['url'] =  requiredFields.url === 'required'
+      newErrors['url'] = requiredFields.url === 'required'
          ? (formdata.url.length === 0 ? 'URL is mandatory' : null)
          : (formdata.url.length === 0 ? null : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null));
       newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;

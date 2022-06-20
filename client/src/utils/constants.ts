@@ -12,6 +12,7 @@ export const BOOKMARK_TYPE_OPTIONS: SelectItem[] = [
    { value: BookmarkType.GAME, label: 'Game' },
    { value: BookmarkType.PLAINTEXT, label: 'Plaintext' },
    { value: BookmarkType.RESOURCE, label: 'Resource' },
+   { value: BookmarkType.BOOK, label: 'Book' },
 ];
 
 export const DEFAULT_TAG_VARIANT = 'light';
