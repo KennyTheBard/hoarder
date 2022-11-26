@@ -1,8 +1,8 @@
-import { ActionIcon, Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Card, Group, LoadingOverlay, Select, SimpleGrid, Space, Stack, Textarea, TextInput, Tooltip } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, Pin } from 'tabler-icons-react';
+import { ExternalLink, Pin, DiscountCheck } from 'tabler-icons-react';
 import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata, Fn } from 'common';
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
@@ -81,41 +81,40 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
    const [candidates, setCandidates] = useState<CandidateMetadata[] | null>(null);
 
-   const debouncedOnUrlChanged = useMemo(() =>
-      debounce(async () => {
-         await new Promise<void>((resolve, reject) => {
-            setMetadataLoading(true);
-            dispatch(getUrlMetadata(formdata.url))
-               .unwrap()
-               .then((metadata: Metadata | undefined) => {
-                  if (!metadata) {
-                     return;
-                  }
-                  setFormdata({
-                     ...formdata,
-                     title: metadata.title !== null && metadata.title.length > 0 && formdata.title.length === 0 ? metadata.title : formdata.title,
-                     note: metadata.description !== null && metadata.description.length > 0 && formdata.note.length === 0 ? metadata.description : formdata.note,
-                     imageUrl: metadata.image !== null && metadata.image.length > 0 && formdata.imageUrl.length === 0 ? metadata.image : formdata.imageUrl,
-                     hostname: metadata.hostname !== null && metadata.hostname.length > 0 && formdata.hostname.length === 0 ? metadata.hostname : formdata.hostname
-                  })
-                  setMetadataLoading(false);
-                  resolve();
+   const debouncedOnUrlChanged = async () => {
+      await new Promise<void>((resolve, reject) => {
+         setMetadataLoading(true);
+         dispatch(getUrlMetadata(formdata.url))
+            .unwrap()
+            .then((metadata: Metadata | undefined) => {
+               if (!metadata) {
+                  return;
+               }
+               setPlaceholders({
+                  title: metadata.title !== null && metadata.title.length > 0 && formdata.title.length === 0 ? metadata.title : formdata.title,
+                  note: metadata.description !== null && metadata.description.length > 0 && formdata.note.length === 0 ? metadata.description : formdata.note,
                })
-               .catch(error => reject(error));
-         });
+               changeFormdata({
+                  imageUrl: metadata.image !== null && metadata.image.length > 0 && formdata.imageUrl.length === 0 ? metadata.image : formdata.imageUrl,
+                  hostname: metadata.hostname !== null && metadata.hostname.length > 0 && formdata.hostname.length === 0 ? metadata.hostname : formdata.hostname
+               })
+               setMetadataLoading(false);
+               resolve();
+            })
+            .catch(error => reject(error));
+      });
 
-         await new Promise<void>((resolve, reject) => {
-            dispatch(getTypeSuggestions(formdata.url))
-               .unwrap()
-               .then((suggestions: BookmarkTypeSuggestion[]) => {
-                  setTypeSuggestions(suggestions);
-                  resolve();
-               })
-               .catch(error => reject(error));
-         });
-      }, 500),
-      []
-   );
+      await new Promise<void>((resolve, reject) => {
+         dispatch(getTypeSuggestions(formdata.url))
+            .unwrap()
+            .then((suggestions: BookmarkTypeSuggestion[]) => {
+               setTypeSuggestions(suggestions);
+               resolve();
+            })
+            .catch(error => reject(error));
+      });
+   }
+
    // TODO : fix this shit; it makes calls for each change because formdata is always changing
    const debouncedGetMetadataCandidates = useMemo(() =>
       debounce(() => {
@@ -130,56 +129,27 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       [formdata.type, formdata.title]
    );
 
-   const setType = (type: BookmarkType) => {
-      setFormdata({
-         ...formdata,
-         type
-      });
-   }
-   const setTitle = (title: string) => {
-      setFormdata({
-         ...formdata,
-         title
-      });
-   }
-   const setNote = (note: string) => {
-      setFormdata({
-         ...formdata,
-         note
-      });
-   }
-   const setUrl = (url: string) => {
-      setFormdata({
-         ...formdata,
-         url
-      });
-   }
-   const setTags = (tags: string[]) => {
-      setFormdata({
-         ...formdata,
-         tags
-      });
-   }
-
    useEffect(() => {
       if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
          return;
       }
       debouncedOnUrlChanged();
    }, [formdata.url]);
+
    useEffect(() => {
       validateFormdata();
    }, [formdata.type, formdata.title, formdata.url, formdata.note]);
+
    useEffect(() => {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
          return;
       }
       debouncedGetMetadataCandidates();
    }, [formdata.type, formdata.title]);
+
    useEffect(() => {
       if (formdata.type !== BookmarkType.VIDEO || formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
-         setFormdata({
-            ...formdata,
+         changeFormdata({
             durationInSeconds: undefined
          });
          return;
@@ -192,18 +162,19 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                return;
             }
 
-            setFormdata({
-               ...formdata,
+            changeFormdata({
                durationInSeconds
             });
          });
-   }, [formdata.type, formdata.url])
+   }, [formdata.type, formdata.url]);
+
    useEffect(() => {
       const guaranteeTypes = typeSuggestions.filter(suggestion => suggestion.confidence === 1);
       if (guaranteeTypes.length > 0) {
-         setType(guaranteeTypes[0].type);
+         changeFormdata({ type: guaranteeTypes[0].type });
       }
    }, [typeSuggestions]);
+
    const validateFormdata = async () => {
       const newErrors: Record<string, string | null> = {};
       const requiredFields = getRequiredFields();
@@ -223,11 +194,10 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
 
       const hiddenProperties = Object.keys(requiredFields)
-         .filter(key => requiredFields[key] === 'hidden')
+         .filter(key => requiredFields[key] === 'hidden' && !formdata[key])
          .reduce((acc, key) => acc = { ...acc, [key]: '' }, {});
       if (Object.keys(hiddenProperties).length > 0) {
-         setFormdata({
-            ...formdata,
+         changeFormdata({
             ...hiddenProperties
          })
       }
@@ -244,6 +214,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
       });
    }
+
    const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
       return {
          _id: '',
@@ -254,6 +225,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          updatedTimestamp: new Date().getTime()
       }
    }
+
    const getUrlLabelByType = (): string | undefined => {
       switch (formdata.type) {
          case BookmarkType.TOOL:
@@ -271,6 +243,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             return undefined;
       }
    }
+
    const getRequiredFields = (): Record<string, 'required' | 'hidden'> => {
       switch (formdata.type) {
          case BookmarkType.PLAINTEXT:
@@ -321,14 +294,48 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const selectCandidate = (candidate: CandidateMetadata) => {
       setIsCandidateSelected(true);
-      setFormdata({
-         ...formdata,
+      changeFormdata({
          ...candidate,
          // TODO: replace this mess with a function
          title: formdata.title.length > 0 ? formdata.title : (candidate.title || ''),
          url: formdata.url.length > 0 ? formdata.url : (candidate.url || ''),
          imageUrl: formdata.imageUrl.length > 0 ? formdata.imageUrl : (candidate.imageUrl || ''),
       });
+   }
+
+   const changeFormdata = (changes: Partial<BookmarkFormdata>) => {
+      setFormdata({
+         ...formdata,
+         ...changes
+      });
+   }
+
+   const acceptSuggestions = (suggestions: Partial<BookmarkFormdata>) => {
+      setFormdata({
+         ...formdata,
+         ...suggestions
+      });
+   }
+
+   const getAcceptSuggestionButton = (field: keyof BookmarkFormdata) => {
+      const shouldDisplay = placeholders[field] !== undefined && formdata[field] !== placeholders[field] && !formdata[field];
+      return (
+         <div hidden={!shouldDisplay}>
+            <Tooltip
+               label="Accept suggestion"
+            >
+               <ActionIcon<'button'>
+                  component="button"
+                  disabled={!shouldDisplay}
+                  onClick={() => acceptSuggestions({
+                     [field]: placeholders[field]
+                  })}
+               >
+                  <DiscountCheck />
+               </ActionIcon>
+            </Tooltip>
+         </div>
+      );
    }
 
    const style = {
@@ -350,26 +357,33 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   maxDropdownHeight={400}
                   value={formdata.type}
                   data={getTypeOptions(typeSuggestions)}
-                  onChange={(type: string) => setType(type as BookmarkType)}
+                  onChange={(type: string) => changeFormdata({ type: type as BookmarkType })}
                   error={errors.type}
+                  rightSection={getAcceptSuggestionButton("type")}
                   {...style}
                />
 
                {getRequiredFields().url !== 'hidden' &&
                   <>
-                     <TextInput
+                     <Textarea
                         label={getUrlLabelByType() || 'URL'}
                         placeholder={placeholders.url || "https://..."}
-                        rightSection={<ActionIcon<'button'>
-                           component="button"
-                           disabled={!!errors.url}
-                           onClick={() => window.open(formdata.url)}
-                        >
-                           <ExternalLink />
-                        </ActionIcon>}
+                        rightSection={
+                           <div>
+                              {getAcceptSuggestionButton("url")}
+                              <ActionIcon<'button'>
+                                 component="button"
+                                 disabled={!!errors.url}
+                                 onClick={() => window.open(formdata.url)}
+                              >
+                                 <ExternalLink />
+                              </ActionIcon>
+                           </div>
+                        }
                         value={formdata.url}
                         required={getRequiredFields().url === 'required'}
-                        onChange={(event) => setUrl(event.target.value)}
+                        minRows={2} maxRows={2}
+                        onChange={(event) => changeFormdata({ url: event.target.value })}
                         error={errors.url}
                         {...style}
                      />
@@ -377,12 +391,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                }
 
                {getRequiredFields().title !== 'hidden' &&
-                  <TextInput
+                  <Textarea
                      label="Title or Name"
                      placeholder={placeholders.title || ""}
                      value={formdata.title}
+                     rightSection={getAcceptSuggestionButton("title")}
                      required={getRequiredFields().title === 'required'}
-                     onChange={(event) => setTitle(event.target.value)}
+                     minRows={2} maxRows={2}
+                     onChange={(event) => changeFormdata({ title: event.target.value })}
                      error={errors.title}
                      {...style}
                   />
@@ -391,12 +407,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                {getRequiredFields().note !== 'hidden' &&
                   <Textarea
                      label="Note"
-                     placeholder={placeholders.url || "Something that might be worth mentioning..."}
+                     placeholder={placeholders.note || "Something that might be worth mentioning..."}
+                     rightSection={getAcceptSuggestionButton("note")}
                      autosize
                      required={getRequiredFields().note === 'required'}
-                     minRows={2}
+                     minRows={2} maxRows={2}
                      value={formdata.note}
-                     onChange={(event) => setNote(event.target.value)}
+                     onChange={(event) => changeFormdata({ note: event.target.value })}
                      error={errors.note}
                      {...style}
                   />
@@ -404,7 +421,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
                <TagsSelect
                   error={errors.tags}
-                  onChange={(tags: string[]) => setTags(tags)}
+                  onChange={(tags: string[]) => changeFormdata({ tags })}
                   {...style}
                />
 
