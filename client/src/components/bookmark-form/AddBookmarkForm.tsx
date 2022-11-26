@@ -71,6 +71,9 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       tags: [],
       ...inputOverrides
    })
+
+   const [placeholders, setPlaceholders] = useState<Partial<BookmarkFormdata>>({})
+
    const [errors, setErrors] = useState<Record<string, string | null>>({});
    const [isSubmitLoading, setSubmitLoading] = useState(false);
    const [isMetadataLoading, setMetadataLoading] = useState(false);
@@ -340,7 +343,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             <Stack align="center" justify="space-around" spacing="lg">
                <Select
                   label="What type of bookmark is this?"
-                  placeholder="Pick one"
+                  placeholder={placeholders.type || "Pick one"}
                   nothingFound="Nothing..."
                   searchable
                   required
@@ -355,7 +358,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                {getRequiredFields().url !== 'hidden' &&
                   <>
                      <TextInput
-                        placeholder="https://..."
+                        label={getUrlLabelByType() || 'URL'}
+                        placeholder={placeholders.url || "https://..."}
                         rightSection={<ActionIcon<'button'>
                            component="button"
                            disabled={!!errors.url}
@@ -363,7 +367,6 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                         >
                            <ExternalLink />
                         </ActionIcon>}
-                        label={getUrlLabelByType() || 'URL'}
                         value={formdata.url}
                         required={getRequiredFields().url === 'required'}
                         onChange={(event) => setUrl(event.target.value)}
@@ -376,6 +379,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                {getRequiredFields().title !== 'hidden' &&
                   <TextInput
                      label="Title or Name"
+                     placeholder={placeholders.title || ""}
                      value={formdata.title}
                      required={getRequiredFields().title === 'required'}
                      onChange={(event) => setTitle(event.target.value)}
@@ -386,8 +390,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
                {getRequiredFields().note !== 'hidden' &&
                   <Textarea
-                     placeholder="Something that might be worth mentioning..."
                      label="Note"
+                     placeholder={placeholders.url || "Something that might be worth mentioning..."}
                      autosize
                      required={getRequiredFields().note === 'required'}
                      minRows={2}

@@ -129,9 +129,14 @@ export function BookmarkCard(props: BookmarkCardProps) {
    return (
       <Card
          shadow="sm"
-         radius={6}
+         radius={3}
          p="0px"
          component="div"
+         withBorder
+         sx={(theme: MantineTheme) => ({
+            border: '2px solid',
+            borderColor: getColorByBookmarkType(theme)
+         })}
       >
          <Box sx={(theme: MantineTheme) => ({
             backgroundColor: getColorByBookmarkType(theme)
@@ -156,6 +161,9 @@ export function BookmarkCard(props: BookmarkCardProps) {
                         radius="md" fit="contain" width={260}
                         src={bookmark.imageUrl!}
                         alt=""
+                        sx={() => ({
+                           cursor: 'pointer'
+                        })}
                      />
                   }
                </Center>
