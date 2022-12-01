@@ -1,3 +1,4 @@
+import { Id } from '..';
 import { SteamAppReviews } from './steam';
 
 
@@ -36,7 +37,7 @@ export type BaseBookmark = {
    note: string;
    url: string;
    imageUrl?: string;
-   tags: string[];
+   tags: Id[];
    hostname: string;
    isArchived: boolean;
    candidateId?: string | number;

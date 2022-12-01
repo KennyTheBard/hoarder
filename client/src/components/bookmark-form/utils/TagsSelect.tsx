@@ -1,4 +1,5 @@
 import { MultiSelect, Sx } from '@mantine/core';
+import { Id } from 'common';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import { addTag, getTags } from '../../../redux/slices';
@@ -16,7 +17,7 @@ export function TagsSelect(props: TagsSelectProps) {
 
    const tagMap = useAppSelector((state) => state.tags.tags);
 
-   const [value, setValue] = useState<string[]>([]);
+   const [value, setValue] = useState<Id[]>([]);
 
    useEffect(() => {      
       dispatch(getTags());
@@ -52,8 +53,8 @@ export function TagsSelect(props: TagsSelectProps) {
             !selected && !!item.label && item.label.toLowerCase().includes(value.toLowerCase().trim())
          }
          error={props.error}
-         onChange={(value: string[]) => {
-            const existingTags = value.filter(tagId => tagMap[tagId]);
+         onChange={(newTags: string[]) => {
+            const existingTags = newTags.filter(tagId => tagMap[tagId]);
             setValue(existingTags);
             props.onChange(existingTags);
          }}

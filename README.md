@@ -21,3 +21,5 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Explicit ask for each bookmark field that would be replaced, but only if it has data already
 - [x] Replace delete with archive and add an arhive page
 - [x] Add a plaintext type
+- [ ] Auto-select newly added tag
+- [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)

@@ -1,4 +1,4 @@
-import { AnonymousBookmark, BookmarkType, BookmarkSearchForm, Bookmark, getHostnameForUrl, WithCount, WithId } from 'common';
+import { AnonymousBookmark, BookmarkType, BookmarkSearchForm, Bookmark, getHostnameForUrl, WithCount, WithId, Id } from 'common';
 import { BookmarkService } from '../services';
 
 export class BookmarkController {
@@ -52,7 +52,7 @@ export type AddBookmarkRequest = {
    note: string;
    url: string;
    imageUrl?: string;
-   tags: string[];
+   tags: Id[];
 };
 
 export type AddBookmarkResponse = {
