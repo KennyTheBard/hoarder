@@ -19,7 +19,7 @@ export class TagController {
    public addTag = async (request: AddTagRequest): Promise<AddTagResponse> => {
       const savedId = await this.tagService.addTag(request);
       return {
-         id: savedId
+         tag: await this.tagService.getTagById(savedId)
       };
    }
 
@@ -41,7 +41,7 @@ export type GetTagsResponse = {
 export type AddTagRequest = Tag;
 
 export type AddTagResponse = {
-   id: string;
+   tag: WithId<Tag>
 };
 
 export type UpdateTagRequest = {

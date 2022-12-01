@@ -17,20 +17,36 @@ export function TagsSelect(props: TagsSelectProps) {
 
    const tagMap = useAppSelector((state) => state.tags.tags);
 
-   const [value, setValue] = useState<Id[]>([]);
+   const [selectedTags, setSelectedTags] = useState<Id[]>([]);
 
-   useEffect(() => {      
+   useEffect(() => {
       dispatch(getTags());
    }, []);
 
    const onTagCreate = (tagName: string) => {
       dispatch(addTag(tagName))
          .unwrap()
-         .then(() => {
-            dispatch(getTags());
+         .then((result: any) => {
+            dispatch(getTags())
+               .unwrap()
+               .then(() => {
+                  const newTagId = result.tag._id;
+                  const tags = [...selectedTags];
+                  if (!tags.find(t => t === newTagId )) {
+                     tags.push(newTagId);
+                  }
+                  onChange(tags);
+                  setSelectedTags(tags);
+               });
             notifySuccess(`Tag '${tagName}' created.`);
          })
    }
+
+   const onChange = (newTags: string[]) => {
+      const existingTags = newTags.filter(tagId => tagMap[tagId]);
+      setSelectedTags(existingTags);
+      props.onChange(existingTags);
+   };
 
    return (<>
       <MultiSelect
@@ -40,7 +56,7 @@ export function TagsSelect(props: TagsSelectProps) {
                value: tag._id,
                label: tag.name
             }))}
-         value={value}
+         value={selectedTags}
          placeholder="Select tags"
          searchable
          creatable
@@ -53,11 +69,7 @@ export function TagsSelect(props: TagsSelectProps) {
             !selected && !!item.label && item.label.toLowerCase().includes(value.toLowerCase().trim())
          }
          error={props.error}
-         onChange={(newTags: string[]) => {
-            const existingTags = newTags.filter(tagId => tagMap[tagId]);
-            setValue(existingTags);
-            props.onChange(existingTags);
-         }}
+         onChange={onChange}
          sx={props.sx}
       />
    </>)

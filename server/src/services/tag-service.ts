@@ -35,8 +35,12 @@ export class TagService {
          }));
    }
 
-   public async getTagById(id: string): Promise<Tag> {
-      return await this.collection.findOne({ _id: new ObjectId(id) });
+   public async getTagById(id: string): Promise<WithId<Tag>> {
+      const tagEntity = await this.collection.findOne({ _id: new ObjectId(id) });
+      return {
+         ...tagEntity,
+         _id: tagEntity._id.toString()
+      };
    }
 
    public async updateTag(id: string, tag: Tag): Promise<void> {
