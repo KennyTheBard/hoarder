@@ -16,9 +16,10 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] Add tag colors
 - [ ] Create configuration directory
 - [x] Have candidates include an object with overridding properties, in case they are chosen
-- [ ] Request for candidates only if current metadata is dropped
-- [ ] Cache responses from server for metadata & candidates
+- [ ] Request for candidates only if current selected candidate is dropped
+- [x] Cache responses from server for metadata & candidates
 - [x] Replace delete with archive and add an arhive page
 - [x] Add a plaintext type
 - [x] Auto-select newly added tag
 - [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
+- [ ] Add expiration for InMemoryCache

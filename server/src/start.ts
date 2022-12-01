@@ -8,7 +8,7 @@ import { MongoClient } from 'mongodb';
 import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
-import { SteamAppCache } from './cache';
+import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
 import { Client as OmdbClient } from 'imdb-api';
 import SteamAPI from 'steamapi';
@@ -32,10 +32,12 @@ import { HowLongToBeatService } from 'howlongtobeat';
 
       // init caches
       const steamAppCache = new SteamAppCache();
+      const urlMetadataCache = new UrlMetadataCache();
+      const candidateMetadataCache = new CandidateMetadataCache();
 
       // init services
       const openLibraryService = new OpenLibraryService();
-      const metadataService = new MetadataService();
+      const metadataService = new MetadataService(urlMetadataCache);
       const bookmarkService = new BookmarkService(db);
       const tagService = new TagService(db);
       const gameCandidatesService = new GameCandidatesService(db, steamClient, steamAppCache, hltbService);
@@ -56,7 +58,8 @@ import { HowLongToBeatService } from 'howlongtobeat';
          metadataService,
          gameCandidatesService,
          mediaCandidatesService,
-         openLibraryService
+         openLibraryService,
+         candidateMetadataCache,
       );
       const tagController = new TagController(tagService, bookmarkService);
       const validationController = new ValidationController(bookmarkService);

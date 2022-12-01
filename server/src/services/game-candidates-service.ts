@@ -107,13 +107,14 @@ export class GameCandidatesService {
 
    private async getSteamGameSuggestions(searchTerm: string): Promise<SteamAppEntry[]> {
       const { data } = await axios.get(`https://store.steampowered.com/search/suggest?term=${encodeURI(searchTerm)}&cc=EN`)
-      const suggestions = data
+      const suggestions: string[] = data
          .replaceAll('<ul>', '')
          .replaceAll('</ul>', '')
          .replaceAll('<li>', '')
          .split('</li>')
          .filter((item: string) => item.length > 0);
-      return this.steamAppCache.getMulti(suggestions);
+      const games = this.steamAppCache.getMulti(suggestions);
+      return Object.values(games).filter(game => !!game);
    }
 
    private async getSteamAppDetails(appid: number): Promise<SteamAppDetails> {

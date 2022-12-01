@@ -1,10 +1,20 @@
 import parser from 'html-metadata-parser';
 import { Metadata, MetadataComplete, getHostnameForUrl } from 'common';
+import { UrlMetadataCache, CandidateMetadataCache } from '../cache';
 
 
 export class MetadataService {
 
+   constructor (
+      private readonly urlMetadataCache: UrlMetadataCache,
+   ) {}
+
    public async getMetadata(url: string): Promise<Metadata> {
+      const urlMetadata = this.urlMetadataCache.get(url);
+      if (urlMetadata) {
+         return urlMetadata;
+      }
+
       try {
          const result = (await parser(url, {
             headers: {

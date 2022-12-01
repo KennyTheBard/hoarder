@@ -1,25 +1,10 @@
 import { SteamAppEntry } from 'common';
+import { InMemoryCache } from '.';
 
 
-export class SteamAppCache {
+export class SteamAppCache extends InMemoryCache<SteamAppEntry> {
 
-   private cache: Record<string, SteamAppEntry> = {};
-
-   constructor() {}
-
-   public async refresh(entries: SteamAppEntry[]): Promise<void> {
-      const newCache = {};
-      entries.forEach(entry => newCache[entry.name] = entry);
-      this.cache = newCache;
+   public computeKey(entity: SteamAppEntry): string {
+      return entity.name;
    }
-
-   public async get(gameName: string): Promise<SteamAppEntry | null> {
-      return this.cache[gameName];
-   }
-   
-   public async getMulti(gameNames: string[]): Promise<SteamAppEntry[]> {
-      const entries = await Promise.all(gameNames.map(gameName => this.get(gameName)));
-      return entries.filter(gameName => gameName);
-   }
-
 }
