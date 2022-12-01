@@ -1,5 +1,4 @@
 import { Metadata, BookmarkTypeSuggestion, GameDurationCandidate, CandidateMetadata, BookmarkType } from 'common';
-import { CandidateMetadataCache } from '../cache';
 import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService, OpenLibraryService } from '../services';
 
 
@@ -11,7 +10,6 @@ export class MetadataController {
       private readonly gameMetadataService: GameCandidatesService,
       private readonly mediaMetadataService: MediaCandidatesService,
       private readonly openLibraryService: OpenLibraryService,
-      private readonly candidateMetadataCache: CandidateMetadataCache,
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
@@ -40,55 +38,32 @@ export class MetadataController {
 
    public getMetadataCandidates = async (request: GetMetadataCandidatesRequest)
       : Promise<GetMetadataCandidatesResponse> => {
-      let candidates = null;
-      if (!(<any>Object).values(BookmarkType).includes(request.type)) {
-         return {
-            candidates
-         };
-      }
-      const type = request.type as BookmarkType;
-
-      // check cache
-      const cachedResponse = this.candidateMetadataCache.get(
-         this.candidateMetadataCache.computeKey({
-            query: request.title,
-            type,
-            candidates
-         })
-      );
-      if (cachedResponse) {
-         return {
-            candidates: cachedResponse.candidates,
-         }
-      }
-
-      // retrieve candidates by type
-      switch (type) {
+      switch (request.type) {
          case 'game':
-            candidates = await this.gameMetadataService.getGameMetadataCandidates(request.title);
-            break;
+            return {
+               candidates: await this.gameMetadataService.getGameMetadataCandidates(request.title)
+            };
          case 'movie':
-            candidates = await this.mediaMetadataService.getMovieCandidates(request.title);
-            break;
+            return {
+               candidates: await this.mediaMetadataService.getMovieCandidates(request.title)
+            };
          case 'show':
-            candidates = await this.mediaMetadataService.getShowCandidates(request.title);
-            break;
+            return {
+               candidates: await this.mediaMetadataService.getShowCandidates(request.title)
+            };
          case 'anime':
-            candidates = await this.mediaMetadataService.getAnimeCandidates(request.title);
-            break;
+            return {
+               candidates: await this.mediaMetadataService.getAnimeCandidates(request.title)
+            };
          case 'book':
-            candidates = await this.openLibraryService.getBookCandidates(request.title);
-            break;
+            return {
+               candidates: await this.openLibraryService.getBookCandidates(request.title)
+            };
+         default:
+            return {
+               candidates: null
+            };
       }
-
-      // save to cache
-      this.candidateMetadataCache.store({
-         query: request.title,
-         type,
-         candidates
-      })
-
-      return candidates;
    }
 
    public getVideoDurationInSeconds = async (request: GetVideoDurationInSecondsRequest)

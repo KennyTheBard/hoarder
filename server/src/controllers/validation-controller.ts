@@ -1,9 +1,10 @@
+import { UrlBookedCache } from '../cache';
 import { BookmarkService } from '../services';
 
 export class ValidationController {
 
    constructor(
-      private readonly bookmarkService: BookmarkService
+      private readonly bookmarkService: BookmarkService,
    ) { }
 
    public isUrlAlreadyBookmarked = async (request: IsUrlAlreadyBookmarkedRequest): Promise<IsUrlAlreadyBookmarkedResponse> => {

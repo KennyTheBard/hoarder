@@ -1,13 +1,9 @@
-import { CandidateMetadata, WithQuery, WithType } from 'common';
-import { InMemoryCache } from '.';
+import { GetMetadataCandidatesRequest, GetMetadataCandidatesResponse } from '../controllers';
+import { InMemoryRequestCache } from './InMemoryRequestCache';
 
-export type CachedCandidateMetadata = WithType<WithQuery<{
-   candidates: CandidateMetadata[]
-}>>;
+export class CandidateMetadataCache extends InMemoryRequestCache<GetMetadataCandidatesRequest, GetMetadataCandidatesResponse> {
 
-export class CandidateMetadataCache extends InMemoryCache<CachedCandidateMetadata> {
-   
-   public computeKey(entity: WithQuery<CachedCandidateMetadata>): string {
-      return `${entity.type}=${entity.query}`;
+   public computeKey(request: GetMetadataCandidatesRequest): string {
+      return `${request.type}=${request.title}`;
    }
 }

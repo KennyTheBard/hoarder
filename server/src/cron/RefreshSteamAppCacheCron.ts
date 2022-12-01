@@ -30,7 +30,10 @@ export class RefreshSteamAppCacheCron {
    private refreshCache = async (): Promise<void> => {
       try {
          const steamApps = await this.gameMetadataService.getSteamAppList();
-         await this.steamAppCache.refresh(steamApps);
+         const steamAppsMap = steamApps.reduce((acc, app) => (
+            acc[this.steamAppCache.computeKey(app)] = app
+         ), {});
+         await this.steamAppCache.refresh(steamAppsMap);
       } catch (err) {
          console.error(err);
       }

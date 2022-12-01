@@ -1,16 +1,16 @@
 
 
-export abstract class InMemoryCache<T> {
+export class InMemoryCache<T> {
 
    protected cache: Record<string, T> = {};
 
-   public store(entry: T): T | undefined {
-      return this.cache[this.computeKey(entry)] = entry;
+   public store(key: string, entry: T): void {
+      this.cache[key] = entry;
    }
 
-   public async refresh(entries: T[]): Promise<void> {
+   public async refresh(entries: Record<string, T>): Promise<void> {
       const newCache = {};
-      entries.forEach(entry => newCache[this.computeKey(entry)] = entry);
+      Object.entries(entries).forEach(([key, entry]) => newCache[key] = entry);
       this.cache = newCache;
    }
 
@@ -21,7 +21,4 @@ export abstract class InMemoryCache<T> {
    public getMulti(keys: string[]): Record<string, T> {
       return keys.reduce((acc, key) => acc[key] = this.cache[key], {});
    }
-
-   public abstract computeKey(entity: T): string;
-
 }
