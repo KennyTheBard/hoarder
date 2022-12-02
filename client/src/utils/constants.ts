@@ -5,6 +5,7 @@ import { BookmarkType } from 'common';
 export const BOOKMARK_TYPE_OPTIONS: SelectItem[] = [
    { value: BookmarkType.ARTICLE, label: 'Article' },
    { value: BookmarkType.TOOL, label: 'Tool' },
+   { value: BookmarkType.COMICS, label: 'Comics' },
    { value: BookmarkType.VIDEO, label: 'Video' },
    { value: BookmarkType.MOVIE, label: 'Movie' },
    { value: BookmarkType.SHOW, label: 'Show' },

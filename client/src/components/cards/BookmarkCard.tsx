@@ -2,7 +2,7 @@ import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler
 import { useModals } from '@mantine/modals';
 import { Archive, ArchiveOff, Edit, ExternalLink, Settings, Share, TrashX } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard, ToolBookmarkCard, ComicsBookmarkCard } from '.';
+import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard, ToolBookmarkCard, ComicsBookmarkCard, BookBookmarkCard } from '.';
 import { UnknownBookmarkCard } from './UnknownBookmarkCard';
 import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notify } from '../../utils';
@@ -35,6 +35,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
             return <ToolBookmarkCard bookmark={bookmark} />
          case BookmarkType.COMICS:
             return <ComicsBookmarkCard bookmark={bookmark} />
+            case BookmarkType.BOOK:
+            return <BookBookmarkCard bookmark={bookmark} />
          case BookmarkType.VIDEO:
             return <VideoBookmarkCard bookmark={bookmark} />
          case BookmarkType.MOVIE:

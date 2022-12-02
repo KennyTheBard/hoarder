@@ -14,8 +14,7 @@ export enum BookmarkType {
    PLAINTEXT = 'plaintext',
    RESOURCE = 'resource',
    BOOK = 'book',
-   // TODO: add comics
-
+   
    UNKNOWN = ''
 }
 

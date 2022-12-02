@@ -24,3 +24,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
 - [ ] Add expiration for InMemoryCache
 - [ ] Update preview tags with newly added tag
+- [ ] "Cannot convert undefined or null to object" on {"type":"game","title":"masochisia"}
+- [ ] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
+- [ ] Add Board Game category
+- [ ] Expose image_url property for bookmark on editing/adding
