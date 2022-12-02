@@ -8,6 +8,12 @@ export class ValidationController {
    ) { }
 
    public isUrlAlreadyBookmarked = async (request: IsUrlAlreadyBookmarkedRequest): Promise<IsUrlAlreadyBookmarkedResponse> => {
+      if (request.url === "") {
+         return {
+            alreadyBookmarked: false
+         };
+      }
+
       const bookmark = await this.bookmarkService.getBookmarkByUrl(request.url);
       return {
          alreadyBookmarked: !!bookmark

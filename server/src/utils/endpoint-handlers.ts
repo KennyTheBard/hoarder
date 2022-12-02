@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
+import { ReturnDocument } from 'mongodb';
 import { CacheHandler, defaultCacheHandler } from '.';
-import { InMemoryRequestCache } from '../cache';
 
 
 export function postHandler<RequestType, ResponseType>(
@@ -10,7 +10,11 @@ export function postHandler<RequestType, ResponseType>(
    return async (req: Request, res: Response) => {
       const cachedResponse = cache.get(req.body);
       if (cachedResponse) {
-         return cachedResponse;
+         res.status(200).json({
+            success: true,
+            ...cachedResponse
+         });
+         return;
       }
 
       try {
