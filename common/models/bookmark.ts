@@ -11,10 +11,11 @@ export enum BookmarkType {
    ANIME = 'anime',
    COMICS = 'comics',
    GAME = 'game',
+   BOARDGAME = 'board game',
    PLAINTEXT = 'plaintext',
    RESOURCE = 'resource',
    BOOK = 'book',
-   
+
    UNKNOWN = ''
 }
 
@@ -30,6 +31,7 @@ export type Bookmark = (ArticleBookmark
    | ResourceBookmark
    | BookBookmark
    | ComicsBookmark
+   | BoardGameBookmark
 ) & BaseBookmark;
 
 export type BaseBookmark = {
@@ -103,6 +105,16 @@ export type GameBookmark = BaseBookmark & Partial<{
    steamReviews: SteamAppReviews;
    gogReviews: GogReviews;
    duration: GameDuration;
+}>;
+
+export type BoardGameBookmark = BaseBookmark & Partial<{
+   type: BookmarkType.BOARDGAME;
+   yearPublished: number;
+   minPlayers: number;
+   maxPlayers: number;
+   minPlaytime: number;
+   maxPlaytime: number;
+   minAge: number;
 }>;
 
 export type UnknownTypeBookmark = BaseBookmark & Partial<{

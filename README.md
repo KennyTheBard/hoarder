@@ -26,5 +26,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Update preview tags with newly added tag
 - [ ] "Cannot convert undefined or null to object" on {"type":"game","title":"masochisia"}
 - [ ] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
-- [ ] Add Board Game category
+- [x] Add Board Game category
 - [ ] Expose image_url property for bookmark on editing/adding
+- [ ] Pagination and infinite scrolling
+- [ ] Solve problem with steam images expiring

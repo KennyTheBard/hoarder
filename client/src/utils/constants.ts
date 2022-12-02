@@ -11,6 +11,7 @@ export const BOOKMARK_TYPE_OPTIONS: SelectItem[] = [
    { value: BookmarkType.SHOW, label: 'Show' },
    { value: BookmarkType.ANIME, label: 'Anime' },
    { value: BookmarkType.GAME, label: 'Game' },
+   { value: BookmarkType.BOARDGAME, label: 'Board Game' },
    { value: BookmarkType.PLAINTEXT, label: 'Plaintext' },
    { value: BookmarkType.RESOURCE, label: 'Resource' },
    { value: BookmarkType.BOOK, label: 'Book' },

@@ -1,5 +1,5 @@
 import { Metadata, BookmarkTypeSuggestion, GameDurationCandidate, CandidateMetadata, BookmarkType } from 'common';
-import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService, OpenLibraryService } from '../services';
+import { GameCandidatesService, MetadataService, MediaCandidatesService, TypeFinderService, OpenLibraryService, BoardGameCandidatesService } from '../services';
 
 
 export class MetadataController {
@@ -10,6 +10,7 @@ export class MetadataController {
       private readonly gameMetadataService: GameCandidatesService,
       private readonly mediaMetadataService: MediaCandidatesService,
       private readonly openLibraryService: OpenLibraryService,
+      private readonly boardGameCandidatesService: BoardGameCandidatesService
    ) { }
 
    public getUrlMetadata = async (request: GetUrlMetadataRequest)
@@ -39,26 +40,30 @@ export class MetadataController {
    public getMetadataCandidates = async (request: GetMetadataCandidatesRequest)
       : Promise<GetMetadataCandidatesResponse> => {
       switch (request.type) {
-         case 'game':
+         case BookmarkType.GAME:
             return {
                candidates: await this.gameMetadataService.getGameMetadataCandidates(request.title)
             };
-         case 'movie':
+         case BookmarkType.MOVIE:
             return {
                candidates: await this.mediaMetadataService.getMovieCandidates(request.title)
             };
-         case 'show':
+         case BookmarkType.SHOW:
             return {
                candidates: await this.mediaMetadataService.getShowCandidates(request.title)
             };
-         case 'anime':
+         case BookmarkType.ANIME:
             return {
                candidates: await this.mediaMetadataService.getAnimeCandidates(request.title)
             };
-         case 'book':
+         case BookmarkType.BOOK:
             return {
                candidates: await this.openLibraryService.getBookCandidates(request.title)
             };
+         case BookmarkType.BOARDGAME:
+            return {
+               candidates: await this.boardGameCandidatesService.getBoardGameCandidate(request.title)
+            }
          default:
             return {
                candidates: null

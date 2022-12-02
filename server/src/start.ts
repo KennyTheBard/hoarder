@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { MongoClient } from 'mongodb';
-import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService } from './services';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
@@ -41,6 +41,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
       const gameCandidatesService = new GameCandidatesService(db, steamClient, steamAppCache, hltbService);
       const mediaCandidatesService = new MediaCandidatesService(movieDbClient, omdbClient);
       const typeFinderService = new TypeFinderService(bookmarkService);
+      const boardGameCandidatesService = new BoardGameCandidatesService();
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
@@ -57,6 +58,7 @@ import { HowLongToBeatService } from 'howlongtobeat';
          gameCandidatesService,
          mediaCandidatesService,
          openLibraryService,
+         boardGameCandidatesService
       );
       const tagController = new TagController(tagService, bookmarkService);
       const validationController = new ValidationController(bookmarkService);
