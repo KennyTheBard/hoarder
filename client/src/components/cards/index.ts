@@ -6,4 +6,7 @@ export * from './ShowBookmarkCard';
 export * from './VideoBookmarkCard';
 export * from './PlainTextBookmarkCard';
 export * from './ResourceBookmarkCard';
+export * from './BookBookmarkCard';
+export * from './ComicsBookmarkCard';
+export * from './ToolBookmarkCard';
 export * from './BookmarkCard';
