@@ -23,3 +23,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] Auto-select newly added tag
 - [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
 - [ ] Add expiration for InMemoryCache
+- [ ] Update preview tags with newly added tag
