@@ -30,3 +30,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Expose image_url property for bookmark on editing/adding
 - [ ] Pagination and infinite scrolling
 - [ ] Solve problem with steam images expiring
+- [x] Url already booked on edit

@@ -202,17 +202,19 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          })
       }
 
-      const alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
-         dispatch(isUrlAlreadyBookmarked(formdata.url))
-            .unwrap()
-            .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
-            .catch(error => reject(error));
-      }));
-      setErrors({
-         ...errors,
-         ...newErrors,
-         url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
-      });
+      if (props.origin !== 'edit_button') {
+         const alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
+            dispatch(isUrlAlreadyBookmarked(formdata.url))
+               .unwrap()
+               .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
+               .catch(error => reject(error));
+         }));
+         setErrors({
+            ...errors,
+            ...newErrors,
+            url: alreadyBookmarked ? 'This URL is already bookmarked!' : null
+         });
+      }
    }
 
    const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
