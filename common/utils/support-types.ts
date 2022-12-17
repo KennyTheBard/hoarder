@@ -25,4 +25,15 @@ export type WithType<T> = {
    type: BookmarkType;
 };
 
+export type Pagination = {
+   limit: number;
+   skip?: number;
+};
+
+export type WithPagination<T> = {
+   [P in keyof T]: T[P];
+} & {
+   pagination: Pagination;
+};
+
 export type Fn = () => void;

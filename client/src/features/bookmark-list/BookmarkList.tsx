@@ -1,32 +1,40 @@
 import { Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text } from '@mantine/core';
 import { Refresh, Search } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
-import { ChangeEvent, useEffect } from 'react';
+import { getBookmarks, getNextPage, getTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
+import { ChangeEvent, UIEvent, useEffect, useRef } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType } from 'common';
-
+import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
 
 export function BookmarkList() {
 
    const dispatch = useAppDispatch();
+   const [scroll, scrollTo] = useWindowScroll();
+   const { ref, height: elementHeight } = useElementSize();
+   const { height: viewportHeight } = useViewportSize();
 
    const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
    const loading = useAppSelector((state) => state.bookmarkList.loading);
-   const showArchived = useAppSelector((state) => state.searchForm.showArchived);
-   const searchForm = useAppSelector((state) => state.searchForm.searchForm);
+   const searchForm = useAppSelector((state) => state.searchForm);
 
    const refreshData = () => {
       dispatch(getBookmarks());
       dispatch(getTags());
    };
 
-   useEffect(refreshData, [showArchived]);
+   useEffect(() => {
+      if (scroll.y + viewportHeight > elementHeight) {
+         console.log(`load data ${scroll.y + viewportHeight - elementHeight}`);
+         dispatch(getNextPage());
+      }
+   }, [scroll])
+   useEffect(refreshData, [searchForm]);
 
    return (
       <>
-         <Container size="xl">
+         <Container size="xl" ref={ref}>
             <Stack mt="50px">
                <Center>
                   <Group position="apart">
@@ -46,7 +54,7 @@ export function BookmarkList() {
                      />
                      <Checkbox
                         label="Archived"
-                        checked={showArchived}
+                        checked={searchForm.isArchived}
                         onChange={(event) => dispatch(setShowArchived(event.currentTarget.checked))}
                      />
                      <Button

@@ -19,9 +19,12 @@ export class BookmarkService {
       return result.insertedId.toString();
    }
 
-   public async getAllBookmarks(isArchived: boolean, form?: BookmarkSearchForm): Promise<WithId<Bookmark>[]> {
+   public async getBookmarks(form: BookmarkSearchForm): Promise<WithId<Bookmark>[]> {
       return (await this.collection
-         .find(this.searchFormToMongoFilter(isArchived, form))
+         .find(
+            this.searchFormToMongoFilter(form),
+            form.pagination
+         )
          .toArray()
       ).map(entry => ({
          ...entry,
@@ -102,14 +105,10 @@ export class BookmarkService {
       };
    }
 
-   private searchFormToMongoFilter(isArchived: boolean, form?: BookmarkSearchForm): Filter<Bookmark> {
+   private searchFormToMongoFilter(form: BookmarkSearchForm): Filter<Bookmark> {
       const filter = {
-         isArchived
+         isArchived: form.isArchived
       };
-      if (!form) {
-         return filter;
-      }
-
       if (form.searchTerm && form.searchTerm.length > 0) {
          filter['$or'] = [
             { title: new RegExp(form.searchTerm, 'i') },

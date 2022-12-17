@@ -24,34 +24,39 @@ export const setTypesAndUpdate = createAsyncThunk(
    }
 );
 
-interface SearchFormState {
-   searchForm: BookmarkSearchForm;
-   showArchived: boolean;
-}
+const PAGE_SIZE = 32;
 
-const initialState: SearchFormState = {
-   searchForm: {},
-   showArchived: false
+const initialState: BookmarkSearchForm = {
+   isArchived: false,
+   pagination: {
+      limit: PAGE_SIZE
+   }
 };
 
 export const searchFormSlice = createSlice({
    name: 'searchForm',
    initialState,
    reducers: {
-      setSearchTerm(state: SearchFormState, action: PayloadAction<string>) {
+      setSearchTerm(state: BookmarkSearchForm, action: PayloadAction<string>) {
          const searchTerm = action.payload;
-         state.searchForm.searchTerm = searchTerm.length > 0 ? searchTerm : undefined;
+         state.searchTerm = searchTerm.length > 0 ? searchTerm : undefined;
       },
-      setTypes(state: SearchFormState, action: PayloadAction<BookmarkType[]>) {
+      setTypes(state: BookmarkSearchForm, action: PayloadAction<BookmarkType[]>) {
          const types = action.payload;
-         state.searchForm.types = types.length > 0 ? types : undefined;
+         state.types = types.length > 0 ? types : undefined;
       },
-      setShowArchived(state: SearchFormState, action: PayloadAction<boolean>) {
-         state.showArchived = action.payload;
+      setShowArchived(state: BookmarkSearchForm, action: PayloadAction<boolean>) {
+         state.isArchived = action.payload;
+      },
+      getNextPage(state: BookmarkSearchForm, _action: PayloadAction<void>) {
+         state.pagination = {
+            ...state.pagination,
+            skip: (state.pagination.skip || 0) + PAGE_SIZE
+         };
       }
    }
 });
 
-const { setSearchTerm, setTypes, setShowArchived } = searchFormSlice.actions
-export { setShowArchived };
+const { setSearchTerm, setTypes, setShowArchived, getNextPage } = searchFormSlice.actions;
+export { setShowArchived, getNextPage };
 export const searchFormReducer: Reducer<typeof initialState> = searchFormSlice.reducer;

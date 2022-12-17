@@ -1,4 +1,4 @@
-import { AnonymousBookmark, BookmarkType, BookmarkSearchForm, Bookmark, getHostnameForUrl, WithCount, WithId, Id } from 'common';
+import { AnonymousBookmark, BookmarkType, BookmarkSearchForm, Bookmark, getHostnameForUrl, WithCount, WithId, Id, WithPagination } from 'common';
 import { BookmarkService } from '../services';
 
 export class BookmarkController {
@@ -23,12 +23,10 @@ export class BookmarkController {
    }
 
    public getBookmarks = async (request: GetBookmarksRequest): Promise<GetBookmarksResponse> => {
-      const entries = await this.bookmarkService.getAllBookmarks(
-         request.isArchived,
-         request.searchForm
-      );
+      const entries = await this.bookmarkService.getBookmarks(request);
       return {
          count: entries.length,
+         pagination: request.pagination,
          entries
       }
    }
@@ -59,12 +57,9 @@ export type AddBookmarkResponse = {
    id: string;
 };
 
-export type GetBookmarksRequest = {
-   isArchived: boolean,
-   searchForm?: BookmarkSearchForm;
-};
+export type GetBookmarksRequest = BookmarkSearchForm;
 
-export type GetBookmarksResponse = WithCount<WithId<Bookmark>>;
+export type GetBookmarksResponse = WithPagination<WithCount<WithId<Bookmark>>>;
 
 export type UpdateBookmarkRequest = {
    id: string;

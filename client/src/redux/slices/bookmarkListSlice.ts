@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
-import { WithId, Bookmark } from 'common';
+import { WithId, Bookmark, WithPagination } from 'common';
 import { bookmarkService } from '../../services';
 import { RootState } from '../store';
 
@@ -8,12 +8,14 @@ import { RootState } from '../store';
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (_, thunkAPI) => {
-      thunkAPI.dispatch(loading());
       const state = thunkAPI.getState() as RootState;
-      const searchForm = state.searchForm.searchForm;
-      const showArchived = state.searchForm.showArchived;
-      const { data } = await bookmarkService.getBookmarks(showArchived, searchForm);
-      return data.entries;
+      if (state.bookmarkList.loading) {
+         return thunkAPI.rejectWithValue("Already requested")
+      }
+
+      thunkAPI.dispatch(loading());
+      const { data } = await bookmarkService.getBookmarks(state.searchForm);
+      return data;
    }
 );
 
@@ -60,8 +62,28 @@ export const bookmarkListSlice = createSlice({
       }
    },
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithId<Bookmark>[]>) => {
-         state.bookmarks = action.payload;
+      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithPagination<{
+         entries: WithId<Bookmark>[]
+      }>>) => {
+         const skip = action.payload.pagination.skip || 0;
+         const entries = action.payload.entries;
+
+         if (skip < state.bookmarks.length) {
+            // delete till then
+         } else {
+            state.bookmarks.push(...entries);
+         }
+
+         // for (let index = skip; index < entries.length + skip; index++) {
+         //    const entry = entries[index - skip];
+         //    if (state.bookmarks.length <= index) {
+         //       state.bookmarks.push(entry);
+         //    } else {
+         //       state.bookmarks[index] = entry;
+         //    }
+         // }
+         
+         // state.bookmarks = bookmarks;
          state.loading = false;
       })
 });

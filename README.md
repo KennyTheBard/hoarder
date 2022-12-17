@@ -31,3 +31,15 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Pagination and infinite scrolling
 - [ ] Solve problem with steam images expiring
 - [x] Url already booked on edit
+- [ ] Icons in tags
+- [ ] Icon to show that there is an URL if there is no image
+- [ ] Editing to add new tag overrides existing tags
+- [ ] Loading metadata overrides input even if metadata field is empty
+- [ ] Use Sonic for fast search over database
+- [ ] Tag sort improvement: first the ones that start with search term, then the ones that contain it
+- [ ] Fix "TypeError: Cannot destructure property 'images' of 'metadata' as it is null."
+- [ ] "I feel lucky" option
+- [ ] Button for "Back to start"
+- [ ] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined
+    BookmarkCard BookmarkCard.tsx:186
+    BookmarkCard BookmarkCard.tsx:183)

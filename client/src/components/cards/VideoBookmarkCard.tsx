@@ -12,7 +12,7 @@ export function VideoBookmarkCard(props: VideoBookmarkCardProps) {
 
    const secondsToHumanFriendly = (seconds: number | undefined): string => seconds
       ? seconds >= 60 * 60
-         ? `${Math.floor(seconds / (60 * 60))}:${zeroPad(Math.floor(seconds / 60), 2)}:${zeroPad(seconds % 60, 2)}`
+         ? `${Math.floor(seconds / (60 * 60))}:${zeroPad(Math.floor(seconds / 60) % 60, 2)}:${zeroPad(seconds % 60, 2)}`
          : `${Math.floor(seconds / 60)}:${zeroPad(seconds % 60, 2)}`
       : '';
 

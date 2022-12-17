@@ -13,11 +13,8 @@ export const bookmarkService = {
             _id: undefined
          }
       }),
-   getBookmarks: (showArchived: boolean, searchForm?: BookmarkSearchForm) =>
-      axios.post('http://localhost:8080/api/getBookmarks', {
-         isArchived: showArchived,
-         searchForm
-      }),
+   getBookmarks: (searchForm: BookmarkSearchForm) =>
+      axios.post('http://localhost:8080/api/getBookmarks', searchForm),
    deleteBookmark: (bookmarkId: string) =>
       axios.post('http://localhost:8080/api/deleteBookmark', {
          id: bookmarkId
