@@ -422,6 +422,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                }
 
                <TagsSelect
+                  values={formdata.tags}
                   error={errors.tags}
                   onChange={(tags: Id[]) => changeFormdata({ tags })}
                   {...style}

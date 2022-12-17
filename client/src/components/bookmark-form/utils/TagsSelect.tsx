@@ -7,6 +7,7 @@ import { notifySuccess } from '../../../utils';
 
 export type TagsSelectProps = {
    onChange: (value: string[]) => void;
+   values?: Id[];
    disabled?: boolean;
    error?: string | null;
    sx?: Sx | Sx[];
@@ -17,7 +18,7 @@ export function TagsSelect(props: TagsSelectProps) {
 
    const tagMap = useAppSelector((state) => state.tags.tags);
 
-   const [selectedTags, setSelectedTags] = useState<Id[]>([]);
+   const [selectedTags, setSelectedTags] = useState<Id[]>([...(props.values || [])].sort());
 
    useEffect(() => {
       dispatch(getTags());
@@ -43,7 +44,7 @@ export function TagsSelect(props: TagsSelectProps) {
    }
 
    const onChange = (newTags: string[]) => {
-      const existingTags = newTags.filter(tagId => tagMap[tagId]);
+      const existingTags = newTags.filter(tagId => tagMap[tagId]).sort();
       setSelectedTags(existingTags);
       props.onChange(existingTags);
    };

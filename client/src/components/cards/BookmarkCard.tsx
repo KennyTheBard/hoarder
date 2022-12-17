@@ -182,7 +182,8 @@ export function BookmarkCard(props: BookmarkCardProps) {
 
             <Spoiler maxHeight={27} showLabel="More" hideLabel="Less">
                <Group mb="15px" spacing="xs">
-                  {props.tags
+                  {[...props.tags]
+                     .sort()
                      .map((tagId: string) => tagsMap[tagId])
                      .map((tag: WithId<Tag>) =>
                         <TagBadge
