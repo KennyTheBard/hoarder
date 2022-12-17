@@ -71,7 +71,7 @@ export function BookmarkList() {
                }
             </Stack>
             <Affix position={{ bottom: 20, left: 20 }}>
-               <Transition transition="slide-up" mounted={scroll.y + viewportHeight > elementHeight}>
+               <Transition transition="slide-up" mounted={scroll.y + viewportHeight > elementHeight - 400}>
                   {(transitionStyles) => (
                      <Group>
                         <Button

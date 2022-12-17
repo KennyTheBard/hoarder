@@ -70,12 +70,18 @@ export function BookmarkCard(props: BookmarkCardProps) {
             return theme.colors.grape;
          case BookmarkType.ANIME:
             return theme.colors.pink;
+         case BookmarkType.COMICS:
+            return theme.colors.lime;
          case BookmarkType.GAME:
             return theme.colors.green;
+         case BookmarkType.BOARDGAME:
+            return theme.colors.orange;
          case BookmarkType.PLAINTEXT:
             return theme.colors.yellow;
          case BookmarkType.RESOURCE:
             return theme.colors.dark;
+         case BookmarkType.BOOK:
+            return theme.colors.cyan;
          default:
             return theme.colors.grey;
       }
