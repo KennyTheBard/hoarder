@@ -440,7 +440,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             <Card>
                <LoadingOverlay visible={isMetadataLoading} />
                {formdata &&
-                  <BookmarkCard bookmark={formdataToBookmark(formdata)} viewOnly={true} />
+                  <BookmarkCard {...formdataToBookmark(formdata)} viewOnly={true} />
                }
             </Card>
          </Group>
@@ -450,7 +450,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                {candidates.map((candidate: CandidateMetadata) => (
                   <Stack key={candidate.url}>
                      <BookmarkCard
-                        bookmark={formdataToBookmark({
+                        {...formdataToBookmark({
                            ...formdata,
                            ...candidate
                         })}

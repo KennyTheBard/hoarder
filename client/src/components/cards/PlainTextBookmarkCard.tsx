@@ -2,21 +2,16 @@ import { Spoiler, Text } from '@mantine/core';
 import { PlainTextBookmark } from 'common';
 
 
-export interface PlainTextBookmarkCardProps {
-   bookmark: PlainTextBookmark
-}
-
-export function PlainTextBookmarkCard(props: PlainTextBookmarkCardProps) {
-   const bookmark = props.bookmark;
-
+export function PlainTextBookmarkCard(props: PlainTextBookmark) {
+   
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
          <Spoiler maxHeight={120} showLabel="More" hideLabel="Less">
             <Text>
-               {bookmark.note}
+               {props.note}
             </Text>
          </Spoiler>
       </>

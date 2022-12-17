@@ -1,17 +1,13 @@
 import { Text } from '@mantine/core';
 import { BoardGameBookmark } from 'common';
 
-export interface BoardGameBookmarkCardProps {
-   bookmark: BoardGameBookmark;
-}
 
-export function BoardGameBookmarkCard(props: BoardGameBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function BoardGameBookmarkCard(props: BoardGameBookmark) {
 
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
       </>
    );

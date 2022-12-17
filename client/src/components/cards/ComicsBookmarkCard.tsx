@@ -1,17 +1,13 @@
 import { Text } from '@mantine/core';
 import { ComicsBookmark } from 'common';
 
-export interface ComicsBookmarkCardProps {
-   bookmark: ComicsBookmark;
-}
 
-export function ComicsBookmarkCard(props: ComicsBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function ComicsBookmarkCard(props: ComicsBookmark) {
 
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
       </>
    );

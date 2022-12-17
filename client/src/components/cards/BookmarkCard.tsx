@@ -9,17 +9,16 @@ import { TagBadge } from '../tag-badge';
 import { AddBookmarkForm } from '../bookmark-form';
 import { WithId, Bookmark, Tag, BookmarkType } from 'common';
 import ReactTimeAgo from 'react-time-ago';
+import { useCallback } from 'react';
 
 
-export interface BookmarkCardProps {
-   bookmark: WithId<Bookmark>;
+export type BookmarkCardProps = WithId<Bookmark> & {
    tempTags?: Tag[];
    viewOnly?: boolean;
    onClick?: () => void;
 }
 
 export function BookmarkCard(props: BookmarkCardProps) {
-   const bookmark = props.bookmark;
 
    const dispatch = useAppDispatch();
    const modals = useModals();
@@ -27,38 +26,38 @@ export function BookmarkCard(props: BookmarkCardProps) {
    const tagsMap = useAppSelector((state) => state.tags.tags);
 
    const getCardContentByBookmarkType = () => {
-      switch (bookmark.type) {
+      switch (props.type) {
          case BookmarkType.ARTICLE:
-            return <ArticleBookmarkCard bookmark={bookmark} />
+            return <ArticleBookmarkCard {...props} />
          case BookmarkType.TOOL:
-            return <ToolBookmarkCard bookmark={bookmark} />
+            return <ToolBookmarkCard {...props} />
          case BookmarkType.COMICS:
-            return <ComicsBookmarkCard bookmark={bookmark} />
+            return <ComicsBookmarkCard {...props} />
          case BookmarkType.BOOK:
-            return <BookBookmarkCard bookmark={bookmark} />
+            return <BookBookmarkCard {...props} />
          case BookmarkType.VIDEO:
-            return <VideoBookmarkCard bookmark={bookmark} />
+            return <VideoBookmarkCard {...props} />
          case BookmarkType.MOVIE:
-            return <MovieBookmarkCard bookmark={bookmark} />
+            return <MovieBookmarkCard {...props} />
          case BookmarkType.SHOW:
-            return <ShowBookmarkCard bookmark={bookmark} />
+            return <ShowBookmarkCard {...props} />
          case BookmarkType.ANIME:
-            return <AnimeBookmarkCard bookmark={bookmark} />
+            return <AnimeBookmarkCard {...props} />
          case BookmarkType.GAME:
-            return <GameBookmarkCard bookmark={bookmark} />
+            return <GameBookmarkCard {...props} />
          case BookmarkType.BOARDGAME:
-            return <BoardGameBookmarkCard bookmark={bookmark} />
+            return <BoardGameBookmarkCard {...props} />
          case BookmarkType.PLAINTEXT:
-            return <PlainTextBookmarkCard bookmark={bookmark} />
+            return <PlainTextBookmarkCard {...props} />
          case BookmarkType.RESOURCE:
-            return <ResourceBookmarkCard bookmark={bookmark} />
+            return <ResourceBookmarkCard {...props} />
          default:
-            return <UnknownBookmarkCard bookmark={bookmark} />
+            return <UnknownBookmarkCard {...props} />
       }
    }
 
    const getColorByBookmarkType = (theme: MantineTheme) => {
-      switch (bookmark.type) {
+      switch (props.type) {
          case BookmarkType.ARTICLE:
             return theme.colors.blue;
          case BookmarkType.TOOL:
@@ -82,29 +81,27 @@ export function BookmarkCard(props: BookmarkCardProps) {
       }
    }
 
-   const onArchive = () => {
-      dispatch(archiveBookmark(bookmark._id))
+   const onArchive = useCallback(() =>
+      dispatch(archiveBookmark(props._id))
          .unwrap()
          .then(() => notify({
-            message: `Bookmark '${bookmark.title}' has been archived successfully.`,
+            message: `Bookmark '${props.title}' has been archived successfully.`,
             title: 'Archived',
             icon: <Archive />,
             color: 'orange'
-         }));
-   }
+         })), [])
 
-   const onRestoreFromArchive = () => {
-      dispatch(restoreBookmark(bookmark._id))
+   const onRestoreFromArchive = useCallback(() =>
+      dispatch(restoreBookmark(props._id))
          .unwrap()
          .then(() => notify({
-            message: `Bookmark '${bookmark.title}' has been restored successfully.`,
+            message: `Bookmark '${props.title}' has been restored successfully.`,
             title: 'Restored',
             icon: <ArchiveOff />,
             color: 'blue'
-         }));
-   }
+         })), []);
 
-   const onDelete = () =>
+   const onDelete = useCallback(() =>
       modals.openConfirmModal({
          title: 'Archive bookmark',
          centered: true,
@@ -115,20 +112,20 @@ export function BookmarkCard(props: BookmarkCardProps) {
          ),
          labels: { confirm: 'Delete', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(deleteBookmark(bookmark._id))
-      });
+         onConfirm: () => dispatch(deleteBookmark(props._id))
+      }), []);
 
-   const onEdit = () => {
+   const onEdit = useCallback(() => {
       modals.openModal({
          title: "Add bookmark",
          padding: "md",
          size: "xl",
          centered: true,
          children: (
-            <AddBookmarkForm origin="edit_button" bookmark={bookmark} />
+            <AddBookmarkForm origin="edit_button" bookmark={props} />
          )
       });
-   }
+   }, []);
 
    return (
       <Card
@@ -147,7 +144,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          })}>
             <Group position="right" mr="10px">
                <Text color="white" weight="bold">
-                  {bookmark.type}
+                  {props.type}
                </Text>
             </Group>
          </Box>
@@ -159,11 +156,11 @@ export function BookmarkCard(props: BookmarkCardProps) {
          >
             <Card.Section>
                <Center mb="15px">
-                  {bookmark.url !== '' &&
+                  {props.url !== '' &&
                      <Image
-                        onClick={() => window.open(bookmark.url)}
+                        onClick={() => window.open(props.url)}
                         radius="md" fit="contain" width={260}
-                        src={bookmark.imageUrl!}
+                        src={props.imageUrl!}
                         alt=""
                         sx={() => ({
                            cursor: 'pointer'
@@ -179,7 +176,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
 
             <Spoiler maxHeight={27} showLabel="More" hideLabel="Less">
                <Group mb="15px" spacing="xs">
-                  {bookmark.tags
+                  {props.tags
                      .map((tagId: string) => tagsMap[tagId])
                      .map((tag: WithId<Tag>) =>
                         <TagBadge
@@ -192,12 +189,12 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Group>
             </Spoiler>
             <Group position="apart">
-               <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(bookmark.createdTimestamp)} />
+               <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.createdTimestamp)} />
                <Group position="right" spacing="xs">
-                  {bookmark.url !== '' &&
+                  {props.url !== '' &&
                      <Tooltip label="Open URL">
                         <UnstyledButton
-                           onClick={() => window.open(bookmark.url)}
+                           onClick={() => window.open(props.url)}
                         >
                            <ActionIcon >
                               <ExternalLink />
@@ -221,7 +218,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                            >
                               Edit
                            </Menu.Item>
-                           {bookmark.isArchived &&
+                           {props.isArchived &&
                               <Menu.Item color="blue"
                                  icon={<ArchiveOff size={14} />}
                                  onClick={onRestoreFromArchive}
@@ -230,10 +227,10 @@ export function BookmarkCard(props: BookmarkCardProps) {
                               </Menu.Item>
                            }
                            <Menu.Item color="red"
-                              icon={bookmark.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
-                              onClick={bookmark.isArchived ? onDelete : onArchive}
+                              icon={props.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
+                              onClick={props.isArchived ? onDelete : onArchive}
                            >
-                              {bookmark.isArchived ? 'Delete' : 'Archive'}
+                              {props.isArchived ? 'Delete' : 'Archive'}
                            </Menu.Item>
                         </Menu>
                      </Tooltip>

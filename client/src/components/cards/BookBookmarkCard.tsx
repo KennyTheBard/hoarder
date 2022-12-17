@@ -1,26 +1,22 @@
 import { Text } from '@mantine/core';
 import { BookBookmark } from 'common';
 
-export interface BookBookmarkCardProps {
-   bookmark: BookBookmark
-}
 
-export function BookBookmarkCard(props: BookBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function BookBookmarkCard(props: BookBookmark) {
 
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
-         {bookmark.subtitle &&
+         {props.subtitle &&
             <Text>
-               {bookmark.subtitle}
+               {props.subtitle}
             </Text>
          }
-         {bookmark.authors && bookmark.authors.length > 0 &&
+         {props.authors && props.authors.length > 0 &&
             <Text>
-               by {bookmark.authors[0]}
+               by {props.authors[0]}
             </Text>
          }
       </>

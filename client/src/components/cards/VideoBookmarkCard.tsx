@@ -1,12 +1,8 @@
 import { Group, Text } from '@mantine/core';
 import { VideoBookmark } from 'common';
 
-export interface VideoBookmarkCardProps {
-   bookmark: VideoBookmark
-}
 
-export function VideoBookmarkCard(props: VideoBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function VideoBookmarkCard(props: VideoBookmark) {
 
    const zeroPad = (value: number, places: number) => String(value).padStart(places, '0');
 
@@ -19,14 +15,14 @@ export function VideoBookmarkCard(props: VideoBookmarkCardProps) {
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
          <Group position="apart">
             <Text>
-               {bookmark.hostname}
+               {props.hostname}
             </Text>
             <Text>
-               {secondsToHumanFriendly(bookmark.durationInSeconds)}
+               {secondsToHumanFriendly(props.durationInSeconds)}
             </Text>
          </Group>
       </>

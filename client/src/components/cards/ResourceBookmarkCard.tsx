@@ -2,21 +2,16 @@ import { Spoiler, Text } from '@mantine/core';
 import { ResourceBookmark } from 'common';
 
 
-export interface ResourceBookmarkCardProps {
-   bookmark: ResourceBookmark;
-}
-
-export function ResourceBookmarkCard(props: ResourceBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function ResourceBookmarkCard(props: ResourceBookmark) {
 
    return (
       <>
          <Text>
-            {bookmark.title}
+            {props.title}
          </Text>
          <Spoiler maxHeight={120} showLabel="More" hideLabel="Less">
             <Text>
-               {bookmark.note}
+               {props.note}
             </Text>
          </Spoiler>
       </>

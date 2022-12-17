@@ -19,7 +19,7 @@ export function BoardFeed(props: BoardFeedProps) {
          {entriesPerColumn.map((entries, idx) =>
             <Grid.Col key={idx} span={1}>
                <Stack>
-                  {entries.map(entry => <BookmarkCard key={entry._id} bookmark={entry}/>)}
+                  {entries.map(entry => <BookmarkCard key={entry._id} {...entry}/>)}
                </Stack>
             </Grid.Col>
          )}

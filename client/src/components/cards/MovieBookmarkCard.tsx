@@ -2,23 +2,19 @@ import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@ma
 import { BrandNetflix } from 'tabler-icons-react';
 import { MovieBookmark } from 'common';
 
-export interface MovieBookmarkCardProps {
-   bookmark: MovieBookmark
-}
 
-export function MovieBookmarkCard(props: MovieBookmarkCardProps) {
-   const bookmark = props.bookmark;
+export function MovieBookmarkCard(props: MovieBookmark) {
 
    return (
       <>
          <Text>
-            {bookmark.title} ({bookmark.releaseYear})
+            {props.title} ({props.releaseYear})
          </Text>
          <Group position="apart">
-            <Anchor href={bookmark.url} target="_blank">
-               {bookmark.imdbRating} on IMDB
+            <Anchor href={props.url} target="_blank">
+               {props.imdbRating} on IMDB
             </Anchor>
-            {bookmark.isOnNetflix &&
+            {props.isOnNetflix &&
                <ActionIcon variant="transparent">
                   <BrandNetflix />
                </ActionIcon>
