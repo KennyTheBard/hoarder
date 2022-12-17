@@ -25,7 +25,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Add expiration for InMemoryCache
 - [ ] Update preview tags with newly added tag
 - [ ] "Cannot convert undefined or null to object" on {"type":"game","title":"masochisia"}
-- [ ] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
+- [x] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
 - [x] Add Board Game category
 - [ ] Expose image_url property for bookmark on editing/adding
 - [x] Pagination
@@ -37,8 +37,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [x] Editing to add new tag overrides existing tags
 - [ ] Loading metadata overrides input even if metadata field is empty
 - [ ] Use Sonic for fast search over database
-- [ ] Tag sort improvement: first the ones that start with search term, then the ones that contain it
-- [ ] Fix "TypeError: Cannot destructure property 'images' of 'metadata' as it is null."
+- [x] Fix "TypeError: Cannot destructure property 'images' of 'metadata' as it is null."
 - [ ] "I feel lucky" option
 - [x] Button for "Back to start"
 - [ ] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined

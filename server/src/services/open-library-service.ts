@@ -4,7 +4,7 @@ import axios from 'axios';
 export class OpenLibraryService {
 
    public getBookCandidates = async (bookTitle: string): Promise<TypeSpecificMetadata<BookBookmark>[]> => {
-      const results = await this.searchBookByName(bookTitle.trim());
+      const results = await this.searchBookByName(encodeURIComponent(bookTitle.trim()));
 
       return results
          .sort((a: OpenLibraryBookEntry, b: OpenLibraryBookEntry) => {

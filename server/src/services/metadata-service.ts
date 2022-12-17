@@ -11,7 +11,7 @@ export class MetadataService {
             headers: {
                'Accept-Encoding': 'gzip,deflate,br',
             },
-         })) as MetadataComplete;
+         })) as MetadataComplete | null;
          return this.metadataCompleteToMetadata(url, result);
       } catch (error) {
          console.error(error);
@@ -26,7 +26,10 @@ export class MetadataService {
       }
    };
 
-   private metadataCompleteToMetadata(url: string, metadata: MetadataComplete): Metadata {
+   private metadataCompleteToMetadata(url: string, metadata: MetadataComplete | null): Metadata {
+      if (!metadata) {
+         throw new Error(`Parsed metadata is ${metadata} for ${url}`);
+      }
       const { images, og, meta } = metadata;
       let image = og.image
          ? og.image
