@@ -24,7 +24,7 @@ export const setTypesAndUpdate = createAsyncThunk(
    }
 );
 
-const PAGE_SIZE = 32;
+const PAGE_SIZE = 30;
 
 const initialState: BookmarkSearchForm = {
    isArchived: false,

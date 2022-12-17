@@ -1,8 +1,8 @@
-import { Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text } from '@mantine/core';
-import { Refresh, Search } from 'tabler-icons-react';
+import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text, Transition } from '@mantine/core';
+import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, getNextPage, getTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
-import { ChangeEvent, UIEvent, useEffect, useRef } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType } from 'common';
@@ -23,13 +23,6 @@ export function BookmarkList() {
       dispatch(getBookmarks());
       dispatch(getTags());
    };
-
-   useEffect(() => {
-      if (scroll.y + viewportHeight > elementHeight) {
-         console.log(`load data ${scroll.y + viewportHeight - elementHeight}`);
-         dispatch(getNextPage());
-      }
-   }, [scroll])
    useEffect(refreshData, [searchForm]);
 
    return (
@@ -77,7 +70,29 @@ export function BookmarkList() {
                      </Center>
                }
             </Stack>
-         </Container>
+            <Affix position={{ bottom: 20, left: 20 }}>
+               <Transition transition="slide-up" mounted={scroll.y + viewportHeight > elementHeight}>
+                  {(transitionStyles) => (
+                     <Group>
+                        <Button
+                           leftIcon={<ArrowUp size={16} />}
+                           style={transitionStyles}
+                           onClick={() => scrollTo({ y: 0 })}
+                        >
+                           Scroll to top
+                        </Button>
+                        <Button
+                           leftIcon={<ArrowRight size={16} />}
+                           style={transitionStyles}
+                           onClick={() => dispatch(getNextPage())}
+                        >
+                        Load next page
+                     </Button>
+                     </Group>
+                  )}
+            </Transition>
+         </Affix>
+      </Container>
       </>
    );
 }

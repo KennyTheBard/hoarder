@@ -65,25 +65,8 @@ export const bookmarkListSlice = createSlice({
       .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithPagination<{
          entries: WithId<Bookmark>[]
       }>>) => {
-         const skip = action.payload.pagination.skip || 0;
-         const entries = action.payload.entries;
-
-         if (skip < state.bookmarks.length) {
-            // delete till then
-         } else {
-            state.bookmarks.push(...entries);
-         }
-
-         // for (let index = skip; index < entries.length + skip; index++) {
-         //    const entry = entries[index - skip];
-         //    if (state.bookmarks.length <= index) {
-         //       state.bookmarks.push(entry);
-         //    } else {
-         //       state.bookmarks[index] = entry;
-         //    }
-         // }
-         
-         // state.bookmarks = bookmarks;
+         // state.bookmarks.push(...action.payload.entries);
+         state.bookmarks = action.payload.entries;
          state.loading = false;
       })
 });

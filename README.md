@@ -28,7 +28,8 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
 - [x] Add Board Game category
 - [ ] Expose image_url property for bookmark on editing/adding
-- [ ] Pagination and infinite scrolling
+- [x] Pagination
+- [ ] infinite scrolling
 - [ ] Solve problem with steam images expiring
 - [x] Url already booked on edit
 - [ ] Icons in tags
@@ -39,7 +40,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Tag sort improvement: first the ones that start with search term, then the ones that contain it
 - [ ] Fix "TypeError: Cannot destructure property 'images' of 'metadata' as it is null."
 - [ ] "I feel lucky" option
-- [ ] Button for "Back to start"
+- [x] Button for "Back to start"
 - [ ] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined
     BookmarkCard BookmarkCard.tsx:186
     BookmarkCard BookmarkCard.tsx:183)
