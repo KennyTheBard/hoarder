@@ -35,10 +35,10 @@ export const updateTag = createAsyncThunk(
 );
 
 
-export const deleteTag = createAsyncThunk(
-   'tags/deleteTag',
-   async (id: string, thunkAPI) => {
-      await tagService.deleteTag(id);
+export const deleteTags = createAsyncThunk(
+   'tags/deleteTags',
+   async (ids: Id[], thunkAPI) => {
+      await tagService.deleteTags(ids);
       thunkAPI.dispatch(getTags());
       thunkAPI.dispatch(getBookmarks());
    }

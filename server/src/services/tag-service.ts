@@ -1,5 +1,5 @@
 import { Collection, Db, ObjectId } from 'mongodb';
-import { Tag, WithId } from 'common';
+import { Id, Tag, WithId } from 'common';
 
 export class TagService {
 
@@ -56,11 +56,14 @@ export class TagService {
       }
    }
 
-   public async deleteTag(id: string): Promise<void> {
-      const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
+   public async deleteTags(ids: Id[]): Promise<void> {
+      console.log(ids)
+      const result = await this.collection.deleteMany({ _id: { $in: ids.map(id => new ObjectId(id)) } });
       if (!result.acknowledged || result.deletedCount === 0) {
-         throw new Error('Failed to delete tag');
+         throw new Error('Failed to delete tags');
       }
+      console.log(result.deletedCount)
+      console.log(await this.collection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }))
    }
 
 }

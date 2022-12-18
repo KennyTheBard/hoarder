@@ -45,13 +45,23 @@ export class BookmarkService {
       }
    }
 
-   public async removeTagFromAllBookmarks(tagId: Id): Promise<void> {
+   public async removeTagsFromAllBookmarks(tagIds: Id[]): Promise<void> {
       const result = await this.collection.updateMany(
-         { tags: tagId },
-         { $pull: { tags: tagId } }
+         {
+            tags: {
+               $in: tagIds
+            }
+         },
+         {
+            $pull: {
+               tags: {
+                  $in: tagIds
+               }
+            }
+         }
       );
       if (!result.acknowledged) {
-         throw new Error(`Could not remove tag '${tagId}' from bookmarks`);
+         throw new Error(`Could not remove tags '${tagIds.join(', ')}' from bookmarks`);
       }
    }
 

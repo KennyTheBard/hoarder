@@ -1,4 +1,4 @@
-import { Tag, WithId } from 'common';
+import { Id, Tag, WithId } from 'common';
 import { BookmarkService, TagService } from '../services';
 
 export class TagController {
@@ -27,9 +27,9 @@ export class TagController {
       await this.tagService.updateTag(request.id, request.tag);
    }
 
-   public deleteTag = async (request: DeleteTagRequest): Promise<void> => {
-      await this.tagService.deleteTag(request.id);
-      await this.bookmarkService.removeTagFromAllBookmarks(request.id);
+   public deleteTags = async (request: DeleteTagsRequest): Promise<void> => {
+      await this.tagService.deleteTags(request.ids);
+      await this.bookmarkService.removeTagsFromAllBookmarks(request.ids);
    }  
 }
 
@@ -45,10 +45,10 @@ export type AddTagResponse = {
 };
 
 export type UpdateTagRequest = {
-   id: string;
+   id: Id;
    tag: Tag;
 };
 
-export type DeleteTagRequest = {
-   id: string;
+export type DeleteTagsRequest = {
+   ids: Id[];
 }

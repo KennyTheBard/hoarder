@@ -1,11 +1,11 @@
-import { Button, Group, Paper, Badge, Text, TextInput, ColorSwatch, MantineColor, useMantineTheme, Stack, Select } from '@mantine/core';
+import { Button, Group, Paper, Text, TextInput, ColorSwatch, useMantineTheme, Stack, Select } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { WithId, Tag } from 'common';
 import { useState } from 'react';
 import { Check, Edit, Trash, X } from 'tabler-icons-react';
 import { TagBadge } from '../../../components';
 import { useAppDispatch } from '../../../redux/hooks';
-import { deleteTag, updateTag } from '../../../redux/slices';
+import { deleteTags, updateTag } from '../../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notifyError, notifySuccess } from '../../../utils';
 
 export type TagCardProps = {
@@ -24,7 +24,6 @@ export function TagCard(props: TagCardProps) {
    const [tagName, setTagName] = useState<string>(tag.name);
    const [selectedColor, setSelectedColor] = useState<string>(tag.color ? tag.color : 'blue');
    const [selectedVariant, setSelectedVariant] = useState<'light' | 'filled'>(tag.variant ? tag.variant : 'light');
-
 
    const swatches = Object.keys(theme.colors).map((color: string) => (
       <ColorSwatch
@@ -49,7 +48,7 @@ export function TagCard(props: TagCardProps) {
          ),
          labels: { confirm: 'Delete', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(deleteTag(tag._id))
+         onConfirm: () => dispatch(deleteTags([tag._id]))
       });
 
    const onSave = () => {
