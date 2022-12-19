@@ -219,7 +219,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
       return {
-         _id: '',
+         id: '',
          ...formdata,
          hostname: '',
          isArchived: false,

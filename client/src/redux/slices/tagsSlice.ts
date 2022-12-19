@@ -66,7 +66,7 @@ export const TagsSlice = createSlice({
       .addCase(getTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
          const tags: Record<Id, WithId<Tag>> = {};
          for (const tag of action.payload) {
-            tags[tag._id] = tag;
+            tags[tag.id] = tag;
          }
          state.tags = tags;
          state.loading = false;

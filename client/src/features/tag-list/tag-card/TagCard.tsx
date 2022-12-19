@@ -48,13 +48,13 @@ export function TagCard(props: TagCardProps) {
          ),
          labels: { confirm: 'Delete', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(deleteTags([tag._id]))
+         onConfirm: () => dispatch(deleteTags([tag.id]))
       });
 
    const onSave = () => {
       setEditDialogLoading(true);
       dispatch(updateTag({
-         id: tag._id,
+         id: tag.id,
          tag: {
             name: tagName,
             variant: selectedVariant,

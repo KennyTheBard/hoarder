@@ -1,69 +1,55 @@
-import { Collection, Db, ObjectId } from 'mongodb';
 import { Id, Tag, WithId } from 'common';
+import { Connection, RTable, r } from 'rethinkdb-ts';
+import { TableNames } from '../utils';
 
 export class TagService {
 
-   private readonly collection: Collection<Tag>;
-
    constructor(
-      private readonly db: Db
-   ) {
-      this.collection = this.db.collection<Tag>('tags');
+      private readonly connection: Connection,
+   ) { }
+
+   private get tags(): RTable<WithId<Tag>> {
+      return r.table(TableNames.TAGS);
    }
 
    public async addTag(tag: Tag): Promise<string> {
-      const extistingTag = await this.collection.findOne({
-         name: tag.name
-      });
+      const extistingTag = await this.tags
+         .filter({
+            name: tag.name
+         })
+         .limit(1)
+         .run(this.connection);
 
-      if (extistingTag) {
+      if (extistingTag.length > 0) {
          throw new Error('Tag already exists');
       }
 
-      const result = await this.collection.insertOne(tag);
-      if (!result.acknowledged) {
-         throw new Error('Tag could not be saved');
-      }
-      return result.insertedId.toString();
+      const result = await r.table(TableNames.TAGS)
+         .insert(tag)
+         .run(this.connection);
+      return result.generated_keys[0];
    }
 
    public async getAllTags(): Promise<WithId<Tag>[]> {
-      return (await this.collection.find().toArray())
-         .map(entry => ({
-            ...entry,
-            _id: entry._id.toString()
-         }));
+      return this.tags.run(this.connection);
    }
 
    public async getTagById(id: string): Promise<WithId<Tag>> {
-      const tagEntity = await this.collection.findOne({ _id: new ObjectId(id) });
-      return {
-         ...tagEntity,
-         _id: tagEntity._id.toString()
-      };
+      return await this.tags.get(id).run(this.connection);
    }
 
    public async updateTag(id: string, tag: Tag): Promise<void> {
-      const result = await this.collection.updateOne(
-         { _id: new ObjectId(id) },
-         { $set: { ...tag } },
-      );
-      if (!result.acknowledged) {
-         throw new Error(`Could not update tag with id '${id}'`);
-      }
-      if (result.matchedCount === 0) {
-         throw new Error(`There is no tag with id '${id}'`);
-      }
+      await this.tags
+         .get(id)
+         .update(tag)
+         .run(this.connection);
    }
 
    public async deleteTags(ids: Id[]): Promise<void> {
-      console.log(ids)
-      const result = await this.collection.deleteMany({ _id: { $in: ids.map(id => new ObjectId(id)) } });
-      if (!result.acknowledged || result.deletedCount === 0) {
-         throw new Error('Failed to delete tags');
-      }
-      console.log(result.deletedCount)
-      console.log(await this.collection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }))
+      await this.tags
+         .getAll(ids)
+         .delete()
+         .run(this.connection);
    }
 
 }

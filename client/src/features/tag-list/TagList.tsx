@@ -57,13 +57,13 @@ export function TagList() {
       content = (
          <Stack mb="120px" align="right" justify="space-around" spacing="lg">
             {tags.map((tag: WithId<Tag>) =>
-               <Grid key={tag._id} columns={24}>
+               <Grid key={tag.id} columns={24}>
                   <Grid.Col span={1}>
                      <Center style={{ height: 70 }}>
                         <Checkbox
                            onChange={(event) => setCheckedTags({
                               ...checkedTags,
-                              [tag._id]: event.currentTarget.checked,
+                              [tag.id]: event.currentTarget.checked,
                            })}
                         />
                      </Center>

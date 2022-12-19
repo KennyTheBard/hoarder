@@ -31,7 +31,7 @@ export function TagsSelect(props: TagsSelectProps) {
             dispatch(getTags())
                .unwrap()
                .then(() => {
-                  const newTagId = result.tag._id;
+                  const newTagId = result.tag.id;
                   const tags = [...selectedTags];
                   if (!tags.find(t => t === newTagId )) {
                      tags.push(newTagId);
@@ -54,7 +54,7 @@ export function TagsSelect(props: TagsSelectProps) {
          label="Tags"
          data={Object.values(tagMap)
             .map((tag) => ({
-               value: tag._id,
+               value: tag.id,
                label: tag.name
             }))}
          value={selectedTags}

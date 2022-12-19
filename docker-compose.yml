@@ -1,12 +1,19 @@
 version: '3.3'
 
 services:
-  mongodb:
-    image: mongo:5.0
+  rethinkdb:
+    image: rethinkdb:2.4
+    container_name: rethinkdb
+    restart: always
     ports:
-      - 27017:27017
+     - 18080:8080
+     - 28015:28015
+     - 29015:29015
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rethinkdb create --initial-password password
+        rethinkdb --bind all
     volumes:
-      - ~/apps/mongo:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=username
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - ~/apps/rethinkdb:/data

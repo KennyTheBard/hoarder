@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ReturnDocument } from 'mongodb';
 import { CacheHandler, defaultCacheHandler } from '.';
 
 

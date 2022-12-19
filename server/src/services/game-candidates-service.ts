@@ -1,22 +1,24 @@
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
 import SteamAPI from 'steamapi';
-import { Collection, Db } from 'mongodb';
 import _ from 'lodash';
 import axios from 'axios';
 import { SteamAppCache } from '../cache';
 import levenshtein from 'fast-levenshtein';
-import { GameDurationCandidate, SteamAppEntry, TypeSpecificMetadata, GameBookmark, TypeAgnosticMetadata, GamePlatform, SteamAppDetails, SteamAppReviews } from 'common';
+import { GameDurationCandidate, SteamAppEntry, TypeSpecificMetadata, GameBookmark, TypeAgnosticMetadata, GamePlatform, SteamAppDetails, SteamAppReviews, WithId } from 'common';
+import { Connection, RTable, r } from 'rethinkdb-ts';
+import { TableNames } from '../utils';
 
 export class GameCandidatesService {
-   private readonly collection: Collection<SteamAPI.App>;
 
    constructor(
-      private readonly db: Db,
+      private readonly connection: Connection,
       private readonly steamClient: SteamAPI,
       private readonly steamAppCache: SteamAppCache,
       private readonly hltbService: HowLongToBeatService
-   ) {
-      this.collection = this.db.collection<SteamAPI.App>('steamApps');
+   ) { }
+
+   private get apps(): RTable<SteamAPI.App> {
+      return r.table(TableNames.STEAM_APPS);
    }
 
    public async getGameDurationCandidates(title: string): Promise<GameDurationCandidate[]> {
@@ -39,33 +41,18 @@ export class GameCandidatesService {
 
    // Doesn't seem used, i think i can remove it
    public async updateSteamAppList(apps: SteamAPI.App[]): Promise<void> {
-      const lastAddedDocuments = await this.collection.find()
-         .sort({
-            appid: -1
-         })
+      const lastAddedDocuments = await this.apps
+         .orderBy(r.desc('appid'))
          .limit(1)
-         .toArray();
+         .run(this.connection);
       const lastAddedAppid = lastAddedDocuments.length === 0 ? 0 : lastAddedDocuments[0].appid;
 
       for (const batch of _.chunk(apps, 1000)) {
          // insert new apps
          const newApps = batch.filter(app => app.appid > lastAddedAppid);
-         await this.collection.insertMany(newApps);
-
-         // update existing apps
-         await Promise.all(
-            batch
-               .filter(app => app.appid <= lastAddedAppid)
-               .filter(app => this.collection.updateOne({
-                  "appid": app.appid
-               },
-                  {
-                     "$set": { ...app }
-                  },
-                  {
-                     upsert: true
-                  }))
-         );
+         await this.apps
+            .insert(newApps, { conflict: 'update' })
+            .run(this.connection);
       }
    }
 

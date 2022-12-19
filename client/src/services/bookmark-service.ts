@@ -7,10 +7,10 @@ export const bookmarkService = {
       axios.post('http://localhost:8080/api/addBookmark', bookmark),
    updateBookmark: (bookmark: WithId<Bookmark>) =>
       axios.post('http://localhost:8080/api/updateBookmark', {
-         id: bookmark._id,
+         id: bookmark.id,
          bookmark: {
             ...bookmark,
-            _id: undefined
+            id: undefined
          }
       }),
    getBookmarks: (searchForm: BookmarkSearchForm) =>

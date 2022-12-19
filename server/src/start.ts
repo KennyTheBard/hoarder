@@ -4,7 +4,6 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
-import { MongoClient } from 'mongodb';
 import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
@@ -13,16 +12,19 @@ import { RefreshSteamAppCacheCron } from './cron';
 import { Client as OmdbClient } from 'imdb-api';
 import SteamAPI from 'steamapi';
 import { HowLongToBeatService } from 'howlongtobeat';
+import { r } from 'rethinkdb-ts';
 
 (async () => {
    try {
       // load environment vars
       dotenv.config();
 
-      // establish connections
-      const mongoClient = new MongoClient(process.env.MONGO_URL);
-      await mongoClient.connect();
-      const db = mongoClient.db(process.env.MONGO_DATABASE_NAME)
+      // establish connection to database
+      const conn = await r.connect({
+         password: process.env.RETHINKDB_PASSWORD,
+         port: parseInt(process.env.RETHINKDB_PORT),
+      });
+      conn.use(process.env.RETHINKDB_DATABASE);
 
       // init APIs
       const movieDbClient = new MovieDb(process.env.MOVIEDB_API_KEY);
@@ -36,9 +38,9 @@ import { HowLongToBeatService } from 'howlongtobeat';
       // init services
       const openLibraryService = new OpenLibraryService();
       const metadataService = new MetadataService();
-      const bookmarkService = new BookmarkService(db);
-      const tagService = new TagService(db);
-      const gameCandidatesService = new GameCandidatesService(db, steamClient, steamAppCache, hltbService);
+      const bookmarkService = new BookmarkService(conn);
+      const tagService = new TagService(conn);
+      const gameCandidatesService = new GameCandidatesService(conn, steamClient, steamAppCache, hltbService);
       const mediaCandidatesService = new MediaCandidatesService(movieDbClient, omdbClient);
       const typeFinderService = new TypeFinderService(bookmarkService);
       const boardGameCandidatesService = new BoardGameCandidatesService();

@@ -88,7 +88,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
    }
 
    const onArchive = useCallback(() =>
-      dispatch(archiveBookmark(props._id))
+      dispatch(archiveBookmark(props.id))
          .unwrap()
          .then(() => notify({
             message: `Bookmark '${props.title}' has been archived successfully.`,
@@ -98,7 +98,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          })), [])
 
    const onRestoreFromArchive = useCallback(() =>
-      dispatch(restoreBookmark(props._id))
+      dispatch(restoreBookmark(props.id))
          .unwrap()
          .then(() => notify({
             message: `Bookmark '${props.title}' has been restored successfully.`,
@@ -118,7 +118,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
          ),
          labels: { confirm: 'Delete', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(deleteBookmark(props._id))
+         onConfirm: () => dispatch(deleteBookmark(props.id))
       }), []);
 
    const onEdit = useCallback(() => {
@@ -187,7 +187,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      .map((tagId: string) => tagsMap[tagId])
                      .map((tag: WithId<Tag>) =>
                         <TagBadge
-                           key={tag._id}
+                           key={tag.id}
                            name={tag.name}
                            variant={tag.variant ? tag.variant : DEFAULT_TAG_VARIANT}
                            color={tag.color ? tag.color : DEFAULT_TAG_COLOR}

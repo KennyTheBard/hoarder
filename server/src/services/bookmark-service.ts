@@ -1,137 +1,137 @@
-import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithId } from 'common';
+import { Connection, RTable } from 'rethinkdb-ts';
+import { r } from 'rethinkdb-ts';
+import { TableNames } from '../utils';
 
 export class BookmarkService {
 
-   private readonly collection: Collection<Bookmark>;
-
    constructor(
-      private readonly db: Db
-   ) {
-      this.collection = this.db.collection<Bookmark>('bookmarks');
+      private readonly connection: Connection,
+   ) { }
+
+   private get bookmarks(): RTable<WithId<Bookmark>> {
+      return r.table(TableNames.BOOKMARKS);
    }
 
    public async addBookmark(bookmark: Bookmark): Promise<string> {
-      const result = await this.collection.insertOne(bookmark);
-      if (!result.acknowledged) {
-         throw new Error('Bookmark could not be saved');
-      }
-      return result.insertedId.toString();
+      const result = await r.table(TableNames.BOOKMARKS)
+         .insert(bookmark)
+         .run(this.connection);
+      return result.generated_keys[0];
    }
 
    public async getBookmarks(form: BookmarkSearchForm): Promise<WithId<Bookmark>[]> {
-      return (await this.collection
-         .find(
-            this.searchFormToMongoFilter(form),
-            form.pagination
-         )
-         .toArray()
-      ).map(entry => ({
-         ...entry,
-         _id: entry._id.toString()
-      }));
+      const query = this.bookmarks
+         .filter({
+            isArchived: form.isArchived
+         })
+         .limit(form.pagination.limit)
+         .skip(form.pagination.skip || 0);
+
+
+      if (form.types && form.types.length > 0) {
+         query.filter(function (bookmark) {
+            return bookmark('types').contains(form.types);
+         })
+      }
+
+      if (form.tags && form.tags.length > 0) {
+         query.filter(function (bookmark) {
+            const condition = bookmark('tags').contains(form.tags[0]);
+            for (let index = 1; index < form.tags.length; index++) {
+               condition.or(bookmark('tags').contains(form.tags[index]))
+            }
+            return condition;
+         })
+      }
+
+      if (form.searchTerm && form.searchTerm.length > 0) {
+         const searchTerm = `(.*)${form.searchTerm}(.*)`;
+         query.filter(function (bookmark) {
+            return bookmark('title').downcase().match(searchTerm).ne(null)
+               .or(bookmark('note').downcase().match(searchTerm).ne(null));
+         })
+      }
+      return query.run(this.connection);
    }
 
    public async updateBookmark(id: string, bookmark: Partial<Bookmark>): Promise<void> {
-      const result = await this.collection.updateOne(
-         { _id: new ObjectId(id) },
-         { $set: { ...bookmark } }
-      );
-      if (!result.acknowledged) {
-         throw new Error(`Could not update bookmark with id '${id}'`);
-      }
-      if (result.matchedCount === 0) {
-         throw new Error(`There is no bookmark with id '${id}'`);
-      }
+      await this.bookmarks
+         .get(id)
+         .update(bookmark)
+         .run(this.connection);
    }
 
    public async removeTagsFromAllBookmarks(tagIds: Id[]): Promise<void> {
-      const result = await this.collection.updateMany(
-         {
-            tags: {
-               $in: tagIds
-            }
-         },
-         {
-            $pull: {
-               tags: {
-                  $in: tagIds
-               }
-            }
-         }
-      );
-      if (!result.acknowledged) {
-         throw new Error(`Could not remove tags '${tagIds.join(', ')}' from bookmarks`);
+      if (tagIds.length === 0) {
+         return;
       }
+
+      const bookmarksToUpdate = await this.bookmarks
+         .filter(function (bookmark) {
+            const condition = bookmark('tags').contains(tagIds[0]);
+            for (let index = 1; index < tagIds.length; index++) {
+               condition.or(bookmark('tags').contains(tagIds[index]))
+            }
+            return condition;
+         })
+         .run(this.connection);
+      if (bookmarksToUpdate.length === 0) {
+         return;
+      }
+
+      const updatedBookmarks = bookmarksToUpdate.map(bookmark => ({
+         ...bookmark,
+         tags: bookmark.tags.filter(tagId => !tagIds.includes(tagId))
+      }))
+      await this.bookmarks
+         .insert(updatedBookmarks, { conflict: 'update' })
+         .run(this.connection);
    }
 
    public async deleteBookmark(id: string): Promise<void> {
-      const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
-      if (!result.acknowledged || result.deletedCount === 0) {
+      const result = await this.bookmarks
+         .get(id)
+         .delete()
+         .run(this.connection);
+      if (result.deleted === 0) {
          throw new Error(`Could not delete bookmark with id '${id}'`);
       }
    }
 
    public async archiveBookmark(id: string, isArchived: boolean): Promise<void> {
-      const result = await this.collection.updateOne(
-         { _id: new ObjectId(id) },
-         { $set: { isArchived } }
-      );
-      if (!result.acknowledged) {
-         throw new Error(`Could not archive bookmark with id '${id}'`);
-      }
-      if (result.matchedCount === 0) {
-         throw new Error(`There is no bookmark with id '${id}'`);
-      }
+      await this.bookmarks
+         .get(id)
+         .update({
+            isArchived
+         })
+         .run(this.connection);
    }
 
    public async getTypeCountByHostname(hostname: string): Promise<Record<BookmarkType, number>> {
-      const results = await this.collection.aggregate([{
-         $match: { "hostname": hostname }
-      }, {
-         $group: {
-            _id: { type: "$type" },
-            count: { $sum: 1 }
-         }
-      }]).toArray();
+      const results: { group: BookmarkType; reduction: number }[] = await r.table(TableNames.BOOKMARKS)
+         .filter({
+            hostname
+         })
+         .group('type')
+         .count()
+         .run(this.connection) as unknown as { group: BookmarkType; reduction: number }[];
 
       const typeCountDictionary: Record<string, number> = {};
-      results.forEach(result => typeCountDictionary[result._id.type] = result.count);
+      results.forEach(result => typeCountDictionary[result.group] = result.reduction);
       return typeCountDictionary;
    }
 
    public async getBookmarkByUrl(url: string): Promise<WithId<Bookmark> | null> {
-      const bookmark = await this.collection.findOne({
-         url
-      });
+      const bookmark = await this.bookmarks
+         .filter({
+            url
+         })
+         .run(this.connection);
 
-      if (!bookmark) {
+      if (bookmark.length === 0) {
          return null;
       }
-
-      return {
-         ...bookmark,
-         _id: bookmark._id.toString()
-      };
-   }
-
-   private searchFormToMongoFilter(form: BookmarkSearchForm): Filter<Bookmark> {
-      const filter = {
-         isArchived: form.isArchived
-      };
-      if (form.searchTerm && form.searchTerm.length > 0) {
-         filter['$or'] = [
-            { title: new RegExp(form.searchTerm, 'i') },
-            { note: new RegExp(form.searchTerm, 'i') }
-         ];
-      }
-      if (form.types && form.types.length > 0) {
-         filter['type'] = { $in: form.types };
-      }
-      if (form.tags && form.tags.length > 0) {
-         filter['tag'] = { $in: form.tags };
-      }
-
-      return filter;
+      return bookmark[0];
    }
 }
