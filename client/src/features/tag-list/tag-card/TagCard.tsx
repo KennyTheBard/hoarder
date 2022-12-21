@@ -1,8 +1,8 @@
-import { Button, Group, Paper, Text, TextInput, ColorSwatch, useMantineTheme, Stack, Select, Indicator, Flex } from '@mantine/core';
+import { Button, Group, Paper, Text, TextInput, ColorSwatch, useMantineTheme, Stack, Select } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { WithId, TagExtended } from 'common';
 import { useState } from 'react';
-import { Check, Edit, ExternalLink, Share, Trash, X } from 'tabler-icons-react';
+import { Check, Edit, ExternalLink, Trash, X } from 'tabler-icons-react';
 import { TagBadge } from '../../../components';
 import { useAppDispatch } from '../../../redux/hooks';
 import { deleteTags, updateTag } from '../../../redux/slices';

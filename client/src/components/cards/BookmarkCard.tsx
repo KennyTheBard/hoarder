@@ -1,6 +1,6 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, Button } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, ExternalLink, Settings, Share, TrashX } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, ExternalLink, PhotoOff, Settings, Share, TrashX } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard, ToolBookmarkCard, ComicsBookmarkCard, BookBookmarkCard, BoardGameBookmarkCard, UnknownBookmarkCard } from '.';
 import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
@@ -166,8 +166,15 @@ export function BookmarkCard(props: BookmarkCardProps) {
                      <Image
                         onClick={() => window.open(props.url)}
                         radius="md" fit="contain" width={260}
-                        src={props.imageUrl!}
-                        alt=""
+                        src={props.imageUrl !== '' ? props.imageUrl! : props.url}
+                        withPlaceholder={true}
+                        placeholder={
+                           <PhotoOff
+                              size={64}
+                              strokeWidth={2}
+                              color={'black'}
+                           />
+                        }
                         sx={() => ({
                            cursor: 'pointer'
                         })}

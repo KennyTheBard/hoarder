@@ -1,6 +1,6 @@
 import { Group, Stack, Text } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
-import { Upload, Photo, X, Icon as TablerIcon } from 'tabler-icons-react';
+import { Upload, Photo, X } from 'tabler-icons-react';
 import { FileRejection } from 'react-dropzone';
 
 export type GeneralDropzoneProps = {

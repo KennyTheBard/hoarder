@@ -1,4 +1,4 @@
-import { ActionIcon, Anchor, Card, Center, Group, Space, Stack, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Group, Text } from '@mantine/core';
 import { BrandNetflix } from 'tabler-icons-react';
 import { MovieBookmark } from 'common';
 

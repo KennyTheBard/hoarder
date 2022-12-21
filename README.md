@@ -33,7 +33,7 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Solve problem with steam images expiring
 - [x] Url already booked on edit
 - [ ] Icons in tags
-- [ ] Icon to show that there is an URL if there is no image
+- [x] Icon to show that there is an URL if there is no image
 - [x] Editing to add new tag overrides existing tags
 - [ ] Loading metadata overrides input even if metadata field is empty
 - [ ] Use Sonic for fast search over database
