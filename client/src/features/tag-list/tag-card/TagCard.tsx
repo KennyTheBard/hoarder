@@ -1,15 +1,15 @@
-import { Button, Group, Paper, Text, TextInput, ColorSwatch, useMantineTheme, Stack, Select } from '@mantine/core';
+import { Button, Group, Paper, Text, TextInput, ColorSwatch, useMantineTheme, Stack, Select, Indicator, Flex } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { WithId, Tag } from 'common';
+import { WithId, TagExtended } from 'common';
 import { useState } from 'react';
-import { Check, Edit, Trash, X } from 'tabler-icons-react';
+import { Check, Edit, ExternalLink, Share, Trash, X } from 'tabler-icons-react';
 import { TagBadge } from '../../../components';
 import { useAppDispatch } from '../../../redux/hooks';
 import { deleteTags, updateTag } from '../../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notifyError, notifySuccess } from '../../../utils';
 
 export type TagCardProps = {
-   tag: WithId<Tag>;
+   tag: WithId<TagExtended>;
 }
 
 export function TagCard(props: TagCardProps) {
@@ -83,7 +83,6 @@ export function TagCard(props: TagCardProps) {
                   variant={isEditDialogOpened ? selectedVariant : (tag.variant ? tag.variant : DEFAULT_TAG_VARIANT)}
                   color={isEditDialogOpened ? selectedColor : (tag.color ? tag.color : DEFAULT_TAG_COLOR)}
                />
-
                <Group position="right">
                   {isEditDialogOpened
                      ? <>
@@ -105,6 +104,19 @@ export function TagCard(props: TagCardProps) {
                         </Button>
                      </>
                      : <>
+                        {!!tag.bookmarksCount &&
+                           <Button
+                              variant="subtle"
+                              color="blue"
+                              rightIcon={<ExternalLink />}
+                              sx={{ width: 160 }}
+                              onClick={() => {
+                                 // TODO
+                              }}
+                           >
+                              {tag.bookmarksCount} bookmark{tag.bookmarksCount > 1 ? 's' : ''}
+                           </Button>
+                        }
                         <Button
                            color="blue"
                            leftIcon={<Edit />}
@@ -152,7 +164,6 @@ export function TagCard(props: TagCardProps) {
                </Group>
             }
          </Stack>
-
       </Paper>
    );
 }

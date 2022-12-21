@@ -1,4 +1,4 @@
-import { Id, Tag, WithId } from 'common';
+import { Id, Tag, TagExtended, WithId } from 'common';
 import { BookmarkService, TagService } from '../services';
 
 export class TagController {
@@ -8,12 +8,16 @@ export class TagController {
       private readonly bookmarkService: BookmarkService,
    ) {}
 
-   public getAllTags = async (): Promise<GetTagsResponse> => {
+   public getAllTags = async (): Promise<GetAllTagsResponse> => {
       const tags = await this.tagService.getAllTags();
       return {
          count: tags.length,
          tags: tags
       }
+   }
+
+   public getTagsExtended = async (): Promise<GetTagsExtendedResponse> => {
+      return await this.tagService.getTagsExtended();
    }
 
    public addTag = async (request: AddTagRequest): Promise<AddTagResponse> => {
@@ -33,10 +37,12 @@ export class TagController {
    }  
 }
 
-export type GetTagsResponse = {
+export type GetAllTagsResponse = {
    count: number;
    tags: WithId<Tag>[];
 }
+
+export type GetTagsExtendedResponse = WithId<TagExtended>[];
 
 export type AddTagRequest = Tag;
 

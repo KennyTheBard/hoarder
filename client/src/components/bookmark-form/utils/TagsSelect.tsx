@@ -2,7 +2,7 @@ import { MultiSelect, Sx } from '@mantine/core';
 import { Id } from 'common';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { addTag, getTags } from '../../../redux/slices';
+import { addTag, getAllTags } from '../../../redux/slices';
 import { notifySuccess } from '../../../utils';
 
 export type TagsSelectProps = {
@@ -21,14 +21,14 @@ export function TagsSelect(props: TagsSelectProps) {
    const [selectedTags, setSelectedTags] = useState<Id[]>([...(props.values || [])].sort());
 
    useEffect(() => {
-      dispatch(getTags());
+      dispatch(getAllTags());
    }, []);
 
    const onTagCreate = (tagName: string) => {
       dispatch(addTag(tagName))
          .unwrap()
          .then((result: any) => {
-            dispatch(getTags())
+            dispatch(getAllTags())
                .unwrap()
                .then(() => {
                   const newTagId = result.tag.id;
@@ -40,7 +40,8 @@ export function TagsSelect(props: TagsSelectProps) {
                   setSelectedTags(tags);
                });
             notifySuccess(`Tag '${tagName}' created.`);
-         })
+         });
+         return null;
    }
 
    const onChange = (newTags: string[]) => {

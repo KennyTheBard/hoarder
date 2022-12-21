@@ -4,3 +4,7 @@ export type Tag = {
    variant?: 'light' | 'filled';
    color?: string;
 }
+
+export type TagExtended = Tag & {
+   bookmarksCount: number;
+}

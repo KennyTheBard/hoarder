@@ -1,15 +1,24 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Id, Tag, WithId } from 'common';
+import { Id, Tag, TagExtended, WithId } from 'common';
 import { tagService } from '../../services';
 import { getBookmarks } from './bookmarkListSlice';
 
 
-export const getTags = createAsyncThunk(
-   'tags/getTags',
+export const getAllTags = createAsyncThunk(
+   'tags/getAllTags',
    async (_, thunkAPI) => {
       thunkAPI.dispatch(loading());
-      const { data } = await tagService.getTags();
+      const { data } = await tagService.getAllTags();
       return data.tags;
+   }
+);
+
+export const getTagsExtended = createAsyncThunk(
+   'tags/getTagsExtended',
+   async (_, thunkAPI) => {
+      thunkAPI.dispatch(loading());
+      const { data } = await tagService.getTagsExtended();
+      return data;
    }
 );
 
@@ -29,7 +38,7 @@ export const updateTag = createAsyncThunk(
       tag: Tag
    }, thunkAPI) => {
       const { data } = await tagService.updateTag(payload)
-      thunkAPI.dispatch(getTags());
+      thunkAPI.dispatch(getAllTags());
       return data;
    }
 );
@@ -39,18 +48,20 @@ export const deleteTags = createAsyncThunk(
    'tags/deleteTags',
    async (ids: Id[], thunkAPI) => {
       await tagService.deleteTags(ids);
-      thunkAPI.dispatch(getTags());
+      thunkAPI.dispatch(getAllTags());
       thunkAPI.dispatch(getBookmarks());
    }
 );
 
 interface TagsState {
    tags: Record<Id, WithId<Tag>>;
+   tagsExtended: WithId<TagExtended>[];
    loading: boolean;
 }
 
 const initialState: TagsState = {
    tags: {},
+   tagsExtended: [],
    loading: false
 };
 
@@ -63,12 +74,16 @@ export const TagsSlice = createSlice({
       }
    },
    extraReducers: (builder) => builder
-      .addCase(getTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
+      .addCase(getAllTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
          const tags: Record<Id, WithId<Tag>> = {};
          for (const tag of action.payload) {
             tags[tag.id] = tag;
          }
          state.tags = tags;
+         state.loading = false;
+      })
+      .addCase(getTagsExtended.fulfilled, (state: TagsState, action: PayloadAction<WithId<TagExtended>[]>) => {
+         state.tagsExtended = action.payload;
          state.loading = false;
       })
 });

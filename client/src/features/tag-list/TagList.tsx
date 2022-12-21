@@ -1,9 +1,9 @@
 import { Stack, Container, Center, Loader, Text, Checkbox, Grid, Affix, Button, Transition } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { deleteTags, getTags } from '../../redux/slices';
+import { deleteTags, getTagsExtended } from '../../redux/slices';
 import { useEffect, useState } from 'react';
 import { TagCard } from './tag-card';
-import { WithId, Tag, Id } from 'common';
+import { WithId, Id, TagExtended } from 'common';
 import { Trash } from 'tabler-icons-react';
 import { useModals } from '@mantine/modals';
 
@@ -12,7 +12,7 @@ export function TagList() {
    const dispatch = useAppDispatch();
 
    const modals = useModals();
-   const tags = useAppSelector((state) => Object.values(state.tags.tags));
+   const tagsExtended = useAppSelector((state) => Object.values(state.tags.tagsExtended));
    const loading = useAppSelector((state) => state.tags.loading);
    const [checkedTags, setCheckedTags] = useState<Record<Id, boolean>>({});
 
@@ -37,7 +37,7 @@ export function TagList() {
       });
 
    useEffect(() => {
-      dispatch(getTags());
+      dispatch(getTagsExtended());
    }, []);
 
    let content;
@@ -47,7 +47,7 @@ export function TagList() {
             <Loader color="red" size="xl" variant="dots" />
          </Center>
       );
-   } else if (tags.length === 0) {
+   } else if (tagsExtended.length === 0) {
       content = (
          <Center>
             <Text size="xl" color="grey" weight="lighter" ml="20px">No tags found</Text>
@@ -56,7 +56,7 @@ export function TagList() {
    } else {
       content = (
          <Stack mb="120px" align="right" justify="space-around" spacing="lg">
-            {tags.map((tag: WithId<Tag>) =>
+            {tagsExtended.map((tag: WithId<TagExtended>) =>
                <Grid key={tag.id} columns={24}>
                   <Grid.Col span={1}>
                      <Center style={{ height: 70 }}>

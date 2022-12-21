@@ -348,7 +348,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    return (
       <>
-         <Group direction="row" position="apart" spacing="xl" grow>
+         <Group position="apart" spacing="xl" grow>
             <Stack align="center" justify="space-around" spacing="lg">
                <Select
                   label="What type of bookmark is this?"

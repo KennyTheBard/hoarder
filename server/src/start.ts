@@ -1,3 +1,4 @@
+import { GetTagsExtendedResponse } from './controllers/tag-controller';
 import { MovieDb } from 'moviedb-promise';
 import { TypeFinderService } from './services/type-finder-service';
 import express from 'express';
@@ -5,7 +6,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -109,8 +110,11 @@ import { r } from 'rethinkdb-ts';
       app.post('/api/addTag', postHandler<AddTagRequest, AddTagResponse>(
          tagController.addTag
       ));
-      app.post('/api/getTags', postHandler<void, GetTagsResponse>(
+      app.post('/api/getAllTags', postHandler<void, GetAllTagsResponse>(
          tagController.getAllTags
+      ));
+      app.post('/api/getTagsExtended', postHandler<void, GetTagsExtendedResponse>(
+         tagController.getTagsExtended
       ));
       app.post('/api/updateTag', postHandler<UpdateTagRequest, void>(
          tagController.updateTag

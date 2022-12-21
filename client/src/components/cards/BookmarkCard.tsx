@@ -1,4 +1,4 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, Button } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { Archive, ArchiveOff, Edit, ExternalLink, Settings, Share, TrashX } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -137,7 +137,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
       <Card
          shadow="sm"
          radius={3}
-         p="0px"
+         p={0}
          component="div"
          withBorder
          sx={(theme: MantineTheme) => ({
@@ -211,34 +211,41 @@ export function BookmarkCard(props: BookmarkCardProps) {
                   }
                   {!props.viewOnly &&
                      <Tooltip label="Settings">
-                        <Menu position="right"
-                           control={<ActionIcon><Settings /></ActionIcon>}>
-                           <Menu.Item
-                              disabled={true}
-                              icon={<Share size={14} />}
-                           >
-                              Share
-                           </Menu.Item>
-                           <Menu.Item
-                              icon={<Edit size={14} />}
-                              onClick={onEdit}
-                           >
-                              Edit
-                           </Menu.Item>
-                           {props.isArchived &&
-                              <Menu.Item color="blue"
-                                 icon={<ArchiveOff size={14} />}
-                                 onClick={onRestoreFromArchive}
+                        <Menu position="right">
+                           <Menu.Target>
+                              <Button leftIcon={<Settings />}></Button>
+                           </Menu.Target>
+                           <ActionIcon>
+                              <Settings />
+                           </ActionIcon>
+                           <Menu.Dropdown>
+                              <Menu.Item
+                                 disabled={true}
+                                 icon={<Share size={14} />}
                               >
-                                 Restore
+                                 Share
                               </Menu.Item>
-                           }
-                           <Menu.Item color="red"
-                              icon={props.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
-                              onClick={props.isArchived ? onDelete : onArchive}
-                           >
-                              {props.isArchived ? 'Delete' : 'Archive'}
-                           </Menu.Item>
+                              <Menu.Item
+                                 icon={<Edit size={14} />}
+                                 onClick={onEdit}
+                              >
+                                 Edit
+                              </Menu.Item>
+                              {props.isArchived &&
+                                 <Menu.Item color="blue"
+                                    icon={<ArchiveOff size={14} />}
+                                    onClick={onRestoreFromArchive}
+                                 >
+                                    Restore
+                                 </Menu.Item>
+                              }
+                              <Menu.Item color="red"
+                                 icon={props.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
+                                 onClick={props.isArchived ? onDelete : onArchive}
+                              >
+                                 {props.isArchived ? 'Delete' : 'Archive'}
+                              </Menu.Item>
+                           </Menu.Dropdown>
                         </Menu>
                      </Tooltip>
                   }

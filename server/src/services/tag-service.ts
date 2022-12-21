@@ -1,6 +1,7 @@
-import { Id, Tag, WithId } from 'common';
+import { Id, Tag, TagExtended, WithId } from 'common';
 import { Connection, RTable, r } from 'rethinkdb-ts';
 import { TableNames } from '../utils';
+import { GroupCounts } from '../utils/rethinkdb';
 
 export class TagService {
 
@@ -32,6 +33,34 @@ export class TagService {
 
    public async getAllTags(): Promise<WithId<Tag>[]> {
       return this.tags.run(this.connection);
+   }
+
+   public async getTagsExtended(): Promise<WithId<TagExtended>[]> {
+      const tags = await this.tags.run(this.connection);
+      const tagBookmarkCounts: GroupCounts<Id> = await r.table(TableNames.TAGS)
+         .concatMap((tag) => {
+            return r.table(TableNames.BOOKMARKS)
+               .filter((bookmark) => bookmark('tags').contains(tag('id')))
+               .map((bookmark) => ({
+                  left: tag('id'),
+                  right: bookmark('id')
+               }))
+         })
+         .group('left')
+         .count()
+         .run(this.connection) as unknown as GroupCounts<Id>;
+      const tagFqMap: Record<Id, number> = tagBookmarkCounts.reduce(
+         (record, tagBookmarkCount) => {
+            record[tagBookmarkCount.group] = tagBookmarkCount.reduction;
+            return record;
+         },
+         {}
+      );
+
+      return tags.map((tag) => ({
+         ...tag,
+         bookmarksCount: tagFqMap[tag.id] || 0
+      }));
    }
 
    public async getTagById(id: string): Promise<WithId<Tag>> {

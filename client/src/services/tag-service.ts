@@ -7,8 +7,10 @@ export const tagService = {
       axios.post('http://localhost:8080/api/addTag', {
          name
       }),
-   getTags: () =>
-      axios.post('http://localhost:8080/api/getTags'),
+   getAllTags: () =>
+      axios.post('http://localhost:8080/api/getAllTags'),
+   getTagsExtended: () =>
+      axios.post('http://localhost:8080/api/getTagsExtended'),
    updateTag: (payload: {
       id: string,
       tag: Tag
