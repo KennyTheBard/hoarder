@@ -211,13 +211,12 @@ export function BookmarkCard(props: BookmarkCardProps) {
                   }
                   {!props.viewOnly &&
                      <Tooltip label="Settings">
-                        <Menu position="right">
+                        <Menu>
                            <Menu.Target>
-                              <Button leftIcon={<Settings />}></Button>
+                              <ActionIcon>
+                                 <Settings />
+                              </ActionIcon>
                            </Menu.Target>
-                           <ActionIcon>
-                              <Settings />
-                           </ActionIcon>
                            <Menu.Dropdown>
                               <Menu.Item
                                  disabled={true}

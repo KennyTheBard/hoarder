@@ -1,6 +1,6 @@
-import { Anchor, Button, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
+import { Anchor, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Tags, Archive, Menu2, DatabaseImport, DatabaseExport, Settings } from 'tabler-icons-react';
+import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings } from 'tabler-icons-react';
 
 export function AppHeader() {
    const navigate = useNavigate();
@@ -32,11 +32,13 @@ export function AppHeader() {
             <Group position="right">
                <Menu>
                   <Menu.Target>
-                  <Menu2
-                        size={64}
-                        strokeWidth={2}
-                        color={'white'}
-                     />
+                     <ActionIcon>
+                        <Menu2
+                           size={64}
+                           strokeWidth={2}
+                           color={'white'}
+                        />
+                     </ActionIcon>
                   </Menu.Target>
                   <Menu.Dropdown>
                      <Menu.Label>Pages</Menu.Label>
