@@ -1,4 +1,4 @@
-import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithId } from 'common';
+import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithTotal, WithId } from 'common';
 import { Connection, RTable } from 'rethinkdb-ts';
 import { r } from 'rethinkdb-ts';
 import { TableNames } from '../utils';
@@ -20,39 +20,48 @@ export class BookmarkService {
       return result.generated_keys[0];
    }
 
-   public async getBookmarks(form: BookmarkSearchForm): Promise<WithId<Bookmark>[]> {
-      const query = this.bookmarks
+   public async getBookmarks(form: BookmarkSearchForm): Promise<WithTotal<WithId<Bookmark>>> {
+      let query = this.bookmarks
          .filter({
             isArchived: form.isArchived
-         })
-         .limit(form.pagination.limit)
-         .skip(form.pagination.skip || 0);
-
+         });
 
       if (form.types && form.types.length > 0) {
-         query.filter(function (bookmark) {
-            return bookmark('types').contains(form.types);
-         })
+         query = query.filter(bookmark =>
+            r.or(
+               r.expr(1 !== 1), // boolean needed, not false
+               ...form.types.map(type => bookmark('type').eq(type))
+            )
+         );
       }
 
       if (form.tags && form.tags.length > 0) {
-         query.filter(function (bookmark) {
-            const condition = bookmark('tags').contains(form.tags[0]);
-            for (let index = 1; index < form.tags.length; index++) {
-               condition.or(bookmark('tags').contains(form.tags[index]))
-            }
-            return condition;
-         })
+         query = query.filter(bookmark =>
+            r.or(
+               r.expr(1 !== 1), // boolean needed, not false
+               ...form.tags.map(tag => bookmark('tags').contains(tag))
+            )
+         );
       }
 
       if (form.searchTerm && form.searchTerm.length > 0) {
-         const searchTerm = `(.*)${form.searchTerm}(.*)`;
-         query.filter(function (bookmark) {
-            return bookmark('title').downcase().match(searchTerm).ne(null)
-               .or(bookmark('note').downcase().match(searchTerm).ne(null));
-         })
+         query = query.filter(bookmark => 
+            r.or(
+               bookmark('title').downcase().match(form.searchTerm.toLowerCase()).ne(null),
+               bookmark('note').downcase().match(form.searchTerm.toLowerCase()).ne(null)
+            )
+         );
       }
-      return query.run(this.connection);
+
+      const entries = await query
+         .skip(form.pagination.skip || 0)
+         .limit(form.pagination.limit)
+         .run(this.connection);
+
+      return {
+         total: await query.count().run(this.connection),
+         entries
+      }
    }
 
    public async updateBookmark(id: string, bookmark: Partial<Bookmark>): Promise<void> {

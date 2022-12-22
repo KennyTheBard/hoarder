@@ -187,7 +187,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Stack>
             </Card.Section>
 
-            <Spoiler maxHeight={27} showLabel="More" hideLabel="Less">
+            <Spoiler maxHeight={40} showLabel="More" hideLabel="Less">
                <Group mb="15px" spacing="xs">
                   {[...props.tags]
                      .sort()

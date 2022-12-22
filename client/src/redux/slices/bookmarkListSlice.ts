@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
-import { WithId, Bookmark, WithPagination } from 'common';
+import { WithId, Bookmark, WithPagination, WithTotal } from 'common';
 import { bookmarkService } from '../../services';
 import { RootState } from '../store';
 
@@ -39,12 +39,13 @@ export const deleteBookmark = createAsyncThunk(
    'bookmark/deleteBookmark',
    async (bookmarkId: string, thunkAPI) => {
       await bookmarkService.deleteBookmark(bookmarkId);
-      thunkAPI.dispatch(getBookmarks())
+      thunkAPI.dispatch(getBookmarks());
    }
 );
 
 interface BookmarkListState {
    bookmarks: WithId<Bookmark>[];
+   bookmarksTotal?: number;
    loading: boolean;
 }
 
@@ -62,11 +63,10 @@ export const bookmarkListSlice = createSlice({
       }
    },
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithPagination<{
-         entries: WithId<Bookmark>[]
-      }>>) => {
+      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
          // state.bookmarks.push(...action.payload.entries);
          state.bookmarks = action.payload.entries;
+         state.bookmarksTotal = action.payload.total;
          state.loading = false;
       })
 });

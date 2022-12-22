@@ -43,3 +43,4 @@ A better alternative than managing your links and messages in chat rooms with yo
 - [ ] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined
     BookmarkCard BookmarkCard.tsx:186
     BookmarkCard BookmarkCard.tsx:183)
+- [ ] Fix 2 requests on loading bookmarks

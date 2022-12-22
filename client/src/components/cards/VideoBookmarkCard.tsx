@@ -19,9 +19,6 @@ export function VideoBookmarkCard(props: VideoBookmark) {
          </Text>
          <Group position="apart">
             <Text>
-               {props.hostname}
-            </Text>
-            <Text>
                {secondsToHumanFriendly(props.durationInSeconds)}
             </Text>
          </Group>

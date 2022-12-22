@@ -8,8 +8,8 @@ export type WithId<T> = {
    id: Id;
 };
 
-export type WithCount<T> = {
-   count: number;
+export type WithTotal<T> = {
+   total: number;
    entries: T[];
 }
 

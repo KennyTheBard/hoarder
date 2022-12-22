@@ -1,4 +1,4 @@
-import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, MultiSelect, Space, Stack, Text, Transition } from '@mantine/core';
+import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, Space, Stack, Text, Transition } from '@mantine/core';
 import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getBookmarks, getNextPage, getAllTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
@@ -16,6 +16,7 @@ export function BookmarkList() {
    const { height: viewportHeight } = useViewportSize();
 
    const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
+   const bookmarkTotal = useAppSelector((state) => state.bookmarkList.bookmarksTotal);
    const loading = useAppSelector((state) => state.bookmarkList.loading);
    const searchForm = useAppSelector((state) => state.searchForm);
 
@@ -28,7 +29,16 @@ export function BookmarkList() {
    return (
       <>
          <Container size="xl" ref={ref}>
-            <Stack mt="50px">
+            <Stack mt="20px">
+               {!!bookmarkTotal &&
+                  <Stack mb="10px">
+                     <Center>
+                        <Text fw={700} size="lg">
+                           Loaded <Mark color="blue">{bookmarks.length}</Mark> out of <Mark color="grape">{bookmarkTotal}</Mark> bookmarks
+                        </Text>
+                     </Center>
+                  </Stack>
+               }
                <Center>
                   <Group position="apart">
                      <Input
@@ -86,13 +96,13 @@ export function BookmarkList() {
                            style={transitionStyles}
                            onClick={() => dispatch(getNextPage())}
                         >
-                        Load next page
-                     </Button>
+                           Load next page
+                        </Button>
                      </Group>
                   )}
-            </Transition>
-         </Affix>
-      </Container>
+               </Transition>
+            </Affix>
+         </Container>
       </>
    );
 }

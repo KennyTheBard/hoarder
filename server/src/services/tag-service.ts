@@ -38,15 +38,15 @@ export class TagService {
    public async getTagsExtended(): Promise<WithId<TagExtended>[]> {
       const tags = await this.tags.run(this.connection);
       const tagBookmarkCounts: GroupCounts<Id> = await r.table(TableNames.TAGS)
-         .concatMap((tag) => {
-            return r.table(TableNames.BOOKMARKS)
+         .concatMap((tag) =>
+            r.table(TableNames.BOOKMARKS)
                .filter((bookmark) => bookmark('tags').contains(tag('id')))
                .map((bookmark) => ({
-                  left: tag('id'),
-                  right: bookmark('id')
+                  tagId: tag('id'),
+                  bookmarkId: bookmark('id')
                }))
-         })
-         .group('left')
+         )
+         .group('tagId')
          .count()
          .run(this.connection) as unknown as GroupCounts<Id>;
       const tagFqMap: Record<Id, number> = tagBookmarkCounts.reduce(
@@ -57,10 +57,12 @@ export class TagService {
          {}
       );
 
-      return tags.map((tag) => ({
-         ...tag,
-         bookmarksCount: tagFqMap[tag.id] || 0
-      }));
+      return tags
+         .map((tag) => ({
+            ...tag,
+            bookmarksCount: tagFqMap[tag.id] || 0
+         }))
+         .sort((a, b) => b.bookmarksCount - a.bookmarksCount);
    }
 
    public async getTagById(id: string): Promise<WithId<Tag>> {
