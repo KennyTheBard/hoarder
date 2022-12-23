@@ -5,7 +5,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
-import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService } from './services';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramListener } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse } from './controllers';
 import { postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
@@ -41,10 +41,14 @@ import { r } from 'rethinkdb-ts';
       const metadataService = new MetadataService();
       const bookmarkService = new BookmarkService(conn);
       const tagService = new TagService(conn);
+      const messageService = new MessageService(conn);
       const gameCandidatesService = new GameCandidatesService(conn, steamClient, steamAppCache, hltbService);
       const mediaCandidatesService = new MediaCandidatesService(movieDbClient, omdbClient);
       const typeFinderService = new TypeFinderService(bookmarkService);
       const boardGameCandidatesService = new BoardGameCandidatesService();
+      
+      // init telegram listener
+      new TelegramListener(process.env.TELEGRAM_BOT, messageService);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(

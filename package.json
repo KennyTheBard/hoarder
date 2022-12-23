@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "telebot": "^1.4.1"
+  },
+  "devDependencies": {
+    "@types/telebot": "^1.2.4"
+  }
+}
