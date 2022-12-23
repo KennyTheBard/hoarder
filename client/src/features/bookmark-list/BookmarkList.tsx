@@ -50,7 +50,7 @@ export function BookmarkList() {
                      <MultiSelect
                         data={getTypeOptions()}
                         placeholder="Filter types..."
-                        maxDropdownHeight={160}
+                        maxDropdownHeight={500}
                         clearable
                         onChange={(types: BookmarkType[]) => dispatch(setTypesAndUpdate(types))}
                         sx={{ width: 350 }}

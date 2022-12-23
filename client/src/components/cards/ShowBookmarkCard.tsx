@@ -20,7 +20,7 @@ export function ShowBookmarkCard(props: ShowBookmark) {
          </Group>
          <Group position="apart">
             <Anchor href={props.url} target="_blank">
-               {props.imdbRating} on IMDB
+               {props.imdbRating && `${props.imdbRating.toFixed(1)} on`} IMDB
             </Anchor>
             {props.isOnNetflix &&
                <ActionIcon variant="transparent">

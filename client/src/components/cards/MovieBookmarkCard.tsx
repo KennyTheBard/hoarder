@@ -11,9 +11,11 @@ export function MovieBookmarkCard(props: MovieBookmark) {
             {props.title} ({props.releaseYear})
          </Text>
          <Group position="apart">
-            <Anchor href={props.url} target="_blank">
-               {props.imdbRating} on IMDB
-            </Anchor>
+            <Group>
+               <Anchor href={props.url} target="_blank">
+                  {props.imdbRating && `${props.imdbRating.toFixed(1)} on`} IMDB
+               </Anchor>
+            </Group>
             {props.isOnNetflix &&
                <ActionIcon variant="transparent">
                   <BrandNetflix />

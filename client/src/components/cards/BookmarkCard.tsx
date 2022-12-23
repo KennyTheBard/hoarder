@@ -1,6 +1,6 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, SimpleGrid } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, ExternalLink, PhotoOff, Settings, Share, TrashX } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, ExternalLink, HandClick, Link, PhotoOff, Settings, Share, TrashX, WorldWww } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard, ToolBookmarkCard, ComicsBookmarkCard, BookBookmarkCard, BoardGameBookmarkCard, UnknownBookmarkCard } from '.';
 import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
@@ -169,11 +169,28 @@ export function BookmarkCard(props: BookmarkCardProps) {
                         src={props.imageUrl !== '' ? props.imageUrl! : props.url}
                         withPlaceholder={true}
                         placeholder={
-                           <PhotoOff
-                              size={64}
-                              strokeWidth={2}
-                              color={'black'}
-                           />
+                           <SimpleGrid cols={2}>
+                              <PhotoOff
+                                 size={64}
+                                 strokeWidth={2}
+                                 color='grey'
+                              />
+                              <HandClick
+                                 size={64}
+                                 strokeWidth={2}
+                                 color='grey'
+                              />
+                              <Link
+                                 size={64}
+                                 strokeWidth={2}
+                                 color='grey'
+                              />
+                              <WorldWww
+                                 size={64}
+                                 strokeWidth={2}
+                                 color='grey'
+                              />
+                           </SimpleGrid>
                         }
                         sx={() => ({
                            cursor: 'pointer'
@@ -203,60 +220,56 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Group>
             </Spoiler>
             <Group position="apart">
-               <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.createdTimestamp)} />
-               <Group position="right" spacing="xs">
-                  {props.url !== '' &&
-                     <Tooltip label="Open URL">
+               {!props.viewOnly && <>
+                  <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.createdTimestamp)} />
+                  <Group position="right" spacing="xs">
+                     {/* <Tooltip label="Share">
+                           <UnstyledButton
+                              onClick={() => {}}
+                           >
+                              <ActionIcon >
+                                 <Share color="black" />
+                              </ActionIcon>
+                           </UnstyledButton>
+                        </Tooltip> */}
+                     <Tooltip label="Edit">
                         <UnstyledButton
-                           onClick={() => window.open(props.url)}
+                           onClick={onEdit}
                         >
                            <ActionIcon >
-                              <ExternalLink />
+                              <Edit color="black" />
                            </ActionIcon>
                         </UnstyledButton>
                      </Tooltip>
-                  }
-                  {!props.viewOnly &&
-                     <Tooltip label="Settings">
-                        <Menu>
-                           <Menu.Target>
-                              <ActionIcon>
-                                 <Settings />
-                              </ActionIcon>
-                           </Menu.Target>
-                           <Menu.Dropdown>
-                              <Menu.Item
-                                 disabled={true}
-                                 icon={<Share size={14} />}
-                              >
-                                 Share
-                              </Menu.Item>
-                              <Menu.Item
-                                 icon={<Edit size={14} />}
-                                 onClick={onEdit}
-                              >
-                                 Edit
-                              </Menu.Item>
-                              {props.isArchived &&
-                                 <Menu.Item color="blue"
-                                    icon={<ArchiveOff size={14} />}
-                                    onClick={onRestoreFromArchive}
-                                 >
-                                    Restore
-                                 </Menu.Item>
-                              }
-                              <Menu.Item color="red"
-                                 icon={props.isArchived ? <TrashX size={14} /> : <Archive size={14} />}
-                                 onClick={props.isArchived ? onDelete : onArchive}
-                              >
-                                 {props.isArchived ? 'Delete' : 'Archive'}
-                              </Menu.Item>
-                           </Menu.Dropdown>
-                        </Menu>
-                     </Tooltip>
-                  }
-               </Group>
-
+                     {!props.isArchived && <Tooltip label="Archive">
+                        <UnstyledButton
+                           onClick={onArchive}
+                        >
+                           <ActionIcon >
+                              <Archive color="red" />
+                           </ActionIcon>
+                        </UnstyledButton>
+                     </Tooltip>}
+                     {props.isArchived && <Tooltip label="Restore">
+                        <UnstyledButton
+                           onClick={onRestoreFromArchive}
+                        >
+                           <ActionIcon >
+                              <ArchiveOff color="green" />
+                           </ActionIcon>
+                        </UnstyledButton>
+                     </Tooltip>}
+                     {props.isArchived && <Tooltip label="Delete">
+                        <UnstyledButton
+                           onClick={onDelete}
+                        >
+                           <ActionIcon >
+                              <TrashX color="red" />
+                           </ActionIcon>
+                        </UnstyledButton>
+                     </Tooltip>}
+                  </Group>
+               </>}
             </Group>
          </Box>
       </Card>

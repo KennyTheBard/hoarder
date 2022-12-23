@@ -9,18 +9,12 @@ export function AnimeBookmarkCard(props: AnimeBookmark) {
       <>
          <Group position="apart">
             <Text>
-               {props.title} ({props.releaseYear}
-               {props.isFinished && ` - ${props.finishedYear}`})
+               {props.title} {props.releaseYear && `(${props.releaseYear})`}
             </Text>
-            {props.isFinished &&
-               <ActionIcon variant="transparent">
-                  <Checks />
-               </ActionIcon>
-            }
          </Group>
          <Group position="apart">
             <Anchor href={props.url} target="_blank">
-               {props.myAnimeListScore} ({props.myAnimeListReviewCount}) on MyAnimeList
+               {props.myAnimeListScore && `${props.myAnimeListScore.toFixed(1)} on`} MyAnimeList
             </Anchor>
             {props.isOnNetflix &&
                <ActionIcon variant="transparent">

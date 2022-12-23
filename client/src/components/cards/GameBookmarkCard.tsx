@@ -9,13 +9,8 @@ export function GameBookmarkCard(props: GameBookmark) {
       <>
          <Group position="apart">
             <Text>
-               {props.title} ({props.launchDate || 'TBD'})
+               {props.title} {props.launchDate && `(${props.launchDate})`}
             </Text>
-            {!props.isLaunched &&
-               <ActionIcon variant="transparent">
-                  <RocketOff />
-               </ActionIcon>
-            }
          </Group>
          <Group position="left" spacing={1}>
             {props.platforms && props.platforms.includes(GamePlatform.WINDOWS) &&
