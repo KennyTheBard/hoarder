@@ -45,3 +45,4 @@ A better alternative than managing your links and messages in chat rooms with yo
     BookmarkCard BookmarkCard.tsx:183)
 - [ ] Fix 2 requests on loading bookmarks
 - [ ] Add "protected" setting for bookmarks 
+- [ ] Pagination + total + hasMore => Paginated

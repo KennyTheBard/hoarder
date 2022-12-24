@@ -26,6 +26,7 @@ export const setTypesAndUpdate = createAsyncThunk(
 
 const PAGE_SIZE = 30;
 
+// TODO: move this in bookmark slice
 const initialState: BookmarkSearchForm = {
    isArchived: false,
    pagination: {

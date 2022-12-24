@@ -21,45 +21,15 @@ export class BookmarkService {
    }
 
    public async getBookmarks(form: BookmarkSearchForm): Promise<WithTotal<WithId<Bookmark>>> {
-      let query = this.bookmarks
-         .filter({
-            isArchived: form.isArchived
-         });
-
-      if (form.types && form.types.length > 0) {
-         query = query.filter(bookmark =>
-            r.or(
-               r.expr(1 !== 1), // boolean needed, not false
-               ...form.types.map(type => bookmark('type').eq(type))
-            )
-         );
-      }
-
-      if (form.tags && form.tags.length > 0) {
-         query = query.filter(bookmark =>
-            r.or(
-               r.expr(1 !== 1), // boolean needed, not false
-               ...form.tags.map(tag => bookmark('tags').contains(tag))
-            )
-         );
-      }
-
-      if (form.searchTerm && form.searchTerm.length > 0) {
-         query = query.filter(bookmark => 
-            r.or(
-               bookmark('title').downcase().match(form.searchTerm.toLowerCase()).ne(null),
-               bookmark('note').downcase().match(form.searchTerm.toLowerCase()).ne(null)
-            )
-         );
-      }
-
+      const query = this.buildQuery(form);
       const entries = await query
          .skip(form.pagination.skip || 0)
          .limit(form.pagination.limit)
          .run(this.connection);
+      const total = await query.count().run(this.connection)
 
       return {
-         total: await query.count().run(this.connection),
+         total,
          entries
       }
    }
@@ -142,5 +112,41 @@ export class BookmarkService {
          return null;
       }
       return bookmark[0];
+   }
+
+   private buildQuery(form: BookmarkSearchForm): RTable<WithId<Bookmark>> {
+      let query = this.bookmarks
+         .filter({
+            isArchived: form.isArchived
+         });
+
+      if (form.types && form.types.length > 0) {
+         query = query.filter(bookmark =>
+            r.or(
+               r.expr(1 !== 1), // boolean needed, not false
+               ...form.types.map(type => bookmark('type').eq(type))
+            )
+         );
+      }
+
+      if (form.tags && form.tags.length > 0) {
+         query = query.filter(bookmark =>
+            r.or(
+               r.expr(1 !== 1), // boolean needed, not false
+               ...form.tags.map(tag => bookmark('tags').contains(tag))
+            )
+         );
+      }
+
+      if (form.searchTerm && form.searchTerm.length > 0) {
+         query = query.filter(bookmark =>
+            r.or(
+               bookmark('title').downcase().match(form.searchTerm.toLowerCase()).ne(null),
+               bookmark('note').downcase().match(form.searchTerm.toLowerCase()).ne(null)
+            )
+         );
+      }
+
+      return query;
    }
 }

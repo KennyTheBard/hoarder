@@ -2,7 +2,7 @@ import { Stack, Container, Center, Loader, Text, Checkbox, Grid, Affix, Button, 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { deleteTags, getTagsExtended } from '../../redux/slices';
 import { useEffect, useState } from 'react';
-import { TagCard } from './tag-card';
+import { TagCard } from './components';
 import { WithId, Id, TagExtended } from 'common';
 import { Trash } from 'tabler-icons-react';
 import { useModals } from '@mantine/modals';

@@ -15,6 +15,7 @@ import { AppHeader, PinDialog } from './components';
 import './App.css';
 import { Export } from './features/export';
 import { Import } from './features/import';
+import { MessageList } from './features/message-list/MessageList';
 
 export default function App() {
 
@@ -32,6 +33,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<BookmarkList />} />
                   <Route path="/tags" element={<TagList />} />
+                  <Route path="/messages" element={<MessageList />} />
                   <Route path="/import" element={<Import />} />
                   <Route path="/export" element={<Export />} />
                 </Routes>

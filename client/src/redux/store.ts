@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { bookmarkListReducer, pinBookmarkReducer, searchFormReducer, tagsReducer } from './slices';
+import { bookmarkListReducer, messagesReducer, pinBookmarkReducer, searchFormReducer, tagsReducer } from './slices';
 
 
 export const store = configureStore({
@@ -7,6 +7,7 @@ export const store = configureStore({
       bookmarkList: bookmarkListReducer,
       pinBookmark: pinBookmarkReducer,
       tags: tagsReducer,
+      messages: messagesReducer,
       searchForm: searchFormReducer,
    },
    middleware: (getDefaultMiddleware) => getDefaultMiddleware()

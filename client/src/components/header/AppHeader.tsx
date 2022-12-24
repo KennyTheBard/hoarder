@@ -1,6 +1,6 @@
 import { Anchor, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings } from 'tabler-icons-react';
+import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings, Mailbox } from 'tabler-icons-react';
 
 export function AppHeader() {
    const navigate = useNavigate();
@@ -53,6 +53,12 @@ export function AppHeader() {
                         onClick={() => navigate('/tags')}
                      >
                         <Text size="lg">Tags</Text>
+                     </Menu.Item>
+                     <Menu.Item
+                        icon={<Mailbox size={24} />}
+                        onClick={() => navigate('/messages')}
+                     >
+                        <Text size="lg">Messages</Text>
                      </Menu.Item>
                      <Divider />
 

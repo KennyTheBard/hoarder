@@ -8,6 +8,6 @@ export type Message = {
 
 export enum MessageStatus {
    PENDING = 'pending',
-   PROCESSED = 'processed',
+   BOOKMARKED = 'bookmarked',
    IGNORED = 'ignored',
 }
