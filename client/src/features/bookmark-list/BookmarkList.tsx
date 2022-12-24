@@ -1,11 +1,11 @@
-import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, Space, Stack, Text, Transition } from '@mantine/core';
+import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
 import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getNextPage, getAllTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate } from '../../redux/slices';
+import { getBookmarks, getNextPage, getAllTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate } from '../../redux/slices';
 import { ChangeEvent, useEffect } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
-import { BookmarkType } from 'common';
+import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
 
 export function BookmarkList() {
@@ -16,6 +16,7 @@ export function BookmarkList() {
    const { height: viewportHeight } = useViewportSize();
 
    const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
+   const tags = useAppSelector((state) => state.tags.tags);
    const bookmarkTotal = useAppSelector((state) => state.bookmarkList.bookmarksTotal);
    const loading = useAppSelector((state) => state.bookmarkList.loading);
    const searchForm = useAppSelector((state) => state.searchForm);
@@ -49,7 +50,7 @@ export function BookmarkList() {
                      />
                      <MultiSelect
                         data={getTypeOptions()}
-                        placeholder="Filter types..."
+                        placeholder="Types..."
                         maxDropdownHeight={500}
                         clearable
                         onChange={(types: BookmarkType[]) => dispatch(setTypesAndUpdate(types))}
@@ -67,7 +68,30 @@ export function BookmarkList() {
                         Refresh
                      </Button>
                   </Group>
-
+               </Center>
+               <Center>
+                  <Group position="apart">
+                     <SegmentedControl
+                        data={[
+                           FilterOperator.OR,
+                           FilterOperator.AND
+                        ]}
+                        defaultValue={FilterOperator.OR}
+                        onChange={(op: FilterOperator) => dispatch(setTagsOperatorAndUpdate(op))}
+                     />
+                     <MultiSelect
+                        data={Object.values(tags).map((tag: WithId<Tag>) => ({
+                           value: tag.id,
+                           label: tag.name
+                        }))}
+                        searchable
+                        placeholder="Tags..."
+                        maxDropdownHeight={500}
+                        clearable
+                        onChange={(tags: Id[]) => dispatch(setTagsAndUpdate(tags))}
+                        sx={{ width: 350 }}
+                     />
+                  </Group>
                </Center>
                <Space h={20} />
 

@@ -1,4 +1,4 @@
-import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithTotal, WithId } from 'common';
+import { Bookmark, BookmarkSearchForm, BookmarkType, Id, WithTotal, WithId, FilterOperator } from 'common';
 import { Connection, RTable } from 'rethinkdb-ts';
 import { r } from 'rethinkdb-ts';
 import { TableNames } from '../utils';
@@ -130,12 +130,21 @@ export class BookmarkService {
       }
 
       if (form.tags && form.tags.length > 0) {
-         query = query.filter(bookmark =>
-            r.or(
-               r.expr(1 !== 1), // boolean needed, not false
-               ...form.tags.map(tag => bookmark('tags').contains(tag))
-            )
-         );
+         if (form.tagsOperator === FilterOperator.OR) {
+            query = query.filter(bookmark =>
+               r.or(
+                  r.expr(1 !== 1), // boolean needed, not false
+                  ...form.tags.map(tag => bookmark('tags').contains(tag))
+                  )
+            );
+         } else {
+            query = query.filter(bookmark =>
+               r.and(
+                  r.expr(1 === 1), // boolean needed, not true
+                  ...form.tags.map(tag => bookmark('tags').contains(tag))
+                  )
+            );
+         }
       }
 
       if (form.searchTerm && form.searchTerm.length > 0) {
