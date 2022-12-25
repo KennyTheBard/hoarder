@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Message, WithId } from 'common';
+import { Id, Message, WithId } from 'common';
 import { messageService } from '../../services';
 
 
@@ -10,6 +10,15 @@ export const getMessages = createAsyncThunk(
       const { data } = await messageService.getMessages();
       console.log(data);
       return data.entries;
+   }
+);
+
+
+export const ignoreMessages = createAsyncThunk(
+   'messages/ignoreMessages',
+   async (messageIds: Id[], thunkAPI) => {
+      await messageService.ignoreMessages(messageIds);
+      thunkAPI.dispatch(getMessages());
    }
 );
 

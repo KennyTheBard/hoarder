@@ -1,4 +1,4 @@
-import { Message, Pagination, WithId, WithPagination, WithTotal } from 'common';
+import { Id, Message, MessageStatus, Pagination, WithId, WithPagination, WithTotal } from 'common';
 import { MessageService } from '../services';
 
 
@@ -19,6 +19,10 @@ export class MessageController {
       };
    }
 
+   public ignoreMessages = async (request: IgnoreMessagesRequest): Promise<void> => {
+      await this.messageService.setMessagesStatus(request.ids, MessageStatus.IGNORED);
+   }
+
 }
 
 export type GetMessagesRequest = {
@@ -26,3 +30,7 @@ export type GetMessagesRequest = {
 };
 
 export type GetMessagesResponse = WithPagination<WithTotal<WithId<Message>>>;
+
+export type IgnoreMessagesRequest = {
+   ids: Id[];
+}

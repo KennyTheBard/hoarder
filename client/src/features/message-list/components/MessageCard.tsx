@@ -1,6 +1,10 @@
-import { Badge, Group, Paper, Stack, Container } from '@mantine/core';
+import { Badge, Group, Paper, Stack, Container, Button, Text } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { WithId, Message, MessageStatus } from 'common';
 import ReactTimeAgo from 'react-time-ago';
+import { MessageOff } from 'tabler-icons-react';
+import { useAppDispatch } from '../../../redux/hooks';
+import { deleteTags, ignoreMessages } from '../../../redux/slices';
 
 export type MessageCardProps = {
    message: WithId<Message>;
@@ -8,22 +12,22 @@ export type MessageCardProps = {
 
 export function MessageCard(props: MessageCardProps) {
 
-   // const dispatch = useAppDispatch();
-   // const modals = useModals();
+   const dispatch = useAppDispatch();
+   const modals = useModals();
 
-   // const openDeleteModal = () =>
-   //    modals.openConfirmModal({
-   //       title: 'Delete tag',
-   //       centered: true,
-   //       children: (
-   //          <Text size="sm">
-   //             This action is destructive and you will not be able to undo it!
-   //          </Text>
-   //       ),
-   //       labels: { confirm: 'Delete', cancel: 'Cancel' },
-   //       confirmProps: { color: 'red' },
-   //       onConfirm: () => dispatch(deleteTags([tag.id]))
-   //    });
+   const openIgnoreModal = () =>
+      modals.openConfirmModal({
+         title: 'Mark message as ignored',
+         centered: true,
+         children: (
+            <Text size="sm">
+               This action is destructive and you will not be able to undo it!
+            </Text>
+         ),
+         labels: { confirm: 'Ignore', cancel: 'Cancel' },
+         confirmProps: { color: 'red' },
+         onConfirm: () => dispatch(ignoreMessages([props.message.id]))
+      });
 
    // const onSave = () => {
    //    setEditDialogLoading(true);
@@ -92,14 +96,14 @@ export function MessageCard(props: MessageCardProps) {
                         onClick={() => setEditDialogOpened(true)}
                      >
                         Edit
-                     </Button>
+                     </Button> */}
                      <Button
                         color="red"
-                        leftIcon={<Trash />}
-                        onClick={openDeleteModal}
+                        leftIcon={<MessageOff />}
+                        onClick={openIgnoreModal}
                      >
-                        Delete
-                     </Button> */}
+                        Ignore
+                     </Button>
                   </Group>
             </Group>
          </Stack>

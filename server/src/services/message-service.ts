@@ -1,4 +1,4 @@
-import { WithId, Message, MessageStatus, Pagination, WithTotal } from 'common';
+import { WithId, Message, MessageStatus, Pagination, WithTotal, Id } from 'common';
 import { Connection, RTable, r } from 'rethinkdb-ts';
 import { TableNames } from '../utils';
 
@@ -42,9 +42,9 @@ export class MessageService {
       }
    }
 
-   public async setMessageStatus(messageId: string, status: MessageStatus): Promise<boolean> {
+   public async setMessagesStatus(messageIds: Id[], status: MessageStatus): Promise<boolean> {
       const result = await this.messages
-         .get(messageId)
+         .getAll(r.args(messageIds))
          .update({
             status
          })
