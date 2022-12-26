@@ -19,8 +19,12 @@ export class MessageController {
       };
    }
 
-   public ignoreMessages = async (request: IgnoreMessagesRequest): Promise<void> => {
+   public markMessagesAsIgnored = async (request: MarkMessagesRequest): Promise<void> => {
       await this.messageService.setMessagesStatus(request.ids, MessageStatus.IGNORED);
+   }
+
+   public markMessagesAsBookmarked = async (request: MarkMessagesRequest): Promise<void> => {
+      await this.messageService.setMessagesStatus(request.ids, MessageStatus.BOOKMARKED);
    }
 
 }
@@ -31,6 +35,6 @@ export type GetMessagesRequest = {
 
 export type GetMessagesResponse = WithPagination<WithTotal<WithId<Message>>>;
 
-export type IgnoreMessagesRequest = {
+export type MarkMessagesRequest = {
    ids: Id[];
 }

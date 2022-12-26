@@ -8,16 +8,23 @@ export const getMessages = createAsyncThunk(
    async (_, thunkAPI) => {
       thunkAPI.dispatch(loading());
       const { data } = await messageService.getMessages();
-      console.log(data);
       return data.entries;
    }
 );
 
 
-export const ignoreMessages = createAsyncThunk(
+export const markMessagesAsIgnored = createAsyncThunk(
    'messages/ignoreMessages',
    async (messageIds: Id[], thunkAPI) => {
-      await messageService.ignoreMessages(messageIds);
+      await messageService.markMessagesAsIgnored(messageIds);
+      thunkAPI.dispatch(getMessages());
+   }
+);
+
+export const markMessagesAsBookmarked = createAsyncThunk(
+   'messages/markMessagesAsBookmarked',
+   async (messageIds: Id[], thunkAPI) => {
+      await messageService.markMessagesAsBookmarked(messageIds);
       thunkAPI.dispatch(getMessages());
    }
 );

@@ -7,8 +7,12 @@ export const messageService = {
       axios.post('http://localhost:8080/api/getMessages', {
          pagination
       }),
-      ignoreMessages: (messageIds: Id[]) =>
-      axios.post('http://localhost:8080/api/ignoreMessages', {
+   markMessagesAsIgnored: (messageIds: Id[]) =>
+      axios.post('http://localhost:8080/api/markMessagesAsIgnored', {
+         ids: messageIds
+      }),
+   markMessagesAsBookmarked: (messageIds: Id[]) =>
+      axios.post('http://localhost:8080/api/markMessagesAsBookmarked', {
          ids: messageIds
       }),
 }

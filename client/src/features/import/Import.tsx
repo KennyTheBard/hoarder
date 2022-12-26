@@ -43,7 +43,6 @@ export function Import() {
             centered={true}
             opened={dataToImport.length > 0}
             onClose={() => {
-               console.log(dataToImport)
                setDataToImport(dataToImport.slice(1));
             }}>
             <AddBookmarkForm origin="import_tool" bookmark={dataToImport[0]} onCompleted={() => setDataToImport(dataToImport.slice(1))} />

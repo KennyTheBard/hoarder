@@ -1,10 +1,11 @@
-import { Badge, Group, Paper, Stack, Container, Button, Text } from '@mantine/core';
+import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { WithId, Message, MessageStatus } from 'common';
 import ReactTimeAgo from 'react-time-ago';
-import { MessageOff } from 'tabler-icons-react';
+import { MessageOff, MessagePlus } from 'tabler-icons-react';
 import { useAppDispatch } from '../../../redux/hooks';
-import { deleteTags, ignoreMessages } from '../../../redux/slices';
+import { markMessagesAsIgnored, markMessagesAsBookmarked } from '../../../redux/slices';
+import { AddBookmarkForm } from '../../../components';
 
 export type MessageCardProps = {
    message: WithId<Message>;
@@ -26,7 +27,7 @@ export function MessageCard(props: MessageCardProps) {
          ),
          labels: { confirm: 'Ignore', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(ignoreMessages([props.message.id]))
+         onConfirm: () => dispatch(markMessagesAsIgnored([props.message.id]))
       });
 
    // const onSave = () => {
@@ -81,32 +82,47 @@ export function MessageCard(props: MessageCardProps) {
       <Paper shadow="md" p="md">
          <Stack>
             <Group position="apart">
-                  <Group position="right">
-                     <Container>
-                        {props.message.text}
-                     </Container>
-                  </Group>
-                  <Group position="right">
-                     {getStatusBadge(props.message)}
-                     <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
-
-                     {/* <Button
-                        color="blue"
-                        leftIcon={<Edit />}
-                        onClick={() => setEditDialogOpened(true)}
+               <Group position="left">
+                  {getStatusBadge(props.message)}
+                  <Container sx={{ maxWidth: "50%" }}>
+                     {props.message.text}
+                  </Container>
+               </Group>
+               <Group position="right">
+                  <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
+                  <Tooltip children={
+                     <Button
+                        color="green"
+                        onClick={() => {
+                           modals.openModal({
+                              title: "Process message",
+                              padding: "md",
+                              size: "xl",
+                              centered: true,
+                              children: (
+                                 <AddBookmarkForm
+                                    origin="process_message"
+                                    messageText={props.message.text}
+                                    onCompleted={() => dispatch(markMessagesAsBookmarked([props.message.id]))}
+                                 />
+                              )
+                           });
+                        }}
                      >
-                        Edit
-                     </Button> */}
+                        <MessagePlus />
+                     </Button>
+                  } label="Process" />
+                  <Tooltip children={
                      <Button
                         color="red"
-                        leftIcon={<MessageOff />}
                         onClick={openIgnoreModal}
                      >
-                        Ignore
+                        <MessageOff />
                      </Button>
-                  </Group>
+                  } label="Ignore" />
+               </Group>
             </Group>
          </Stack>
-      </Paper>
+      </Paper >
    );
 }

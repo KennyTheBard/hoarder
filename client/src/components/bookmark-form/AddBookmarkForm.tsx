@@ -3,7 +3,7 @@ import { useModals } from '@mantine/modals';
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Pin, DiscountCheck } from 'tabler-icons-react';
-import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata, Id } from 'common';
+import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata, Id, findHttpUrls } from 'common';
 import { useAppDispatch } from '../../redux/hooks';
 import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
 import { notifyError, getTypeOptions } from '../../utils';
@@ -20,6 +20,10 @@ export type AddBookmarkFormProps = {
 } | {
    origin: 'edit_button';
    bookmark: WithId<Bookmark>;
+} | {
+   origin: 'process_message';
+   messageText: string;
+   onCompleted?: () => void;
 }
 
 type BookmarkFormdata = {
@@ -49,6 +53,20 @@ function getInputOverrides(props: AddBookmarkFormProps): Partial<BookmarkFormdat
       for (const key of Object.keys(props.bookmark)) {
          ret[key] = props.bookmark[key as keyof WithId<Bookmark>];
       }
+   }
+
+   if (props.origin === 'process_message') {
+      const matches = findHttpUrls(props.messageText);
+
+      if (matches.length !== 1) {
+         ret[props.messageText.length < 300 ? 'title' : 'note'] = props.messageText;
+         return ret;
+      }
+
+      const onlyMatch = matches[0];
+      ret['url'] = onlyMatch.text;
+      const messageWithoutUrl = props.messageText.slice(0, onlyMatch.index) + props.messageText.slice(onlyMatch.index + onlyMatch.text.length);
+      ret[messageWithoutUrl.length < 300 ? 'title' : 'note'] = messageWithoutUrl;
    }
 
    return ret;
@@ -284,7 +302,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
             setSubmitLoading(false);
             if (response.success) {
                dispatch(getBookmarks());
-               if (props.origin === 'import_tool' && props.onCompleted) {
+               if ((props.origin === 'import_tool' || props.origin === 'process_message') && props.onCompleted) {
                   props.onCompleted();
                }
                modals.closeAll();
