@@ -1,8 +1,8 @@
 import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal, Divider, Space, Menu } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { WithId, Message, MessageStatus } from 'common';
+import { WithId, Message, MessageStatus, findHttpUrls } from 'common';
 import ReactTimeAgo from 'react-time-ago';
-import { ChevronDown, ListDetails, MessageOff, MessagePlus } from 'tabler-icons-react';
+import { ChevronDown, ExternalLink, ListDetails, MessageOff, MessagePlus } from 'tabler-icons-react';
 import { useAppDispatch } from '../../../redux/hooks';
 import { AddBookmarkForm } from '../../../components';
 import { markMessages } from '../../../redux/slices';
@@ -64,6 +64,26 @@ export function MessageCard(props: MessageCardProps) {
       }
    }
 
+   const getUrlButton = (messageText: string) => {
+      const urls = findHttpUrls(messageText);
+
+      if (urls.length !== 1) {
+         return;
+      }
+
+      const url = urls[0].text;
+      return (
+         <Tooltip children={
+            <Button 
+            variant="subtle" color="dark"
+            onClick={() => window.open(url)}
+            >
+               <ExternalLink size={20} />
+            </Button>
+         } label={url} />
+      );
+   }
+
    return (
       <Paper shadow="md" p="md">
          <Stack>
@@ -75,6 +95,7 @@ export function MessageCard(props: MessageCardProps) {
                   <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
                </Group>
                <Group position="right">
+                  {getUrlButton(props.message.text)}
                   {props.message.status === MessageStatus.PENDING
                      ? <>
                         <Button
