@@ -1,4 +1,4 @@
-import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal } from '@mantine/core';
+import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal, Divider, Space } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { WithId, Message, MessageStatus } from 'common';
 import ReactTimeAgo from 'react-time-ago';
@@ -58,6 +58,7 @@ export function MessageCard(props: MessageCardProps) {
             return (<Badge
                color="yellow"
                variant="filled"
+               sx={{ width: 100 }}
             >
                PENDING
             </Badge>)
@@ -65,6 +66,7 @@ export function MessageCard(props: MessageCardProps) {
             return (<Badge
                color="red"
                variant="filled"
+               sx={{ width: 100 }}
             >
                IGNORED
             </Badge>)
@@ -72,6 +74,7 @@ export function MessageCard(props: MessageCardProps) {
             return (<Badge
                color="green"
                variant="filled"
+               sx={{ width: 100 }}
             >
                PROCESSED
             </Badge>)
@@ -83,45 +86,47 @@ export function MessageCard(props: MessageCardProps) {
          <Stack>
             <Group position="apart">
                <Group position="left">
-                  {getStatusBadge(props.message)}
-                  <Container sx={{ maxWidth: "50%" }}>
-                     {props.message.text}
+                  <Container sx={{ width: 120 }}>
+                     {getStatusBadge(props.message)}
                   </Container>
+                  <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
                </Group>
                <Group position="right">
-                  <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
-                  <Tooltip children={
-                     <Button
-                        color="green"
-                        onClick={() => {
-                           modals.openModal({
-                              title: "Process message",
-                              padding: "md",
-                              size: "xl",
-                              centered: true,
-                              children: (
-                                 <AddBookmarkForm
-                                    origin="process_message"
-                                    messageText={props.message.text}
-                                    onCompleted={() => dispatch(markMessagesAsBookmarked([props.message.id]))}
-                                 />
-                              )
-                           });
-                        }}
-                     >
-                        <MessagePlus />
-                     </Button>
-                  } label="Process" />
-                  <Tooltip children={
-                     <Button
-                        color="red"
-                        onClick={openIgnoreModal}
-                     >
-                        <MessageOff />
-                     </Button>
-                  } label="Ignore" />
+                  <Button
+                     color="green"
+                     leftIcon={<MessagePlus />}
+                     onClick={() => {
+                        modals.openModal({
+                           title: "Process message",
+                           padding: "md",
+                           size: "xl",
+                           centered: true,
+                           children: (
+                              <AddBookmarkForm
+                                 origin="process_message"
+                                 messageText={props.message.text}
+                                 onCompleted={() => dispatch(markMessagesAsBookmarked([props.message.id]))}
+                              />
+                           )
+                        });
+                     }}
+                  >
+                     Process
+                  </Button>
+                  <Button
+                     color="red"
+                     onClick={openIgnoreModal}
+                     leftIcon={<MessageOff />}
+                  >
+                     Ignore
+                  </Button>
                </Group>
             </Group>
+            <Divider my="sm" />
+            <Group position="left">
+                  {props.message.text}
+            </Group>
+            <Space />
          </Stack>
       </Paper >
    );

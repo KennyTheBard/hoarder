@@ -26,7 +26,7 @@ export class MessageService {
 
    public async getPendingMessages(pagination: Pagination): Promise<WithTotal<WithId<Message>>> {
       const query = this.messages
-         .filter(m => m('status').eq(MessageStatus.PENDING))
+         // .filter(m => m('status').eq(MessageStatus.PENDING))
          .orderBy(r.desc('sendAt'));
       const entries = await query
          .skip(pagination.skip || 0)

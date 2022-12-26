@@ -31,6 +31,7 @@ export class MessageController {
 
 export type GetMessagesRequest = {
    pagination?: Pagination;
+   status?: MessageStatus;
 };
 
 export type GetMessagesResponse = WithPagination<WithTotal<WithId<Message>>>;
