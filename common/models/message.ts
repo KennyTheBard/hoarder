@@ -10,4 +10,4 @@ export enum MessageStatus {
    PENDING = 'pending',
    BOOKMARKED = 'bookmarked',
    IGNORED = 'ignored',
-}
+};

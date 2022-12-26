@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Id, Pagination } from 'common';
+import { Id, MessageStatus, Pagination } from 'common';
 
 
 export const messageService = {
@@ -7,12 +7,9 @@ export const messageService = {
       axios.post('http://localhost:8080/api/getMessages', {
          pagination
       }),
-   markMessagesAsIgnored: (messageIds: Id[]) =>
-      axios.post('http://localhost:8080/api/markMessagesAsIgnored', {
-         ids: messageIds
-      }),
-   markMessagesAsBookmarked: (messageIds: Id[]) =>
-      axios.post('http://localhost:8080/api/markMessagesAsBookmarked', {
-         ids: messageIds
+   markMessages: (ids: Id[], status: MessageStatus) =>
+      axios.post('http://localhost:8080/api/markMessages', {
+         ids,
+         status
       }),
 }

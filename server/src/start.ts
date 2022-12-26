@@ -137,11 +137,8 @@ import { r } from 'rethinkdb-ts';
       app.post('/api/getMessages', postHandler<GetMessagesRequest, GetMessagesRequest>(
          messageController.getMessages
       ));
-      app.post('/api/markMessagesAsIgnored', postHandler<MarkMessagesRequest, void>(
-         messageController.markMessagesAsIgnored
-      ));
-      app.post('/api/markMessagesAsBookmarked', postHandler<MarkMessagesRequest, void>(
-         messageController.markMessagesAsBookmarked
+      app.post('/api/markMessages', postHandler<MarkMessagesRequest, void>(
+         messageController.markMessages
       ));
 
       // start server

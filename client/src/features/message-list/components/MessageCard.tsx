@@ -1,15 +1,17 @@
-import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal, Divider, Space } from '@mantine/core';
+import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal, Divider, Space, Menu } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { WithId, Message, MessageStatus } from 'common';
 import ReactTimeAgo from 'react-time-ago';
-import { MessageOff, MessagePlus } from 'tabler-icons-react';
+import { ChevronDown, ListDetails, MessageOff, MessagePlus } from 'tabler-icons-react';
 import { useAppDispatch } from '../../../redux/hooks';
-import { markMessagesAsIgnored, markMessagesAsBookmarked } from '../../../redux/slices';
 import { AddBookmarkForm } from '../../../components';
+import { markMessages } from '../../../redux/slices';
 
 export type MessageCardProps = {
    message: WithId<Message>;
 }
+
+const STATUS_BADGE_WIDTH = 120;
 
 export function MessageCard(props: MessageCardProps) {
 
@@ -27,38 +29,19 @@ export function MessageCard(props: MessageCardProps) {
          ),
          labels: { confirm: 'Ignore', cancel: 'Cancel' },
          confirmProps: { color: 'red' },
-         onConfirm: () => dispatch(markMessagesAsIgnored([props.message.id]))
+         onConfirm: () => dispatch(markMessages({
+            ids: [props.message.id],
+            status: MessageStatus.IGNORED
+         }))
       });
-
-   // const onSave = () => {
-   //    setEditDialogLoading(true);
-   //    dispatch(updateTag({
-   //       id: tag.id,
-   //       tag: {
-   //          name: tagName,
-   //          variant: selectedVariant,
-   //          color: selectedColor
-   //       }
-   //    }))
-   //       .unwrap()
-   //       .then((result: any) => {
-   //          if (result.success) {
-   //             notifySuccess('Updated tag name.')
-   //          } else {
-   //             notifyError(result.error);
-   //          }
-   //          setEditDialogLoading(false);
-   //          setEditDialogOpened(false);
-   //       });
-   // }
 
    const getStatusBadge = (message: Message) => {
       switch (message.status) {
          case MessageStatus.PENDING:
             return (<Badge
                color="yellow"
-               variant="filled"
-               sx={{ width: 100 }}
+               variant="outline"
+               sx={{ width: STATUS_BADGE_WIDTH }}
             >
                PENDING
             </Badge>)
@@ -66,7 +49,7 @@ export function MessageCard(props: MessageCardProps) {
             return (<Badge
                color="red"
                variant="filled"
-               sx={{ width: 100 }}
+               sx={{ width: STATUS_BADGE_WIDTH }}
             >
                IGNORED
             </Badge>)
@@ -74,9 +57,9 @@ export function MessageCard(props: MessageCardProps) {
             return (<Badge
                color="green"
                variant="filled"
-               sx={{ width: 100 }}
+               sx={{ width: STATUS_BADGE_WIDTH }}
             >
-               PROCESSED
+               BOOKMARKED
             </Badge>)
       }
    }
@@ -86,45 +69,94 @@ export function MessageCard(props: MessageCardProps) {
          <Stack>
             <Group position="apart">
                <Group position="left">
-                  <Container sx={{ width: 120 }}>
+                  <Container sx={{ width: STATUS_BADGE_WIDTH + 30 }}>
                      {getStatusBadge(props.message)}
                   </Container>
                   <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.message.sendAt * 1000)} />
                </Group>
                <Group position="right">
-                  <Button
-                     color="green"
-                     leftIcon={<MessagePlus />}
-                     onClick={() => {
-                        modals.openModal({
-                           title: "Process message",
-                           padding: "md",
-                           size: "xl",
-                           centered: true,
-                           children: (
-                              <AddBookmarkForm
-                                 origin="process_message"
-                                 messageText={props.message.text}
-                                 onCompleted={() => dispatch(markMessagesAsBookmarked([props.message.id]))}
-                              />
-                           )
-                        });
-                     }}
-                  >
-                     Process
-                  </Button>
-                  <Button
-                     color="red"
-                     onClick={openIgnoreModal}
-                     leftIcon={<MessageOff />}
-                  >
-                     Ignore
-                  </Button>
+                  {props.message.status === MessageStatus.PENDING
+                     ? <>
+                        <Button
+                           color="green"
+                           leftIcon={<MessagePlus />}
+                           onClick={() => {
+                              modals.openModal({
+                                 title: "Process message",
+                                 padding: "md",
+                                 size: "xl",
+                                 centered: true,
+                                 children: (
+                                    <AddBookmarkForm
+                                       origin="process_message"
+                                       messageText={props.message.text}
+                                       onCompleted={() => dispatch(markMessages({
+                                          ids: [props.message.id],
+                                          status: MessageStatus.BOOKMARKED
+                                       }))}
+                                    />
+                                 )
+                              });
+                           }}
+                        >
+                           Process
+                        </Button>
+                        <Button
+                           color="red"
+                           onClick={openIgnoreModal}
+                           leftIcon={<MessageOff />}
+                        >
+                           Ignore
+                        </Button>
+                     </>
+                     : <>
+                        <Menu>
+                           <Menu.Target>
+                              <Button
+                                 variant="outline" color="gray"
+                                 leftIcon={<ChevronDown size={24} color="gray" />}
+                              >
+                                 <Text size="lg" color="gray">Mark as</Text>
+                              </Button>
+                           </Menu.Target>
+                           <Menu.Dropdown>
+                              <Menu.Item
+                                 onClick={() => dispatch(markMessages({
+                                    ids: [props.message.id],
+                                    status: MessageStatus.PENDING
+                                 }))}
+                              >
+                                 <Text size="lg" color="orange">Pending</Text>
+                              </Menu.Item>
+                              {props.message.status === MessageStatus.IGNORED
+                                 ? <Menu.Item
+                                    onClick={() => dispatch(markMessages({
+                                       ids: [props.message.id],
+                                       status: MessageStatus.BOOKMARKED
+                                    }))}
+                                 >
+                                    <Text size="lg" color="green">Bookmarked</Text>
+                                 </Menu.Item>
+                                 : <Menu.Item
+                                    onClick={() => dispatch(markMessages({
+                                       ids: [props.message.id],
+                                       status: MessageStatus.IGNORED
+                                    }))}
+                                 >
+                                    <Text size="lg" color="red">Ignored</Text>
+                                 </Menu.Item>
+                              }
+
+                           </Menu.Dropdown>
+                        </Menu>
+                     </>
+                  }
+
                </Group>
             </Group>
             <Divider my="sm" />
             <Group position="left">
-                  {props.message.text}
+               {props.message.text}
             </Group>
             <Space />
          </Stack>

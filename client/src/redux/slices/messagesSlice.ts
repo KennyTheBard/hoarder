@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Id, Message, WithId } from 'common';
+import { Id, Message, MessageStatus, WithId } from 'common';
 import { messageService } from '../../services';
 
 
@@ -12,19 +12,13 @@ export const getMessages = createAsyncThunk(
    }
 );
 
-
-export const markMessagesAsIgnored = createAsyncThunk(
-   'messages/ignoreMessages',
-   async (messageIds: Id[], thunkAPI) => {
-      await messageService.markMessagesAsIgnored(messageIds);
-      thunkAPI.dispatch(getMessages());
-   }
-);
-
-export const markMessagesAsBookmarked = createAsyncThunk(
-   'messages/markMessagesAsBookmarked',
-   async (messageIds: Id[], thunkAPI) => {
-      await messageService.markMessagesAsBookmarked(messageIds);
+export const markMessages = createAsyncThunk(
+   'messages/markMessages',
+   async (payload: {
+      ids: Id[],
+      status: MessageStatus
+   }, thunkAPI) => {
+      await messageService.markMessages(payload.ids, payload.status);
       thunkAPI.dispatch(getMessages());
    }
 );
