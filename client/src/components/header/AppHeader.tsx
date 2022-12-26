@@ -1,6 +1,6 @@
-import { Anchor, Group, Header, Image, Menu, Text, Divider, ActionIcon } from '@mantine/core'
+import { Anchor, Group, Header, Image, Menu, Text, Divider, ActionIcon, UnstyledButton, Button } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings, Mailbox } from 'tabler-icons-react';
+import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings, Mailbox, Mail, Tool } from 'tabler-icons-react';
 
 export function AppHeader() {
    const navigate = useNavigate();
@@ -30,39 +30,30 @@ export function AppHeader() {
             </Anchor>
 
             <Group position="right">
+               <Button
+                  variant="subtle" color="dark"
+                  leftIcon={<Tags size={24} color="white" />}
+                  onClick={() => navigate('/tags')}
+               >
+                  <Text size="lg" color="white">Tags</Text>
+               </Button>
+               <Button
+                  variant="subtle" color="dark"
+                  leftIcon={<Mail size={24} color="white" />}
+                  onClick={() => navigate('/messages')}
+               >
+                  <Text size="lg" color="white">Messages</Text>
+               </Button>
                <Menu>
                   <Menu.Target>
-                     <ActionIcon>
-                        <Menu2
-                           size={64}
-                           strokeWidth={2}
-                           color={'white'}
-                        />
-                     </ActionIcon>
+                     <Button
+                        variant="subtle" color="dark"
+                        leftIcon={<Tool size={24} color="white" />}
+                     >
+                        <Text size="lg" color="white">Tools</Text>
+                     </Button>
                   </Menu.Target>
                   <Menu.Dropdown>
-                     <Menu.Label>Pages</Menu.Label>
-                     <Menu.Item
-                        icon={<Home size={24} />}
-                        onClick={() => navigate('/')}
-                     >
-                        <Text size="lg">Home</Text>
-                     </Menu.Item>
-                     <Menu.Item
-                        icon={<Tags size={24} />}
-                        onClick={() => navigate('/tags')}
-                     >
-                        <Text size="lg">Tags</Text>
-                     </Menu.Item>
-                     <Menu.Item
-                        icon={<Mailbox size={24} />}
-                        onClick={() => navigate('/messages')}
-                     >
-                        <Text size="lg">Messages</Text>
-                     </Menu.Item>
-                     <Divider />
-
-                     <Menu.Label>Tools</Menu.Label>
                      <Menu.Item
                         icon={<DatabaseImport size={24} />}
                         onClick={() => navigate('/import')}
@@ -77,7 +68,7 @@ export function AppHeader() {
                      </Menu.Item>
                      <Menu.Item
                         icon={<Settings size={24} />}
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/')} // TODO: create a settings page
                      >
                         <Text size="lg">Settings</Text>
                      </Menu.Item>
