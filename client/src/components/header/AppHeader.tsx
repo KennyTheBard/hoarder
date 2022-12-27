@@ -1,6 +1,6 @@
-import { Anchor, Group, Header, Image, Menu, Text, Divider, ActionIcon, UnstyledButton, Button } from '@mantine/core'
+import { Anchor, Group, Header, Image, Menu, Text, Button } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Tags, Menu2, DatabaseImport, DatabaseExport, Settings, Mailbox, Mail, Tool } from 'tabler-icons-react';
+import { Tags, DatabaseImport, DatabaseExport, Settings, Mail, Tool } from 'tabler-icons-react';
 
 export function AppHeader() {
    const navigate = useNavigate();

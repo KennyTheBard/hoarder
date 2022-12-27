@@ -19,7 +19,7 @@ export function BookmarkList() {
    const tags = useAppSelector((state) => state.tags.tags);
    const bookmarkTotal = useAppSelector((state) => state.bookmarkList.bookmarksTotal);
    const loading = useAppSelector((state) => state.bookmarkList.loading);
-   const searchForm = useAppSelector((state) => state.searchForm);
+   const searchForm = useAppSelector((state) => state.bookmarkList.searchForm);
 
    const refreshData = () => {
       dispatch(getBookmarks());

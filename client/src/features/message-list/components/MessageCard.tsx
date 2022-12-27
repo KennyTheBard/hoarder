@@ -1,8 +1,8 @@
-import { Badge, Group, Paper, Stack, Container, Button, Text, Tooltip, Modal, Divider, Space, Menu, Anchor } from '@mantine/core';
+import { Badge, Group, Paper, Stack, Container, Button, Text, Divider, Space, Menu, Anchor } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { WithId, Message, MessageStatus, findHttpUrls } from 'common';
+import { WithId, Message, MessageStatus } from 'common';
 import ReactTimeAgo from 'react-time-ago';
-import { ChevronDown, ExternalLink, ListDetails, MessageOff, MessagePlus } from 'tabler-icons-react';
+import { ChevronDown, MessageOff, MessagePlus } from 'tabler-icons-react';
 import { useAppDispatch } from '../../../redux/hooks';
 import { AddBookmarkForm } from '../../../components';
 import { markMessages } from '../../../redux/slices';
