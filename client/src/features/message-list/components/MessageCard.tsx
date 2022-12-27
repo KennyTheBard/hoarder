@@ -5,8 +5,8 @@ import ReactTimeAgo from 'react-time-ago';
 import { ChevronDown, MessageOff, MessagePlus } from 'tabler-icons-react';
 import { useAppDispatch } from '../../../redux/hooks';
 import { AddBookmarkForm } from '../../../components';
-import { markMessages } from '../../../redux/slices';
 import Linkify from 'react-linkify';
+import { markMessages } from '../../../redux/thunks';
 
 export type MessageCardProps = {
    message: WithId<Message>;

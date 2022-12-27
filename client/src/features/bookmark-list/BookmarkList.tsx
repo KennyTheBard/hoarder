@@ -1,12 +1,13 @@
 import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
 import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getBookmarks, getNextPage, getAllTags, setSearchTermAndUpdate, setShowArchived, setTypesAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate } from '../../redux/slices';
 import { ChangeEvent, useEffect } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
+import { getBookmarks, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
+import { getAllTags, setShowArchived, getNextPage } from '../../redux/slices';
 
 export function BookmarkList() {
 

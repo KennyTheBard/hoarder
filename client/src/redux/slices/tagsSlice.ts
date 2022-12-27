@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Id, Tag, TagExtended, WithId } from 'common';
 import { tagService } from '../../services';
-import { getBookmarks } from './bookmarkListSlice';
+import { getBookmarks } from '../thunks';
 
 
 export const getAllTags = createAsyncThunk(

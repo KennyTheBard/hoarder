@@ -3,85 +3,11 @@ import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, Filter
 import { bookmarkService } from '../../services';
 import { RootState } from '../store';
 import debounce from 'lodash.debounce';
+import { DEFAULT_PAGE_SIZE } from '../../utils';
+import { getBookmarks } from '../thunks';
 
 
-const debouncedGetBookmarks = debounce((thunkAPI) => {
-   thunkAPI.dispatch(getBookmarks());
-}, 500);
-
-export const setSearchTermAndUpdate = createAsyncThunk(
-   'bookmark/setSearchTermAndUpdate',
-   async (searchTerm: string, thunkAPI) => {
-      thunkAPI.dispatch(setSearchTerm(searchTerm));
-      debouncedGetBookmarks(thunkAPI);
-   }
-);
-
-export const setTypesAndUpdate = createAsyncThunk(
-   'bookmark/setTypesAndUpdate',
-   async (types: BookmarkType[], thunkAPI) => {
-      thunkAPI.dispatch(setTypes(types));
-      debouncedGetBookmarks(thunkAPI);
-   }
-);
-
-export const setTagsAndUpdate = createAsyncThunk(
-   'bookmark/setTagsAndUpdate',
-   async (tags: Id[], thunkAPI) => {
-      thunkAPI.dispatch(setTags(tags));
-      debouncedGetBookmarks(thunkAPI);
-   }
-);
-
-export const setTagsOperatorAndUpdate = createAsyncThunk(
-   'bookmark/setTagsOperatorAndUpdate',
-   async (op: FilterOperator, thunkAPI) => {
-      thunkAPI.dispatch(setTagsOperator(op));
-      debouncedGetBookmarks(thunkAPI);
-   }
-);
-
-export const getBookmarks = createAsyncThunk(
-   'bookmark/getBookmarks',
-   async (_, thunkAPI) => {
-      const state = thunkAPI.getState() as RootState;
-      if (state.bookmarkList.loading) {
-         return thunkAPI.rejectWithValue("Already requested")
-      }
-
-      thunkAPI.dispatch(loading());
-      const { data } = await bookmarkService.getBookmarks(state.bookmarkList.searchForm);
-      return data;
-   }
-);
-
-export const archiveBookmark = createAsyncThunk(
-   'bookmark/archiveBookmark',
-   async (bookmarkId: string, thunkAPI) => {
-      await bookmarkService.updateIsArchivedForBookmark(bookmarkId, true);
-      thunkAPI.dispatch(getBookmarks());
-   }
-);
-
-export const restoreBookmark = createAsyncThunk(
-   'bookmark/restoreBookmark',
-   async (bookmarkId: string, thunkAPI) => {
-      await bookmarkService.updateIsArchivedForBookmark(bookmarkId, false);
-      thunkAPI.dispatch(getBookmarks());
-   }
-);
-
-export const deleteBookmark = createAsyncThunk(
-   'bookmark/deleteBookmark',
-   async (bookmarkId: string, thunkAPI) => {
-      await bookmarkService.deleteBookmark(bookmarkId);
-      thunkAPI.dispatch(getBookmarks());
-   }
-);
-
-const PAGE_SIZE = 30;
-
-interface BookmarkListState {
+export interface BookmarkListState {
    bookmarks: WithId<Bookmark>[];
    bookmarksTotal?: number;
    loading: boolean;
@@ -94,7 +20,7 @@ const initialState: BookmarkListState = {
    searchForm: {
       isArchived: false,
       pagination: {
-         limit: PAGE_SIZE
+         limit: DEFAULT_PAGE_SIZE
       },
       tagsOperator: FilterOperator.OR,
    },
@@ -128,7 +54,7 @@ export const bookmarkListSlice = createSlice({
       getNextPage(state: BookmarkListState, _action: PayloadAction<void>) {
          state.searchForm.pagination = {
             ...state.searchForm.pagination,
-            skip: (state.searchForm.pagination.skip || 0) + PAGE_SIZE
+            skip: (state.searchForm.pagination.skip || 0) + DEFAULT_PAGE_SIZE
          };
       },
    },
@@ -141,6 +67,6 @@ export const bookmarkListSlice = createSlice({
       })
 });
 
-const { loading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkListSlice.actions;
-export { setShowArchived, getNextPage };
+export const { loading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkListSlice.actions;
+// export { setShowArchived, getNextPage };
 export const bookmarkListReducer: Reducer<typeof initialState> = bookmarkListSlice.reducer;

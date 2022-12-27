@@ -1,12 +1,10 @@
 import axios from 'axios';
-import { Id, MessageStatus, Pagination } from 'common';
+import { Id, MessageSearchForm, MessageStatus } from 'common';
 
 
 export const messageService = {
-   getMessages: (pagination?: Pagination) =>
-      axios.post('http://localhost:8080/api/getMessages', {
-         pagination
-      }),
+   getMessages: (searchForm: MessageSearchForm) =>
+      axios.post('http://localhost:8080/api/getMessages', searchForm),
    markMessages: (ids: Id[], status: MessageStatus) =>
       axios.post('http://localhost:8080/api/markMessages', {
          ids,

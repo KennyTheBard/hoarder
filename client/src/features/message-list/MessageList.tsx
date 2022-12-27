@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getMessages } from '../../redux/slices';
 import { Center, Loader, Container, Stack, Text } from '@mantine/core';
 import { WithId, Message } from 'common';
 import { MessageCard } from './components';
+import { getMessages } from '../../redux/thunks';
 
 
 export function MessageList() {

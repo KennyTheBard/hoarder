@@ -19,3 +19,4 @@ export const BOOKMARK_TYPE_OPTIONS: SelectItem[] = [
 
 export const DEFAULT_TAG_VARIANT = 'light';
 export const DEFAULT_TAG_COLOR = 'blue'; 
+export const DEFAULT_PAGE_SIZE = 30;

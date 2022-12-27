@@ -5,10 +5,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Pin, DiscountCheck } from 'tabler-icons-react';
 import { Bookmark, WithId, BookmarkType, isValidHttpUrl, BookmarkTypeSuggestion, CandidateMetadata, Metadata, Id, findHttpUrls } from 'common';
 import { useAppDispatch } from '../../redux/hooks';
-import { getBookmarks, getMetadataCandidates, getTypeSuggestions, getUrlMetadata, getVideoDurationInSeconds, isUrlAlreadyBookmarked, saveBookmark, updateBookmark } from '../../redux/slices';
 import { notifyError, getTypeOptions } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
+import { getUrlMetadata, getTypeSuggestions, getMetadataCandidates, getVideoDurationInSeconds, isUrlAlreadyBookmarked, updateBookmark, saveBookmark } from '../../redux/slices';
+import { getBookmarks } from '../../redux/thunks';
 
 export type AddBookmarkFormProps = {
    origin: 'pin_dialog';

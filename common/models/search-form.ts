@@ -13,3 +13,7 @@ export enum FilterOperator {
    AND = "and",
    OR = "or",
 }
+
+export type MessageSearchForm = WithPagination<{
+   onlyPending: boolean;
+}>

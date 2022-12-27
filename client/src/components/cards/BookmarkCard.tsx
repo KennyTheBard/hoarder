@@ -1,15 +1,15 @@
-import { ActionIcon, Image, Card, Center, Group, Menu, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, SimpleGrid } from '@mantine/core';
+import { ActionIcon, Image, Card, Center, Group, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, SimpleGrid } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { Archive, ArchiveOff, Edit, ExternalLink, HandClick, Link, PhotoOff, Settings, Share, TrashX, WorldWww } from 'tabler-icons-react';
+import { Archive, ArchiveOff, Edit, HandClick, Link, PhotoOff, TrashX, WorldWww } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ArticleBookmarkCard, VideoBookmarkCard, MovieBookmarkCard, ShowBookmarkCard, AnimeBookmarkCard, GameBookmarkCard, PlainTextBookmarkCard, ResourceBookmarkCard, ToolBookmarkCard, ComicsBookmarkCard, BookBookmarkCard, BoardGameBookmarkCard, UnknownBookmarkCard } from '.';
-import { deleteBookmark, archiveBookmark, restoreBookmark } from '../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notify } from '../../utils';
 import { TagBadge } from '../tag-badge';
 import { AddBookmarkForm } from '../bookmark-form';
 import { WithId, Bookmark, Tag, BookmarkType } from 'common';
 import ReactTimeAgo from 'react-time-ago';
 import { useCallback } from 'react';
+import { archiveBookmark, restoreBookmark, deleteBookmark } from '../../redux/thunks';
 
 
 export type BookmarkCardProps = WithId<Bookmark> & {
