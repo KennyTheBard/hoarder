@@ -1,9 +1,8 @@
 import { BookmarkType, FilterOperator, Id } from 'common';
-import { BookmarkListState, loading, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
+import { BookmarkListState, messagesLoading, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import debounce from 'lodash.debounce';
 import { bookmarkService } from '../../services';
-import { RootState } from '../store';
 
 const debouncedGetBookmarks = debounce((thunkAPI) => {
    thunkAPI.dispatch(getBookmarks());
@@ -51,7 +50,7 @@ export const getBookmarks = createAsyncThunk(
          return thunkAPI.rejectWithValue("Already requested")
       }
 
-      thunkAPI.dispatch(loading());
+      thunkAPI.dispatch(messagesLoading());
       const { data } = await bookmarkService.getBookmarks(bookmarkList.searchForm);
       return data;
    }

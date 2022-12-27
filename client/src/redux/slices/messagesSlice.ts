@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Id, Message, MessageSearchForm, MessageStatus, WithId } from 'common';
-import { messageService } from '../../services';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Message, MessageSearchForm, WithId } from 'common';
 import { DEFAULT_PAGE_SIZE } from '../../utils';
-import { RootState } from '../store';
 import { getMessages } from '../thunks';
 
 
@@ -27,9 +25,12 @@ export const MessagesSlice = createSlice({
    name: 'messages',
    initialState,
    reducers: {
-      loading(state: MessagesState) {
+      messagesLoading(state: MessagesState) {
          state.loading = true;
-      }
+      },
+      setOnlyPending(state: MessagesState, action: PayloadAction<boolean>) {
+         state.searchForm.onlyPending = action.payload;
+      },
    },
    extraReducers: (builder) => builder
       .addCase(getMessages.fulfilled, (state: MessagesState, action: PayloadAction<WithId<Message>[]>) => {
@@ -38,6 +39,6 @@ export const MessagesSlice = createSlice({
       })
 });
 
-const { loading } = MessagesSlice.actions;
+export const { messagesLoading, setOnlyPending } = MessagesSlice.actions;
 export const messagesReducer = MessagesSlice.reducer;
 

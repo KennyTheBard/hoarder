@@ -1,6 +1,7 @@
 import { WithId, Message, MessageStatus, Pagination, WithTotal, Id } from 'common';
 import { Connection, RTable, r } from 'rethinkdb-ts';
 import { TableNames } from '../utils';
+import { GetMessagesRequest } from '../controllers';
 
 
 export class MessageService {
@@ -24,13 +25,13 @@ export class MessageService {
       return result.generated_keys[0];
    }
 
-   public async getPendingMessages(pagination: Pagination): Promise<WithTotal<WithId<Message>>> {
+   public async getPendingMessages(request: GetMessagesRequest): Promise<WithTotal<WithId<Message>>> {
       const query = this.messages
-         // .filter(m => m('status').eq(MessageStatus.PENDING))
+         .filter(m => r.or(r.expr(request.onlyPending).not(), m('status').eq(MessageStatus.PENDING)))
          .orderBy(r.desc('sendAt'));
       const entries = await query
-         .skip(pagination.skip || 0)
-         .limit(pagination.limit)
+         .skip(request.pagination.skip || 0)
+         .limit(request.pagination.limit)
          .run(this.connection);
       const total = await query
          .count()

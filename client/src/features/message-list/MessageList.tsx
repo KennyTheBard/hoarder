@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { Center, Loader, Container, Stack, Text } from '@mantine/core';
+import { Center, Loader, Container, Stack, Text, Checkbox } from '@mantine/core';
 import { WithId, Message } from 'common';
 import { MessageCard } from './components';
-import { getMessages } from '../../redux/thunks';
+import { getMessages, setOnlyPendingAndUpdate } from '../../redux/thunks';
 
 
 export function MessageList() {
@@ -41,7 +41,15 @@ export function MessageList() {
 
    return (
       <Container size="xl">
-         {content}
+         <Stack>
+            <Container>
+               <Checkbox
+                  label="Show only pending messages"
+                  onChange={(event) => dispatch(setOnlyPendingAndUpdate(event.currentTarget.checked))}
+               />
+            </Container>
+            {content}
+         </Stack>
       </Container>
    );
 }

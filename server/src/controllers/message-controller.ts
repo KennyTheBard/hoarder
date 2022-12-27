@@ -1,4 +1,4 @@
-import { Id, Message, MessageStatus, Pagination, WithId, WithPagination, WithTotal } from 'common';
+import { Id, Message, MessageSearchForm, MessageStatus, WithId, WithPagination, WithTotal } from 'common';
 import { MessageService } from '../services';
 
 
@@ -9,9 +9,7 @@ export class MessageController {
    ) {}
 
    public getMessages = async (request: GetMessagesRequest): Promise<GetMessagesResponse> => {
-      const result = await this.messageService.getPendingMessages(request.pagination || {
-         limit: 1000
-      });
+      const result = await this.messageService.getPendingMessages(request);
 
       return {
          ...result,
@@ -25,10 +23,7 @@ export class MessageController {
 
 }
 
-export type GetMessagesRequest = {
-   pagination?: Pagination;
-   status?: MessageStatus;
-};
+export type GetMessagesRequest = MessageSearchForm;
 
 export type GetMessagesResponse = WithPagination<WithTotal<WithId<Message>>>;
 

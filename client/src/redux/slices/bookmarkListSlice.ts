@@ -1,8 +1,5 @@
-import { createAsyncThunk, createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
 import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, FilterOperator, BookmarkType, Id } from 'common';
-import { bookmarkService } from '../../services';
-import { RootState } from '../store';
-import debounce from 'lodash.debounce';
 import { DEFAULT_PAGE_SIZE } from '../../utils';
 import { getBookmarks } from '../thunks';
 
@@ -30,10 +27,10 @@ export const bookmarkListSlice = createSlice({
    name: 'bookmarkList',
    initialState,
    reducers: {
-      loading(state: BookmarkListState) {
+      bookmarksLoading(state: BookmarkListState) {
          state.loading = true;
       },
-       setSearchTerm(state: BookmarkListState, action: PayloadAction<string>) {
+      setSearchTerm(state: BookmarkListState, action: PayloadAction<string>) {
          const searchTerm = action.payload;
          state.searchForm.searchTerm = searchTerm.length > 0 ? searchTerm : undefined;
       },
@@ -67,6 +64,6 @@ export const bookmarkListSlice = createSlice({
       })
 });
 
-export const { loading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkListSlice.actions;
+export const { bookmarksLoading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkListSlice.actions;
 // export { setShowArchived, getNextPage };
 export const bookmarkListReducer: Reducer<typeof initialState> = bookmarkListSlice.reducer;
