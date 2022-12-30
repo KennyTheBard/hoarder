@@ -18,7 +18,7 @@ export const getTagsExtended = createAsyncThunk(
    async (_, thunkAPI) => {
       thunkAPI.dispatch(loading());
       const { data } = await tagService.getTagsExtended();
-      return data;
+      return data.entries;
    }
 );
 
@@ -84,6 +84,7 @@ export const TagsSlice = createSlice({
          state.loading = false;
       })
       .addCase(getTagsExtended.fulfilled, (state: TagsState, action: PayloadAction<WithId<TagExtended>[]>) => {
+         console.log('payload', action.payload)
          state.tagsExtended = action.payload;
          state.loading = false;
       })

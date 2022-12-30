@@ -13,6 +13,7 @@ export function TagList() {
 
    const modals = useModals();
    const tagsExtended = useAppSelector((state) => Object.values(state.tags.tagsExtended));
+   console.log(tagsExtended)
    const loading = useAppSelector((state) => state.tags.loading);
    const [checkedTags, setCheckedTags] = useState<Record<Id, boolean>>({});
 
@@ -71,7 +72,6 @@ export function TagList() {
                   <Grid.Col span={23}>
                      <TagCard tag={tag} />
                   </Grid.Col>
-
                </Grid>
             )}
          </Stack>

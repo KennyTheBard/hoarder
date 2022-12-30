@@ -17,7 +17,9 @@ export class TagController {
    }
 
    public getTagsExtended = async (): Promise<GetTagsExtendedResponse> => {
-      return await this.tagService.getTagsExtended();
+      return {
+         entries: await this.tagService.getTagsExtended()
+      };
    }
 
    public addTag = async (request: AddTagRequest): Promise<AddTagResponse> => {
@@ -42,12 +44,14 @@ export type GetAllTagsResponse = {
    tags: WithId<Tag>[];
 }
 
-export type GetTagsExtendedResponse = WithId<TagExtended>[];
+export type GetTagsExtendedResponse = {
+   entries: WithId<TagExtended>[];
+};
 
 export type AddTagRequest = Tag;
 
 export type AddTagResponse = {
-   tag: WithId<Tag>
+   tag: WithId<Tag>;
 };
 
 export type UpdateTagRequest = {
