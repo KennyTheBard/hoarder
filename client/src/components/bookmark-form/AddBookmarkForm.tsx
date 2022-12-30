@@ -325,17 +325,17 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    }
 
    const changeFormdata = (changes: Partial<BookmarkFormdata>) => {
-      setFormdata({
-         ...formdata,
+      setFormdata(prevFormdata => ({
+         ...prevFormdata,
          ...changes
-      });
+      }));
    }
 
    const acceptSuggestions = (suggestions: Partial<BookmarkFormdata>) => {
-      setFormdata({
-         ...formdata,
+      setFormdata(prevFormdata => ({
+         ...prevFormdata,
          ...suggestions
-      });
+      }));
    }
 
    const getAcceptSuggestionButton = (field: keyof BookmarkFormdata) => {
