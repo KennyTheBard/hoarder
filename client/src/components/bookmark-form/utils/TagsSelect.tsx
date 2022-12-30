@@ -28,26 +28,22 @@ export function TagsSelect(props: TagsSelectProps) {
       dispatch(addTag(tagName))
          .unwrap()
          .then((result: any) => {
-            dispatch(getAllTags())
-               .unwrap()
-               .then(() => {
-                  const newTagId = result.tag.id;
-                  const tags = [...selectedTags];
-                  if (!tags.find(t => t === newTagId )) {
-                     tags.push(newTagId);
-                  }
-                  onChange(tags);
-                  setSelectedTags(tags);
-               });
+            const newTagId = result.tag.id;
+            const tags = [...selectedTags];
+            if (!tags.find(t => t === newTagId)) {
+               tags.push(newTagId);
+            }
+            onChange(tags);
+            setSelectedTags(tags);
             notifySuccess(`Tag '${tagName}' created.`);
          });
-         return null;
+      return null;
    }
 
    const onChange = (newTags: string[]) => {
-      const existingTags = newTags.filter(tagId => tagMap[tagId]).sort();
-      setSelectedTags(existingTags);
-      props.onChange(existingTags);
+      const sortedTags = newTags.sort();
+      setSelectedTags(sortedTags);
+      props.onChange(sortedTags);
    };
 
    return (<>

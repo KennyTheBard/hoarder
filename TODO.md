@@ -20,8 +20,8 @@
 - [x] Auto-select newly added tag
 - [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
 - [ ] Add expiration for InMemoryCache
-- [ ] Update preview tags with newly added tag
-- [ ] "Cannot convert undefined or null to object" on {"type":"game","title":"masochisia"}
+- [x] Update preview tags with newly added tag
+- [x] "Cannot convert undefined or null to object" on {"type":"game","title":"masochisia"}
 - [x] "Request path contains unescaped characters" on {"type":"book","title":"Harap Alb continuă"}
 - [x] Add Board Game category
 - [ ] Expose image_url property for bookmark on editing/adding
@@ -29,7 +29,6 @@
 - [ ] infinite scrolling
 - [ ] Solve problem with steam images expiring
 - [x] Url already booked on edit
-- [ ] Icons in tags
 - [x] Icon to show that there is an URL if there is no image
 - [x] Editing to add new tag overrides existing tags
 - [x] Loading metadata overrides input even if metadata field is empty
@@ -37,7 +36,7 @@
 - [x] Fix "TypeError: Cannot destructure property 'images' of 'metadata' as it is null."
 - [ ] "I feel lucky" option
 - [x] Button for "Back to start"
-- [ ] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined
+- [x] Fix "TypeError: Tag is undefined" (Uncaught TypeError: tag is undefined
     BookmarkCard BookmarkCard.tsx:186
     BookmarkCard BookmarkCard.tsx:183)
 - [ ] Fix 2 requests on loading bookmarks

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 export const tagService = {
-   saveTag: (name: string) =>
+   addTag: (name: string) =>
       axios.post('http://localhost:8080/api/addTag', {
          name
       }),

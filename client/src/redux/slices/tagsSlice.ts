@@ -25,7 +25,8 @@ export const getTagsExtended = createAsyncThunk(
 export const addTag = createAsyncThunk(
    'tags/addTag',
    async (tagName: string, thunkAPI) => {
-      const { data } = await tagService.saveTag(tagName);
+      const { data } = await tagService.addTag(tagName);
+      thunkAPI.dispatch(getAllTags());
       return data;
    }
 );

@@ -209,6 +209,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                   {[...props.tags]
                      .sort()
                      .map((tagId: string) => tagsMap[tagId])
+                     .filter((tag: Tag | undefined) => !!tag)
                      .map((tag: WithId<Tag>) =>
                         <TagBadge
                            key={tag.id}
