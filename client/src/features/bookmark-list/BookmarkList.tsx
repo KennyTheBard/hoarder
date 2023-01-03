@@ -16,11 +16,11 @@ export function BookmarkList() {
    const { ref, height: elementHeight } = useElementSize();
    const { height: viewportHeight } = useViewportSize();
 
-   const bookmarks = useAppSelector((state) => state.bookmarkList.bookmarks);
-   const tags = useAppSelector((state) => state.tags.tags);
-   const bookmarkTotal = useAppSelector((state) => state.bookmarkList.bookmarksTotal);
-   const loading = useAppSelector((state) => state.bookmarkList.loading);
-   const searchForm = useAppSelector((state) => state.bookmarkList.searchForm);
+   const bookmarks = useAppSelector((state) => state.bookmarkSlice.bookmarks);
+   const tags = useAppSelector((state) => state.tagSlice.tagMaps);
+   const bookmarkTotal = useAppSelector((state) => state.bookmarkSlice.bookmarksTotal);
+   const loading = useAppSelector((state) => state.bookmarkSlice.loading);
+   const searchForm = useAppSelector((state) => state.bookmarkSlice.searchForm);
 
    const refreshData = () => {
       dispatch(getBookmarks());

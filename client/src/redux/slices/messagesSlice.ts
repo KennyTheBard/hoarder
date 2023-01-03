@@ -4,13 +4,13 @@ import { DEFAULT_PAGE_SIZE } from '../../utils';
 import { getMessages } from '../thunks';
 
 
-export interface MessagesState {
+export interface MessageSliceState {
    messages: WithId<Message>[];
    loading: boolean;
    searchForm: MessageSearchForm;
 }
 
-const initialState: MessagesState = {
+const initialState: MessageSliceState = {
    messages: [],
    loading: false,
    searchForm: {
@@ -21,24 +21,24 @@ const initialState: MessagesState = {
    }
 };
 
-export const MessagesSlice = createSlice({
+export const MessageSlice = createSlice({
    name: 'messages',
    initialState,
    reducers: {
-      messagesLoading(state: MessagesState) {
+      messagesLoading(state: MessageSliceState) {
          state.loading = true;
       },
-      setOnlyPending(state: MessagesState, action: PayloadAction<boolean>) {
+      setOnlyPending(state: MessageSliceState, action: PayloadAction<boolean>) {
          state.searchForm.onlyPending = action.payload;
       },
    },
    extraReducers: (builder) => builder
-      .addCase(getMessages.fulfilled, (state: MessagesState, action: PayloadAction<WithId<Message>[]>) => {
+      .addCase(getMessages.fulfilled, (state: MessageSliceState, action: PayloadAction<WithId<Message>[]>) => {
          state.messages = action.payload;
          state.loading = false;
       })
 });
 
-export const { messagesLoading, setOnlyPending } = MessagesSlice.actions;
-export const messagesReducer = MessagesSlice.reducer;
+export const { messagesLoading, setOnlyPending } = MessageSlice.actions;
+export const messageSliceReducer = MessageSlice.reducer;
 

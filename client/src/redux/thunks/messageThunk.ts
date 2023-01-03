@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Id, MessageStatus } from 'common';
 import { messageService } from '../../services';
-import { MessagesState, messagesLoading, setOnlyPending } from '../slices';
+import { MessageSliceState, messagesLoading, setOnlyPending } from '../slices';
 import debounce from 'lodash.debounce';
 
 
@@ -12,11 +12,14 @@ const debouncedGetBookmarks = debounce((thunkAPI) => {
 export const getMessages = createAsyncThunk(
    'messages/getMessages',
    async (_, thunkAPI) => {
-      const { messages } = thunkAPI.getState() as {
-         messages: MessagesState
+      const { messageSlice } = thunkAPI.getState() as {
+         messageSlice: MessageSliceState
       };
+      if (!messageSlice) {
+         console.error("Could not find messageSlice in global store")
+      }
       thunkAPI.dispatch(messagesLoading());
-      const { data } = await messageService.getMessages(messages.searchForm);
+      const { data } = await messageService.getMessages(messageSlice.searchForm);
       return data.entries;
    }
 );

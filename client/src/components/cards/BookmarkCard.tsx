@@ -23,7 +23,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
    const dispatch = useAppDispatch();
    const modals = useModals();
 
-   const tagsMap = useAppSelector((state) => state.tags.tags);
+   const tagsMap = useAppSelector((state) => state.tagSlice.tagMaps);
 
    const getCardContentByBookmarkType = () => {
       switch (props.type) {
@@ -228,45 +228,35 @@ export function BookmarkCard(props: BookmarkCardProps) {
                            <UnstyledButton
                               onClick={() => {}}
                            >
-                              <ActionIcon >
-                                 <Share color="black" />
-                              </ActionIcon>
+                              <Share color="black" />
                            </UnstyledButton>
                         </Tooltip> */}
                      <Tooltip label="Edit">
                         <UnstyledButton
                            onClick={onEdit}
                         >
-                           <ActionIcon >
-                              <Edit color="black" />
-                           </ActionIcon>
+                           <Edit color="black" />
                         </UnstyledButton>
                      </Tooltip>
                      {!props.isArchived && <Tooltip label="Archive">
                         <UnstyledButton
                            onClick={onArchive}
                         >
-                           <ActionIcon >
-                              <Archive color="red" />
-                           </ActionIcon>
+                           <Archive color="red" />
                         </UnstyledButton>
                      </Tooltip>}
                      {props.isArchived && <Tooltip label="Restore">
                         <UnstyledButton
                            onClick={onRestoreFromArchive}
                         >
-                           <ActionIcon >
-                              <ArchiveOff color="green" />
-                           </ActionIcon>
+                           <ArchiveOff color="green" />
                         </UnstyledButton>
                      </Tooltip>}
                      {props.isArchived && <Tooltip label="Delete">
                         <UnstyledButton
                            onClick={onDelete}
                         >
-                           <ActionIcon >
-                              <TrashX color="red" />
-                           </ActionIcon>
+                           <TrashX color="red" />
                         </UnstyledButton>
                      </Tooltip>}
                   </Group>

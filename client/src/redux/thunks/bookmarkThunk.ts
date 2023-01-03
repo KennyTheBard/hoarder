@@ -1,5 +1,5 @@
 import { BookmarkType, FilterOperator, Id } from 'common';
-import { BookmarkListState, messagesLoading, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
+import { BookmarkSliceState, messagesLoading, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import debounce from 'lodash.debounce';
 import { bookmarkService } from '../../services';
@@ -43,15 +43,18 @@ export const setTagsOperatorAndUpdate = createAsyncThunk(
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (_, thunkAPI) => {
-      const { bookmarkList } = thunkAPI.getState() as {
-         bookmarkList: BookmarkListState
+      const { bookmarkSlice } = thunkAPI.getState() as {
+         bookmarkSlice: BookmarkSliceState
       };
-      if (bookmarkList.loading) {
+      if (!bookmarkSlice) {
+         console.error("Could not find bookmarkSlice in global store")
+      } 
+      if (bookmarkSlice.loading) {
          return thunkAPI.rejectWithValue("Already requested")
       }
 
       thunkAPI.dispatch(messagesLoading());
-      const { data } = await bookmarkService.getBookmarks(bookmarkList.searchForm);
+      const { data } = await bookmarkService.getBookmarks(bookmarkSlice.searchForm);
       return data;
    }
 );

@@ -16,7 +16,7 @@ export type TagsSelectProps = {
 export function TagsSelect(props: TagsSelectProps) {
    const dispatch = useAppDispatch();
 
-   const tagMap = useAppSelector((state) => state.tags.tags);
+   const tagMap = useAppSelector((state) => state.tagSlice.tagMaps);
 
    const [selectedTags, setSelectedTags] = useState<Id[]>([...(props.values || [])].sort());
 

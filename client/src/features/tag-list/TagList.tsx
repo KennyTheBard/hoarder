@@ -12,9 +12,8 @@ export function TagList() {
    const dispatch = useAppDispatch();
 
    const modals = useModals();
-   const tagsExtended = useAppSelector((state) => Object.values(state.tags.tagsExtended));
-   console.log(tagsExtended)
-   const loading = useAppSelector((state) => state.tags.loading);
+   const tagsExtended = useAppSelector((state) => Object.values(state.tagSlice.tagsExtended));
+   const loading = useAppSelector((state) => state.tagSlice.loading);
    const [checkedTags, setCheckedTags] = useState<Record<Id, boolean>>({});
 
    const openDeleteModal = () =>

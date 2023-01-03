@@ -4,14 +4,14 @@ import { DEFAULT_PAGE_SIZE } from '../../utils';
 import { getBookmarks } from '../thunks';
 
 
-export interface BookmarkListState {
+export interface BookmarkSliceState {
    bookmarks: WithId<Bookmark>[];
    bookmarksTotal?: number;
    loading: boolean;
    searchForm: BookmarkSearchForm;
 }
 
-const initialState: BookmarkListState = {
+const initialState: BookmarkSliceState = {
    bookmarks: [],
    loading: false,
    searchForm: {
@@ -23,32 +23,32 @@ const initialState: BookmarkListState = {
    },
 };
 
-export const bookmarkListSlice = createSlice({
+export const bookmarkSlice = createSlice({
    name: 'bookmarkList',
    initialState,
    reducers: {
-      bookmarksLoading(state: BookmarkListState) {
+      bookmarksLoading(state: BookmarkSliceState) {
          state.loading = true;
       },
-      setSearchTerm(state: BookmarkListState, action: PayloadAction<string>) {
+      setSearchTerm(state: BookmarkSliceState, action: PayloadAction<string>) {
          const searchTerm = action.payload;
          state.searchForm.searchTerm = searchTerm.length > 0 ? searchTerm : undefined;
       },
-      setTypes(state: BookmarkListState, action: PayloadAction<BookmarkType[]>) {
+      setTypes(state: BookmarkSliceState, action: PayloadAction<BookmarkType[]>) {
          const types = action.payload;
          state.searchForm.types = types.length > 0 ? types : undefined;
       },
-      setTags(state: BookmarkListState, action: PayloadAction<Id[]>) {
+      setTags(state: BookmarkSliceState, action: PayloadAction<Id[]>) {
          const tags = action.payload;
          state.searchForm.tags = tags.length > 0 ? tags : undefined;
       },
-      setTagsOperator(state: BookmarkListState, action: PayloadAction<FilterOperator>) {
+      setTagsOperator(state: BookmarkSliceState, action: PayloadAction<FilterOperator>) {
          state.searchForm.tagsOperator = action.payload;
       },
-      setShowArchived(state: BookmarkListState, action: PayloadAction<boolean>) {
+      setShowArchived(state: BookmarkSliceState, action: PayloadAction<boolean>) {
          state.searchForm.isArchived = action.payload;
       },
-      getNextPage(state: BookmarkListState, _action: PayloadAction<void>) {
+      getNextPage(state: BookmarkSliceState, _action: PayloadAction<void>) {
          state.searchForm.pagination = {
             ...state.searchForm.pagination,
             skip: (state.searchForm.pagination.skip || 0) + DEFAULT_PAGE_SIZE
@@ -56,7 +56,7 @@ export const bookmarkListSlice = createSlice({
       },
    },
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarkListState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
+      .addCase(getBookmarks.fulfilled, (state: BookmarkSliceState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
          // state.bookmarks.push(...action.payload.entries);
          state.bookmarks = action.payload.entries;
          state.bookmarksTotal = action.payload.total;
@@ -64,6 +64,6 @@ export const bookmarkListSlice = createSlice({
       })
 });
 
-export const { bookmarksLoading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkListSlice.actions;
+export const { bookmarksLoading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkSlice.actions;
 // export { setShowArchived, getNextPage };
-export const bookmarkListReducer: Reducer<typeof initialState> = bookmarkListSlice.reducer;
+export const bookmarkSliceReducer: Reducer<typeof initialState> = bookmarkSlice.reducer;

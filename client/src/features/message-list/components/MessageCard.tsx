@@ -159,7 +159,7 @@ export function MessageCard(props: MessageCardProps) {
             <Group position="left">
                <Text>
                <Linkify componentDecorator={((decoratedHref: string, decoratedText: string, key: number) => (
-                  <Anchor href={decoratedHref} target="_blank">
+                  <Anchor key={key} href={decoratedHref} target="_blank">
                      {decoratedText}
                   </Anchor>
                ))}>

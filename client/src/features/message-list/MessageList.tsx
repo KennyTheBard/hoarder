@@ -9,8 +9,9 @@ import { getMessages, setOnlyPendingAndUpdate } from '../../redux/thunks';
 export function MessageList() {
    const dispatch = useAppDispatch();
 
-   const messages = useAppSelector((state) => Object.values(state.messages.messages));
-   const loading = useAppSelector((state) => state.messages.loading);
+   const messages = useAppSelector((state) => Object.values(state.messageSlice.messages));
+   const onlyPending = useAppSelector((state) => state.messageSlice.searchForm.onlyPending);
+   const loading = useAppSelector((state) => state.messageSlice.loading);
 
    useEffect(() => {
       dispatch(getMessages());
@@ -33,7 +34,7 @@ export function MessageList() {
       content = (
          <Stack mb="120px" align="right" justify="space-around" spacing="lg">
             {messages.map((message: WithId<Message>) =>
-               <MessageCard message={message} />
+               <MessageCard key={message.id} message={message} />
             )}
          </Stack>
       );
@@ -45,6 +46,7 @@ export function MessageList() {
             <Container>
                <Checkbox
                   label="Show only pending messages"
+                  checked={onlyPending}
                   onChange={(event) => dispatch(setOnlyPendingAndUpdate(event.currentTarget.checked))}
                />
             </Container>

@@ -1,5 +1,5 @@
 import { ActionIcon, Anchor, Group, Text } from '@mantine/core';
-import { Checks, BrandNetflix } from 'tabler-icons-react';
+import { BrandNetflix } from 'tabler-icons-react';
 import { AnimeBookmark } from 'common';
 
 

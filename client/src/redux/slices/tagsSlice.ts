@@ -54,42 +54,41 @@ export const deleteTags = createAsyncThunk(
    }
 );
 
-interface TagsState {
-   tags: Record<Id, WithId<Tag>>;
+interface TagSliceState {
+   tagMaps: Record<Id, WithId<Tag>>;
    tagsExtended: WithId<TagExtended>[];
    loading: boolean;
 }
 
-const initialState: TagsState = {
-   tags: {},
+const initialState: TagSliceState = {
+   tagMaps: {},
    tagsExtended: [],
    loading: false
 };
 
-export const TagsSlice = createSlice({
+export const TagSlice = createSlice({
    name: 'tags',
    initialState,
    reducers: {
-      loading(state: TagsState) {
+      loading(state: TagSliceState) {
          state.loading = true;
       }
    },
    extraReducers: (builder) => builder
-      .addCase(getAllTags.fulfilled, (state: TagsState, action: PayloadAction<WithId<Tag>[]>) => {
+      .addCase(getAllTags.fulfilled, (state: TagSliceState, action: PayloadAction<WithId<Tag>[]>) => {
          const tags: Record<Id, WithId<Tag>> = {};
          for (const tag of action.payload) {
             tags[tag.id] = tag;
          }
-         state.tags = tags;
+         state.tagMaps = tags;
          state.loading = false;
       })
-      .addCase(getTagsExtended.fulfilled, (state: TagsState, action: PayloadAction<WithId<TagExtended>[]>) => {
-         console.log('payload', action.payload)
+      .addCase(getTagsExtended.fulfilled, (state: TagSliceState, action: PayloadAction<WithId<TagExtended>[]>) => {
          state.tagsExtended = action.payload;
          state.loading = false;
       })
 });
 
-const { loading } = TagsSlice.actions
-export const tagsReducer = TagsSlice.reducer;
+const { loading } = TagSlice.actions
+export const tagSliceReducer = TagSlice.reducer;
 
