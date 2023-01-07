@@ -99,71 +99,85 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const [isCandidateSelected, setIsCandidateSelected] = useState(false);
    const [typeSuggestions, setTypeSuggestions] = useState<BookmarkTypeSuggestion[]>([]);
    const [candidates, setCandidates] = useState<CandidateMetadata[] | null>(null);
+   const [urlAlreadyBookmarked, setUrlAlreadyBookmarked] = useState<Record<string, boolean>>({})
 
-   const debouncedOnUrlChanged = async () => {
-      await new Promise<void>((resolve, reject) => {
-         setMetadataLoading(true);
-         dispatch(getUrlMetadata(formdata.url))
-            .unwrap()
-            .then((metadata: Metadata | undefined) => {
-               if (!metadata) {
-                  return;
-               }
-               setPlaceholders({
-                  title: metadata.title !== null && metadata.title.length > 0 && formdata.title.length === 0 ? metadata.title : formdata.title,
-                  note: metadata.description !== null && metadata.description.length > 0 && formdata.note.length === 0 ? metadata.description : formdata.note,
+   const debouncedOnUrlChanged = useMemo(() =>
+      debounce(async (url: string) => {
+         await new Promise<void>((resolve, reject) => {
+            setMetadataLoading(true);
+            dispatch(getUrlMetadata(url))
+               .unwrap()
+               .then((metadata: Metadata | undefined) => {
+                  if (!metadata) {
+                     return;
+                  }
+
+                  const placeholders: Partial<BookmarkFormdata> = {};
+                  if (metadata.title !== null && metadata.title.length > 0) {
+                     placeholders['title'] = metadata.title;
+                  }
+                  if (metadata.description !== null && metadata.description.length > 0) {
+                     placeholders['description'] = metadata.description;
+                  }
+                  setPlaceholders(placeholders);
+
+                  const formdata: Partial<BookmarkFormdata> = {};
+                  if (metadata.image !== null && metadata.image.length > 0) {
+                     formdata['imageUrl'] = metadata.image;
+                  }
+                  if (metadata.hostname !== null && metadata.hostname.length > 0) {
+                     formdata['hostname'] = metadata.hostname;
+                  }
+                  changeFormdataIfNotFilled(formdata);
+
+                  setMetadataLoading(false);
+                  resolve();
                })
-               changeFormdata({
-                  imageUrl: metadata.image !== null && metadata.image.length > 0 && formdata.imageUrl.length === 0 ? metadata.image : formdata.imageUrl,
-                  hostname: metadata.hostname !== null && metadata.hostname.length > 0 && formdata.hostname.length === 0 ? metadata.hostname : formdata.hostname
+               .catch(error => reject(error));
+         });
+
+         await new Promise<void>((resolve, reject) => {
+            dispatch(getTypeSuggestions(url))
+               .unwrap()
+               .then((suggestions: BookmarkTypeSuggestion[]) => {
+                  setTypeSuggestions(suggestions);
+                  resolve();
                })
-               setMetadataLoading(false);
-               resolve();
-            })
-            .catch(error => reject(error));
-      });
+               .catch(error => reject(error));
+         });
+      }, 500),
+      []
+   );
 
-      await new Promise<void>((resolve, reject) => {
-         dispatch(getTypeSuggestions(formdata.url))
-            .unwrap()
-            .then((suggestions: BookmarkTypeSuggestion[]) => {
-               setTypeSuggestions(suggestions);
-               resolve();
-            })
-            .catch(error => reject(error));
-      });
-   }
-
-   // TODO : fix this shit; it makes calls for each change because formdata is always changing
    const debouncedGetMetadataCandidates = useMemo(() =>
-      debounce(() => {
+      debounce((type: BookmarkType, title: string) => {
          dispatch(getMetadataCandidates({
-            type: formdata.type,
-            title: formdata.title
+            type,
+            title
          })).unwrap()
             .then((candidates: CandidateMetadata[] | null) => {
                setCandidates(candidates);
             });
       }, 500),
-      [formdata.type, formdata.title]
+      []
    );
 
    useEffect(() => {
       if (formdata.url.length === 0 || !isValidHttpUrl(formdata.url)) {
          return;
       }
-      debouncedOnUrlChanged();
+      debouncedOnUrlChanged(formdata.url);
    }, [formdata.url]);
 
    useEffect(() => {
-      validateFormdata();
+      debounceValidateFormdata(formdata);
    }, [formdata.type, formdata.title, formdata.url, formdata.note]);
 
    useEffect(() => {
       if (formdata.title.length === 0 || formdata.type.length === 0) {
          return;
       }
-      debouncedGetMetadataCandidates();
+      debouncedGetMetadataCandidates(formdata.type, formdata.title);
    }, [formdata.type, formdata.title]);
 
    useEffect(() => {
@@ -194,7 +208,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }, [typeSuggestions]);
 
-   const validateFormdata = async () => {
+   const validateFormdata = async (currentFormdata: BookmarkFormdata) => {
       const newErrors: Record<string, string | null> = {};
       const requiredFields = getRequiredFields();
       newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
@@ -222,12 +236,19 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
 
       if (props.origin !== 'edit_button') {
-         const alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
-            dispatch(isUrlAlreadyBookmarked(formdata.url))
-               .unwrap()
-               .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
-               .catch(error => reject(error));
-         }));
+         let alreadyBookmarked = urlAlreadyBookmarked[formdata.url];
+         if (alreadyBookmarked === undefined) {
+            alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
+               dispatch(isUrlAlreadyBookmarked(formdata.url))
+                  .unwrap()
+                  .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
+                  .catch(error => reject(error));
+            }));
+            setUrlAlreadyBookmarked({
+               ...urlAlreadyBookmarked,
+               [formdata.url]: alreadyBookmarked
+            })
+         }
          setErrors({
             ...errors,
             ...newErrors,
@@ -235,6 +256,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          });
       }
    }
+
+   const debounceValidateFormdata = useMemo(() =>
+      debounce((formdata: BookmarkFormdata) =>
+         validateFormdata(formdata),
+         500
+      ),
+      []
+   );
 
    const formdataToBookmark = (formdata: BookmarkFormdata): WithId<Bookmark> => {
       return {
@@ -283,7 +312,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const onBookmarkSubmit = async () => {
       setSubmitLoading(true);
 
-      await validateFormdata();
+      await validateFormdata(formdata);
 
       const ok = Object.values(errors).filter(v => v !== null).length === 0;
       if (!ok) {
@@ -328,6 +357,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       setFormdata(prevFormdata => ({
          ...prevFormdata,
          ...changes
+      }));
+   }
+
+   const changeFormdataIfNotFilled = (changes: Partial<BookmarkFormdata>) => {
+      setFormdata(prevFormdata => ({
+         ...changes,
+         ...prevFormdata
       }));
    }
 

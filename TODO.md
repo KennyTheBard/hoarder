@@ -8,7 +8,7 @@
 - [ ] Add 'Refresh metadata' in bookmark card options
 - [ ] Create configuration directory
 - [ ] Request for candidates only if current selected candidate is dropped
-- [ ] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
+- [x] Fix repeated requests (such as isUrlAlreadyBooked) when fields are changing (in this case title)
 - [ ] Add expiration for InMemoryCache
 - [ ] Expose image_url property for bookmark on editing/adding
 - [ ] infinite scrolling
