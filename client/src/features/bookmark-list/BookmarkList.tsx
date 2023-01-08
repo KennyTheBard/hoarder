@@ -7,7 +7,8 @@ import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
 import { getBookmarks, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
-import { getAllTags, setShowArchived, getNextPage } from '../../redux/slices';
+import { getAllTags, setShowArchived, getNextPage, searchParamsToBookmarkSearchForm, setSearchForm } from '../../redux/slices';
+import { useSearchParams } from 'react-router-dom';
 
 export function BookmarkList() {
 
@@ -15,6 +16,7 @@ export function BookmarkList() {
    const [scroll, scrollTo] = useWindowScroll();
    const { ref, height: elementHeight } = useElementSize();
    const { height: viewportHeight } = useViewportSize();
+   const [searchParams, setSearchParams] = useSearchParams();
 
    const bookmarks = useAppSelector((state) => state.bookmarkSlice.bookmarks);
    const tags = useAppSelector((state) => state.tagSlice.tagMaps);
@@ -26,7 +28,11 @@ export function BookmarkList() {
       dispatch(getBookmarks());
       dispatch(getAllTags());
    };
+   useEffect(() => {
+      dispatch(setSearchForm(searchParamsToBookmarkSearchForm(searchParams)));
+   }, []);
    useEffect(refreshData, [searchForm]);
+   // useEffect(() => console.log(searchForm), [searchForm]);
 
    return (
       <>
@@ -51,6 +57,7 @@ export function BookmarkList() {
                      />
                      <MultiSelect
                         data={getTypeOptions()}
+                        value={searchForm.types}
                         placeholder="Types..."
                         maxDropdownHeight={500}
                         clearable
@@ -77,6 +84,7 @@ export function BookmarkList() {
                            FilterOperator.OR,
                            FilterOperator.AND
                         ]}
+                        value={searchForm.tagsOperator}
                         defaultValue={FilterOperator.OR}
                         onChange={(op: FilterOperator) => dispatch(setTagsOperatorAndUpdate(op))}
                      />
@@ -85,6 +93,7 @@ export function BookmarkList() {
                            value: tag.id,
                            label: tag.name
                         }))}
+                        value={searchForm.tags}
                         searchable
                         placeholder="Tags..."
                         maxDropdownHeight={500}

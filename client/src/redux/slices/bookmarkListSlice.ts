@@ -11,16 +11,46 @@ export interface BookmarkSliceState {
    searchForm: BookmarkSearchForm;
 }
 
+const initialBookmarkSearchForm: BookmarkSearchForm = {
+   isArchived: false,
+   pagination: {
+      limit: DEFAULT_PAGE_SIZE
+   },
+   tagsOperator: FilterOperator.OR,
+}
+
+export function searchParamsToBookmarkSearchForm(searchParams: URLSearchParams): BookmarkSearchForm {
+   const searchForm: BookmarkSearchForm = JSON.parse(JSON.stringify(initialBookmarkSearchForm));
+   searchForm.isArchived = searchParams.get('isArchived') === 'true';
+   if (searchParams.get('tagsOperator') === FilterOperator.OR) {
+      searchForm.tagsOperator = FilterOperator.OR;
+   }
+   if (searchParams.get('tagsOperator') === FilterOperator.AND) {
+      searchForm.tagsOperator = FilterOperator.AND;
+   }
+   searchForm.searchTerm = searchParams.get('searchTerm') || undefined;
+   searchForm.types = !!searchParams.get('types') ? JSON.parse(searchParams.get('types')!) : undefined;
+   searchForm.tags = !!searchParams.get('tags') ? JSON.parse(searchParams.get('tags')!) : undefined;
+   return searchForm;
+}
+
+export function bookmarkSearchFormToSearchParams(searchForm: BookmarkSearchForm): URLSearchParams {
+   const searchParams = new URLSearchParams();
+   Object.keys(searchForm)
+      .filter((propertyName: string): propertyName is keyof BookmarkSearchForm => propertyName !== 'pagination')
+      .filter((propertyName: keyof BookmarkSearchForm) =>
+         searchForm[propertyName] !== initialBookmarkSearchForm[propertyName])
+      .forEach((propertyName: keyof BookmarkSearchForm) =>
+         searchParams.set(propertyName, JSON.stringify(searchForm[propertyName]))
+      );
+   console.log(searchParams.entries());
+   return searchParams;
+}
+
 const initialState: BookmarkSliceState = {
    bookmarks: [],
    loading: false,
-   searchForm: {
-      isArchived: false,
-      pagination: {
-         limit: DEFAULT_PAGE_SIZE
-      },
-      tagsOperator: FilterOperator.OR,
-   },
+   searchForm: initialBookmarkSearchForm,
 };
 
 export const bookmarkSlice = createSlice({
@@ -29,6 +59,9 @@ export const bookmarkSlice = createSlice({
    reducers: {
       bookmarksLoading(state: BookmarkSliceState) {
          state.loading = true;
+      },
+      setSearchForm(state: BookmarkSliceState, action: PayloadAction<BookmarkSearchForm>) {
+         state.searchForm = action.payload;
       },
       setSearchTerm(state: BookmarkSliceState, action: PayloadAction<string>) {
          const searchTerm = action.payload;
@@ -64,6 +97,6 @@ export const bookmarkSlice = createSlice({
       })
 });
 
-export const { bookmarksLoading, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkSlice.actions;
+export const { bookmarksLoading, setSearchForm, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkSlice.actions;
 // export { setShowArchived, getNextPage };
 export const bookmarkSliceReducer: Reducer<typeof initialState> = bookmarkSlice.reducer;
