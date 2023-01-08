@@ -20,7 +20,7 @@
 - [ ] Use Sonic for fast search over database
 - [ ] (Games) Search on steam for game metadata
 - [ ] (Games) Add a new property for store_url
-- [ ] Enable tag list button that redirects to all bookmarks with that tag 
+- [x] Enable tag list button that redirects to all bookmarks with that tag 
 
 ## Issues
 - [ ] Solve problem with steam images expiring

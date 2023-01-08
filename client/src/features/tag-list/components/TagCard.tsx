@@ -7,6 +7,7 @@ import { TagBadge } from '../../../components';
 import { useAppDispatch } from '../../../redux/hooks';
 import { deleteTags, updateTag } from '../../../redux/slices';
 import { DEFAULT_TAG_COLOR, DEFAULT_TAG_VARIANT, notifyError, notifySuccess } from '../../../utils';
+import { useNavigate } from 'react-router';
 
 export type TagCardProps = {
    tag: WithId<TagExtended>;
@@ -18,6 +19,7 @@ export function TagCard(props: TagCardProps) {
    const dispatch = useAppDispatch();
    const modals = useModals();
    const theme = useMantineTheme();
+   const navigate = useNavigate();
 
    const [isEditDialogOpened, setEditDialogOpened] = useState(false);
    const [isEditDialogLoading, setEditDialogLoading] = useState(false);
@@ -110,9 +112,7 @@ export function TagCard(props: TagCardProps) {
                               color="blue"
                               rightIcon={<ExternalLink />}
                               sx={{ width: 160 }}
-                              onClick={() => {
-                                 // TODO
-                              }}
+                              onClick={() => navigate(`/?tags=${tag.id}`)}
                            >
                               {tag.bookmarksCount} bookmark{tag.bookmarksCount > 1 ? 's' : ''}
                            </Button>
