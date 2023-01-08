@@ -10,7 +10,7 @@
 - [ ] "I feel lucky" option
 - [ ] Add "protected" setting for bookmarks 
 - [ ] Infinite scrolling
-- [ ] Reflect formdata changes in url query
+- [x] Reflect formdata changes in url query
 
 ## Improvements
 - [ ] Expose image_url property for bookmark on editing/adding
@@ -19,7 +19,8 @@
 - [ ] Media Queries to make the site mobile friendly
 - [ ] Use Sonic for fast search over database
 - [ ] (Games) Search on steam for game metadata
-- [ ] (Games) Add a new property for store_url 
+- [ ] (Games) Add a new property for store_url
+- [ ] Enable tag list button that redirects to all bookmarks with that tag 
 
 ## Issues
 - [ ] Solve problem with steam images expiring

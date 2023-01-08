@@ -1,14 +1,15 @@
 import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
 import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect, useMemo } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
 import { getBookmarks, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
-import { getAllTags, setShowArchived, getNextPage, searchParamsToBookmarkSearchForm, setSearchForm } from '../../redux/slices';
+import { getAllTags, setShowArchived, getNextPage, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm } from '../../redux/slices';
 import { useSearchParams } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 
 export function BookmarkList() {
 
@@ -24,15 +25,20 @@ export function BookmarkList() {
    const loading = useAppSelector((state) => state.bookmarkSlice.loading);
    const searchForm = useAppSelector((state) => state.bookmarkSlice.searchForm);
 
-   const refreshData = () => {
-      dispatch(getBookmarks());
-      dispatch(getAllTags());
-   };
+   const debouncedRefreshData = useMemo(() =>
+      debounce(() => {
+         dispatch(getBookmarks());
+         dispatch(getAllTags());
+      }, 500),
+      []
+   );
    useEffect(() => {
       dispatch(setSearchForm(searchParamsToBookmarkSearchForm(searchParams)));
    }, []);
-   useEffect(refreshData, [searchForm]);
-   // useEffect(() => console.log(searchForm), [searchForm]);
+   useEffect(() => {
+      debouncedRefreshData();
+      setSearchParams(bookmarkSearchFormToSearchParams(searchForm));
+   }, [searchForm]);
 
    return (
       <>
@@ -71,7 +77,7 @@ export function BookmarkList() {
                      />
                      <Button
                         leftIcon={<Refresh size={16} />}
-                        onClick={refreshData}
+                        onClick={debouncedRefreshData}
                      >
                         Refresh
                      </Button>

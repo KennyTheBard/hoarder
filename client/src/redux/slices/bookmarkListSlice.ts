@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
 import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, FilterOperator, BookmarkType, Id } from 'common';
-import { DEFAULT_PAGE_SIZE } from '../../utils';
+import { BOOKMARK_TYPE_OPTIONS, DEFAULT_PAGE_SIZE } from '../../utils';
 import { getBookmarks } from '../thunks';
 
 
@@ -29,8 +29,9 @@ export function searchParamsToBookmarkSearchForm(searchParams: URLSearchParams):
       searchForm.tagsOperator = FilterOperator.AND;
    }
    searchForm.searchTerm = searchParams.get('searchTerm') || undefined;
-   searchForm.types = !!searchParams.get('types') ? JSON.parse(searchParams.get('types')!) : undefined;
-   searchForm.tags = !!searchParams.get('tags') ? JSON.parse(searchParams.get('tags')!) : undefined;
+   const bookmarkTypes = BOOKMARK_TYPE_OPTIONS.map(op => op.value);
+   searchForm.types = !!searchParams.get('types') ? searchParams.get('types')!.split(',').filter(type => bookmarkTypes.includes(type)) as BookmarkType[] : undefined;
+   searchForm.tags = !!searchParams.get('tags') ? searchParams.get('tags')!.split(',') : undefined;
    return searchForm;
 }
 
@@ -41,9 +42,8 @@ export function bookmarkSearchFormToSearchParams(searchForm: BookmarkSearchForm)
       .filter((propertyName: keyof BookmarkSearchForm) =>
          searchForm[propertyName] !== initialBookmarkSearchForm[propertyName])
       .forEach((propertyName: keyof BookmarkSearchForm) =>
-         searchParams.set(propertyName, JSON.stringify(searchForm[propertyName]))
+         searchParams.set(propertyName, String(searchForm[propertyName]))
       );
-   console.log(searchParams.entries());
    return searchParams;
 }
 
