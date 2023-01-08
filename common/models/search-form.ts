@@ -15,5 +15,5 @@ export enum FilterOperator {
 }
 
 export type MessageSearchForm = WithPagination<{
-   onlyPending: boolean;
+   showOnlyPending: boolean;
 }>

@@ -14,7 +14,7 @@ const initialState: MessageSliceState = {
    messages: [],
    loading: false,
    searchForm: {
-      onlyPending: false,
+      showOnlyPending: true,
       pagination: {
          limit: DEFAULT_PAGE_SIZE
       }
@@ -29,7 +29,7 @@ export const MessageSlice = createSlice({
          state.loading = true;
       },
       setOnlyPending(state: MessageSliceState, action: PayloadAction<boolean>) {
-         state.searchForm.onlyPending = action.payload;
+         state.searchForm.showOnlyPending = action.payload;
       },
    },
    extraReducers: (builder) => builder

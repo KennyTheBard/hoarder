@@ -10,7 +10,7 @@ export function MessageList() {
    const dispatch = useAppDispatch();
 
    const messages = useAppSelector((state) => Object.values(state.messageSlice.messages));
-   const onlyPending = useAppSelector((state) => state.messageSlice.searchForm.onlyPending);
+   const showOnlyPending = useAppSelector((state) => state.messageSlice.searchForm.showOnlyPending);
    const loading = useAppSelector((state) => state.messageSlice.loading);
 
    useEffect(() => {
@@ -46,7 +46,7 @@ export function MessageList() {
             <Container>
                <Checkbox
                   label="Show only pending messages"
-                  checked={onlyPending}
+                  checked={showOnlyPending}
                   onChange={(event) => dispatch(setOnlyPendingAndUpdate(event.currentTarget.checked))}
                />
             </Container>
