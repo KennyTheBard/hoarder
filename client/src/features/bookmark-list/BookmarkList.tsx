@@ -32,6 +32,12 @@ export function BookmarkList() {
       }, 500),
       []
    );
+   const debouncedSearchTermUpdate = useMemo(() =>
+      debounce((searchTerm: string) => {
+         dispatch(setSearchTermAndUpdate(searchTerm))
+      }, 500),
+      []
+   );
    useEffect(() => {
       dispatch(setSearchForm(searchParamsToBookmarkSearchForm(searchParams)));
    }, []);
@@ -59,7 +65,7 @@ export function BookmarkList() {
                         icon={<Search size={16} />}
                         placeholder="Search..."
                         value={searchForm.searchTerm}
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => dispatch(setSearchTermAndUpdate(event.target.value))}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => debouncedSearchTermUpdate(event.target.value)}
                      />
                      <MultiSelect
                         data={getTypeOptions()}
