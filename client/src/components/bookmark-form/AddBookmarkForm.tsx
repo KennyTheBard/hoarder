@@ -121,14 +121,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   }
                   setPlaceholders(placeholders);
 
-                  const formdata: Partial<BookmarkFormdata> = {};
+                  const newFormdata: Partial<BookmarkFormdata> = {};
                   if (metadata.image !== null && metadata.image.length > 0) {
-                     formdata['imageUrl'] = metadata.image;
+                     newFormdata['imageUrl'] = metadata.image;
                   }
                   if (metadata.hostname !== null && metadata.hostname.length > 0) {
-                     formdata['hostname'] = metadata.hostname;
+                     newFormdata['hostname'] = metadata.hostname;
                   }
-                  changeFormdataIfNotFilled(formdata);
+                  changeFormdataIfNotFilled(newFormdata);
 
                   setMetadataLoading(false);
                   resolve();
@@ -211,12 +211,12 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    const validateFormdata = async (currentFormdata: BookmarkFormdata) => {
       const newErrors: Record<string, string | null> = {};
       const requiredFields = getRequiredFields();
-      newErrors['type'] = formdata.type.length === 0 ? 'Type is mandatory' : null;
-      newErrors['title'] = formdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
+      newErrors['type'] = currentFormdata.type.length === 0 ? 'Type is mandatory' : null;
+      newErrors['title'] = currentFormdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
       newErrors['url'] = requiredFields.url === 'required'
-         ? (formdata.url.length === 0 ? 'URL is mandatory' : null)
-         : (formdata.url.length === 0 ? null : (!isValidHttpUrl(formdata.url) ? 'Invalid URL' : null));
-      newErrors['note'] = formdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
+         ? (currentFormdata.url.length === 0 ? 'URL is mandatory' : null)
+         : (currentFormdata.url.length === 0 ? null : (!isValidHttpUrl(currentFormdata.url) ? 'Invalid URL' : null));
+      newErrors['note'] = currentFormdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
 
       if (newErrors['url']) {
          setErrors({
@@ -227,7 +227,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
 
       const hiddenProperties = Object.keys(requiredFields)
-         .filter(key => requiredFields[key] === 'hidden' && !formdata[key])
+         .filter(key => requiredFields[key] === 'hidden' && !currentFormdata[key])
          .reduce((acc, key) => acc = { ...acc, [key]: '' }, {});
       if (Object.keys(hiddenProperties).length > 0) {
          changeFormdata({
@@ -236,17 +236,17 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
 
       if (props.origin !== 'edit_button') {
-         let alreadyBookmarked = urlAlreadyBookmarked[formdata.url];
+         let alreadyBookmarked = urlAlreadyBookmarked[currentFormdata.url];
          if (alreadyBookmarked === undefined) {
             alreadyBookmarked = await (new Promise<boolean>((resolve, reject) => {
-               dispatch(isUrlAlreadyBookmarked(formdata.url))
+               dispatch(isUrlAlreadyBookmarked(currentFormdata.url))
                   .unwrap()
                   .then((alreadyBookmarked: boolean) => resolve(alreadyBookmarked))
                   .catch(error => reject(error));
             }));
             setUrlAlreadyBookmarked({
                ...urlAlreadyBookmarked,
-               [formdata.url]: alreadyBookmarked
+               [currentFormdata.url]: alreadyBookmarked
             })
          }
          setErrors({
