@@ -344,13 +344,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const selectCandidate = (candidate: CandidateMetadata) => {
       setIsCandidateSelected(true);
-      changeFormdata({
-         ...candidate,
-         // TODO: replace this mess with a function
-         title: formdata.title.length > 0 ? formdata.title : (candidate.title || ''),
-         url: formdata.url.length > 0 ? formdata.url : (candidate.url || ''),
-         imageUrl: formdata.imageUrl.length > 0 ? formdata.imageUrl : (candidate.imageUrl || ''),
-      });
+      changeFormdataIfNotFilled(candidate)
    }
 
    const changeFormdata = (changes: Partial<BookmarkFormdata>) => {
@@ -361,10 +355,15 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
    }
 
    const changeFormdataIfNotFilled = (changes: Partial<BookmarkFormdata>) => {
-      setFormdata(prevFormdata => ({
-         ...changes,
-         ...prevFormdata
-      }));
+      setFormdata(prevFormdata => {
+         const newFormdata = {
+            ...prevFormdata
+         };
+         Object.keys(changes)
+            .filter(propertyName => !newFormdata[propertyName])
+            .forEach(propertyName => newFormdata[propertyName] = changes[propertyName]);
+         return newFormdata;
+      });
    }
 
    const acceptSuggestions = (suggestions: Partial<BookmarkFormdata>) => {
