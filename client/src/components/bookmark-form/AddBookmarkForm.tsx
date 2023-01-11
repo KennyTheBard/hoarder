@@ -112,14 +112,14 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                      return;
                   }
 
-                  const placeholders: Partial<BookmarkFormdata> = {};
+                  const newPlaceholders: Partial<BookmarkFormdata> = {};
                   if (metadata.title !== null && metadata.title.length > 0) {
-                     placeholders['title'] = metadata.title;
+                     newPlaceholders['title'] = metadata.title;
                   }
                   if (metadata.description !== null && metadata.description.length > 0) {
-                     placeholders['description'] = metadata.description;
+                     newPlaceholders['note'] = metadata.description;
                   }
-                  setPlaceholders(placeholders);
+                  setPlaceholders(newPlaceholders);
 
                   const newFormdata: Partial<BookmarkFormdata> = {};
                   if (metadata.image !== null && metadata.image.length > 0) {
