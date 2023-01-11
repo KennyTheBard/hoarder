@@ -96,7 +96,13 @@ export class MediaCandidatesService {
 
    public async getVideoDurationInSeconds(url: string): Promise<number> {
       const urlObject = new URL(url);
-      const videoId = urlObject.searchParams.get('v');
+      let videoId = '';
+      if ( urlObject.hostname === 'www.youtube.com') {
+         videoId = urlObject.searchParams.get('v');
+      }
+      if ( urlObject.hostname === 'youtu.be') {
+         videoId = urlObject.pathname.split('/')[1];
+      }
       const { data } = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${process.env.GOOGLE_API_KEY}`)
       return iso8601.toSeconds(iso8601.parse(data.items[0].contentDetails.duration));
    }

@@ -12,6 +12,7 @@ const hostnameToTypeDictionary = {
    'www.npmjs.com': BookmarkType.TOOL,
    'www.producthunt.com': BookmarkType.TOOL,
    'www.youtube.com': BookmarkType.VIDEO,
+   'youtu.be': BookmarkType.VIDEO,
 }
 
 export class TypeFinderService {
