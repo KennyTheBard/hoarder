@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
 import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramListener, DataService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse } from './controllers';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse, ImportDataRequest } from './controllers';
 import { TableNames, postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -87,7 +87,9 @@ import { r } from 'rethinkdb-ts';
 
       // add middleware
       app.use(cors());
-      app.use(express.json());
+      app.use(express.json({
+         limit: '10mb'
+      }));
       app.use(new ErrorHandlerMiddleware().use);
 
       // add endpoints
@@ -152,6 +154,9 @@ import { r } from 'rethinkdb-ts';
       ));
       app.post('/api/exportData', postHandler<void, ExportDataResponse>(
          dataController.exportData
+      ));
+      app.post('/api/importData', postHandler<ImportDataRequest, void>(
+         dataController.importData
       ));
 
       // start server

@@ -14,8 +14,16 @@ export class DataController {
       };
    }
 
+   public importData = async (request: ImportDataRequest): Promise<void> => {
+      await this.dataService.importData(request.rawData);
+   }
+
 }
 
 export type ExportDataResponse = {
    rawData: RawData;
+};
+
+export type ImportDataRequest = {
+   rawData: any;
 };

@@ -16,8 +16,8 @@ export function GeneralDropzone(props: GeneralDropzoneProps) {
          onReject={props.onReject ? props.onReject : () => { }}
          maxSize={3 * 1024 ** 2}
       >
-         <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
-            <Dropzone.Accept>
+         <Group position="center" spacing="xl" style={{ minHeight: 220, minWidth: 400, pointerEvents: 'none' }}>
+            {/* <Dropzone.Accept>
                <Upload
                   size={50}
                   stroke="1.5"
@@ -31,7 +31,7 @@ export function GeneralDropzone(props: GeneralDropzoneProps) {
             </Dropzone.Reject>
             <Dropzone.Idle>
                <Photo size={50} stroke="1.5" />
-            </Dropzone.Idle>
+            </Dropzone.Idle> */}
 
             <Stack spacing="xs">
                <Text size="xl" inline>
