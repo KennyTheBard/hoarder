@@ -7,7 +7,7 @@
 
 ## Features
 - [ ] Add 'Refresh metadata' in bookmark card options
-- [ ] "I feel lucky" option
+- [x] "I feel lucky" option
 - [ ] Add "protected" setting for bookmarks 
 - [ ] Infinite scrolling
 - [x] Reflect formdata changes in url query

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
 import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, FilterOperator, BookmarkType, Id } from 'common';
 import { BOOKMARK_TYPE_OPTIONS, DEFAULT_PAGE_SIZE } from '../../utils';
-import { getBookmarks } from '../thunks';
+import { getBookmarks, getRandomBookmark } from '../thunks';
 
 
 export interface BookmarkSliceState {
@@ -90,6 +90,12 @@ export const bookmarkSlice = createSlice({
    },
    extraReducers: (builder) => builder
       .addCase(getBookmarks.fulfilled, (state: BookmarkSliceState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
+         // state.bookmarks.push(...action.payload.entries);
+         state.bookmarks = action.payload.entries;
+         state.bookmarksTotal = action.payload.total;
+         state.loading = false;
+      })
+      .addCase(getRandomBookmark.fulfilled, (state: BookmarkSliceState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
          // state.bookmarks.push(...action.payload.entries);
          state.bookmarks = action.payload.entries;
          state.bookmarksTotal = action.payload.total;

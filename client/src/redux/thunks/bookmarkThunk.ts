@@ -47,14 +47,39 @@ export const getBookmarks = createAsyncThunk(
          bookmarkSlice: BookmarkSliceState
       };
       if (!bookmarkSlice) {
-         console.error("Could not find bookmarkSlice in global store")
+         console.error("Could not find bookmarkSlice in global store");
       } 
       if (bookmarkSlice.loading) {
-         return thunkAPI.rejectWithValue("Already requested")
+         return thunkAPI.rejectWithValue("Already requested");
       }
 
-      thunkAPI.dispatch(messagesLoading());
+      // No idea why this was here
+      // thunkAPI.dispatch(messagesLoading());
       const { data } = await bookmarkService.getBookmarks(bookmarkSlice.searchForm);
+      return data;
+   }
+);
+
+export const getRandomBookmark = createAsyncThunk(
+   'bookmark/getRandomBookmark',
+   async (offset: number, thunkAPI) => {
+      const { bookmarkSlice } = thunkAPI.getState() as {
+         bookmarkSlice: BookmarkSliceState
+      };
+      if (!bookmarkSlice) {
+         console.error("Could not find bookmarkSlice in global store");
+      } 
+      if (bookmarkSlice.loading) {
+         return thunkAPI.rejectWithValue("Already requested");
+      }
+
+      const { data } = await bookmarkService.getBookmarks({
+         ...bookmarkSlice.searchForm,
+         pagination: {
+            limit: 1,
+            skip: offset
+         }
+      });
       return data;
    }
 );

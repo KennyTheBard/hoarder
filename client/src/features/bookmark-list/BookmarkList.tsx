@@ -1,12 +1,12 @@
 import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
-import { Refresh, Search, ArrowUp, ArrowRight } from 'tabler-icons-react';
+import { Refresh, Search, ArrowUp, ArrowRight, Dice3 } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ChangeEvent, useEffect, useMemo } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
-import { getBookmarks, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
+import { getBookmarks, getRandomBookmark, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
 import { getAllTags, setShowArchived, getNextPage, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm } from '../../redux/slices';
 import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
@@ -31,6 +31,15 @@ export function BookmarkList() {
          dispatch(getAllTags());
       }, 500),
       []
+   );
+   const debouncedRandom = useMemo(() =>
+      debounce(() => {
+         if (!bookmarkTotal) {
+            return;
+         }
+         dispatch(getRandomBookmark(Math.floor(Math.random() * bookmarkTotal)));
+      }, 500),
+      [bookmarkTotal]
    );
    const debouncedSearchTermUpdate = useMemo(() =>
       debounce((searchTerm: string) => {
@@ -86,6 +95,12 @@ export function BookmarkList() {
                         onClick={debouncedRefreshData}
                      >
                         Refresh
+                     </Button>
+                     <Button
+                        leftIcon={<Dice3 size={16} />}
+                        onClick={debouncedRandom}
+                     >
+                        Random
                      </Button>
                   </Group>
                </Center>
