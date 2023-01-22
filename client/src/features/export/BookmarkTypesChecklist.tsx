@@ -1,20 +1,14 @@
-import { Checkbox } from '@mantine/core';
+import { Checkbox, SelectItem } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
-import { BookmarkType } from 'common';
+import { BOOKMARK_TYPE_OPTIONS } from '../../utils';
 
-
-const initialValues = [
-   { label: 'Export articles', checked: true, key: BookmarkType.ARTICLE },
-   { label: 'Export tools', checked: true, key: BookmarkType.TOOL },
-   { label: 'Export videos', checked: true, key: BookmarkType.VIDEO },
-   { label: 'Export movies', checked: true, key: BookmarkType.MOVIE },
-   { label: 'Export shows', checked: true, key: BookmarkType.SHOW },
-   { label: 'Export animes', checked: true, key: BookmarkType.ANIME },
-   { label: 'Export games', checked: true, key: BookmarkType.GAME },
-];
 
 export function BookmarkTypesChecklist() {
-   const [values, handlers] = useListState(initialValues);
+   const [values, handlers] = useListState(BOOKMARK_TYPE_OPTIONS.map((option: SelectItem) => ({
+      label: `Export '${option.label}'`,
+      key: option.value,
+      checked: true
+   })));
 
    const allChecked = values.every((value) => value.checked);
    const indeterminate = values.some((value) => value.checked) && !allChecked;

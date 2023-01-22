@@ -199,7 +199,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                durationInSeconds
             });
          });
-   }, [formdata.type, formdata.url]);
+   }, [formdata.type, formdata.url, formdata.durationInSeconds]);
 
    useEffect(() => {
       const guaranteeTypes = typeSuggestions.filter(suggestion => suggestion.confidence === 1);

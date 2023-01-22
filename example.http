@@ -6,12 +6,10 @@
 GET {{PROXY_URL}}https://store.steampowered.com/app/3830/Psychonauts/
 
 ###
-POST {{HOST_URL}}/api/addBookmark
+POST {{HOST_URL}}/api/exportData
 Content-Type: application/json
 
-{
-
-}
+{}
 
 ###
 POST {{HOST_URL}}/api/getBookmarks

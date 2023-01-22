@@ -6,9 +6,9 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
-import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramListener } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse } from './controllers';
-import { postHandler } from './utils';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramListener, DataService } from './services';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse } from './controllers';
+import { TableNames, postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
 import { Client as OmdbClient } from 'imdb-api';
@@ -27,6 +27,14 @@ import { r } from 'rethinkdb-ts';
          port: parseInt(process.env.RETHINKDB_PORT),
       });
       conn.use(process.env.RETHINKDB_DATABASE);
+
+      // make sure that our tables exists
+      const existingTables = await r.tableList().run(conn);
+      for (const table of Object.values(TableNames)) {
+         if (!existingTables.includes(table)) {
+            await r.tableCreate(table).run(conn);
+         }
+      }
 
       // init APIs
       const movieDbClient = new MovieDb(process.env.MOVIEDB_API_KEY);
@@ -47,6 +55,7 @@ import { r } from 'rethinkdb-ts';
       const mediaCandidatesService = new MediaCandidatesService(movieDbClient, omdbClient);
       const typeFinderService = new TypeFinderService(bookmarkService);
       const boardGameCandidatesService = new BoardGameCandidatesService();
+      const dataService = new DataService(conn);
       
       // init telegram listener
       new TelegramListener(process.env.TELEGRAM_BOT, messageService);
@@ -71,6 +80,7 @@ import { r } from 'rethinkdb-ts';
       const tagController = new TagController(tagService, bookmarkService);
       const validationController = new ValidationController(bookmarkService);
       const messageController = new MessageController(messageService);
+      const dataController = new DataController(dataService);
 
       // init app with an websocket server
       const app = express();
@@ -139,6 +149,9 @@ import { r } from 'rethinkdb-ts';
       ));
       app.post('/api/markMessages', postHandler<MarkMessagesRequest, void>(
          messageController.markMessages
+      ));
+      app.post('/api/exportData', postHandler<void, ExportDataResponse>(
+         dataController.exportData
       ));
 
       // start server

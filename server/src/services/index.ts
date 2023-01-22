@@ -8,3 +8,4 @@ export * from './open-library-service';
 export * from './board-game-candidates-service';
 export * from './message-service';
 export * from './telegram-listener';
+export * from './data-service';
