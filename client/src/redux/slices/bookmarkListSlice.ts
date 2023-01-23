@@ -5,7 +5,9 @@ import { getBookmarks, getRandomBookmark } from '../thunks';
 
 
 export interface BookmarkSliceState {
-   bookmarks: WithId<Bookmark>[];
+   bookmarks: Record<Id, WithId<Bookmark>>;
+   usedSearchForm: BookmarkSearchForm;
+   bookmarksLoaded: number;
    bookmarksTotal?: number;
    loading: boolean;
    searchForm: BookmarkSearchForm;
@@ -48,8 +50,10 @@ export function bookmarkSearchFormToSearchParams(searchForm: BookmarkSearchForm)
 }
 
 const initialState: BookmarkSliceState = {
-   bookmarks: [],
+   bookmarks: {},
+   bookmarksLoaded: 0,
    loading: false,
+   usedSearchForm: initialBookmarkSearchForm,
    searchForm: initialBookmarkSearchForm,
 };
 
@@ -89,19 +93,46 @@ export const bookmarkSlice = createSlice({
       },
    },
    extraReducers: (builder) => builder
-      .addCase(getBookmarks.fulfilled, (state: BookmarkSliceState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
-         // state.bookmarks.push(...action.payload.entries);
-         state.bookmarks = action.payload.entries;
-         state.bookmarksTotal = action.payload.total;
-         state.loading = false;
-      })
-      .addCase(getRandomBookmark.fulfilled, (state: BookmarkSliceState, action: PayloadAction<WithPagination<WithTotal<WithId<Bookmark>>>>) => {
-         // state.bookmarks.push(...action.payload.entries);
-         state.bookmarks = action.payload.entries;
-         state.bookmarksTotal = action.payload.total;
-         state.loading = false;
-      })
+      .addCase(getBookmarks.fulfilled, extraReducerLoadBookmarks)
+      .addCase(getRandomBookmark.fulfilled, extraReducerLoadBookmarks)
 });
+
+const extraReducerLoadBookmarks = (
+   state: BookmarkSliceState,
+   action: PayloadAction<{
+      data: WithPagination<WithTotal<WithId<Bookmark>>>,
+      searchForm: BookmarkSearchForm
+   }>
+) => {
+   state.bookmarks = {
+      ...(areSearchFormsConditionsEqual(action.payload.searchForm, state.usedSearchForm) ? state.bookmarks : {}),
+      ...action.payload.data.entries.reduce((acc: Record<Id, WithId<Bookmark>>, entry: WithId<Bookmark>) => {
+         acc[entry.id] = entry;
+         return acc;
+      }, {})
+   };
+   state.usedSearchForm = action.payload.searchForm;
+   state.bookmarksLoaded = Object.values(state.bookmarks).length;
+   state.bookmarksTotal = action.payload.data.total;
+   state.loading = false;
+};
+
+const areSearchFormsConditionsEqual = (
+   form1: BookmarkSearchForm,
+   form2: BookmarkSearchForm
+): boolean => {
+   return JSON.stringify({
+      ...form1,
+      pagination: {
+         limit: 0
+      }
+   }) === JSON.stringify({
+      ...form2,
+      pagination: {
+         limit: 0
+      }
+   });
+}
 
 export const { bookmarksLoading, setSearchForm, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkSlice.actions;
 // export { setShowArchived, getNextPage };

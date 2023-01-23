@@ -1,13 +1,13 @@
-import { Affix, Button, Center, Checkbox, Container, Group, Input, Loader, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
-import { Refresh, Search, ArrowUp, ArrowRight, Dice3 } from 'tabler-icons-react';
+import { Affix, Button, Center, Checkbox, Container, Group, Input, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
+import { Refresh, Search, ArrowUp, Dice3 } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ChangeEvent, useEffect, useMemo } from 'react';
 import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
-import { useElementSize, useViewportSize, useWindowScroll } from '@mantine/hooks';
+import { useWindowScroll } from '@mantine/hooks';
 import { getBookmarks, getRandomBookmark, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
-import { getAllTags, setShowArchived, getNextPage, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm } from '../../redux/slices';
+import { getAllTags, setShowArchived, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm } from '../../redux/slices';
 import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 
@@ -15,14 +15,11 @@ export function BookmarkList() {
 
    const dispatch = useAppDispatch();
    const [scroll, scrollTo] = useWindowScroll();
-   const { ref: elementSizeRef, height: elementHeight } = useElementSize();
-   const { height: viewportHeight } = useViewportSize();
    const [searchParams, setSearchParams] = useSearchParams();
 
-   const bookmarks = useAppSelector((state) => state.bookmarkSlice.bookmarks);
    const tags = useAppSelector((state) => state.tagSlice.tagMaps);
+   const bookmarksLoaded = useAppSelector((state) => state.bookmarkSlice.bookmarksLoaded);
    const bookmarkTotal = useAppSelector((state) => state.bookmarkSlice.bookmarksTotal);
-   const loading = useAppSelector((state) => state.bookmarkSlice.loading);
    const searchForm = useAppSelector((state) => state.bookmarkSlice.searchForm);
 
    const debouncedRefreshData = useMemo(() =>
@@ -57,13 +54,13 @@ export function BookmarkList() {
 
    return (
       <>
-         <Container size="xl" ref={elementSizeRef}>
+         <Container size="xl">
             <Stack mt="20px">
                {!!bookmarkTotal &&
                   <Stack mb="10px">
                      <Center>
                         <Text fw={700} size="lg">
-                           Loaded <Mark color="blue">{bookmarks.length}</Mark> out of <Mark color="grape">{bookmarkTotal}</Mark> bookmarks
+                           Loaded <Mark color="blue">{bookmarksLoaded}</Mark> out of <Mark color="grape">{bookmarkTotal}</Mark> bookmarks
                         </Text>
                      </Center>
                   </Stack>
@@ -132,17 +129,15 @@ export function BookmarkList() {
                </Center>
                <Space h={20} />
 
-               {loading
-                  ? <Center><Loader color="red" size="xl" variant="dots" /></Center>
-                  : bookmarks.length > 0
-                     ? <BoardFeed columnCount={4} />
-                     : <Center>
-                        <Text size="xl" color="grey" weight="lighter" ml="20px">No bookmarks found</Text>
-                     </Center>
+               {bookmarksLoaded > 0
+                  ? <BoardFeed columnCount={4} />
+                  : <Center>
+                     <Text size="xl" color="grey" weight="lighter" ml="20px">No bookmarks found</Text>
+                  </Center>
                }
             </Stack>
             <Affix position={{ bottom: 20, left: 20 }}>
-               <Transition transition="slide-up" mounted={scroll.y + viewportHeight > elementHeight - 400}>
+               <Transition transition="slide-up" mounted={scroll.y > 50}>
                   {(transitionStyles) => (
                      <Group>
                         <Button
@@ -151,13 +146,6 @@ export function BookmarkList() {
                            onClick={() => scrollTo({ y: 0 })}
                         >
                            Scroll to top
-                        </Button>
-                        <Button
-                           leftIcon={<ArrowRight size={16} />}
-                           style={transitionStyles}
-                           onClick={() => dispatch(getNextPage())}
-                        >
-                           Load next page
                         </Button>
                      </Group>
                   )}

@@ -1,5 +1,5 @@
 import { BookmarkType, FilterOperator, Id } from 'common';
-import { BookmarkSliceState, messagesLoading, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
+import { BookmarkSliceState, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import debounce from 'lodash.debounce';
 import { bookmarkService } from '../../services';
@@ -56,7 +56,10 @@ export const getBookmarks = createAsyncThunk(
       // No idea why this was here
       // thunkAPI.dispatch(messagesLoading());
       const { data } = await bookmarkService.getBookmarks(bookmarkSlice.searchForm);
-      return data;
+      return {
+         data,
+         searchForm: bookmarkSlice.searchForm
+      };
    }
 );
 
@@ -73,14 +76,18 @@ export const getRandomBookmark = createAsyncThunk(
          return thunkAPI.rejectWithValue("Already requested");
       }
 
-      const { data } = await bookmarkService.getBookmarks({
+      const searchForm = {
          ...bookmarkSlice.searchForm,
          pagination: {
             limit: 1,
             skip: offset
          }
-      });
-      return data;
+      };
+      const { data } = await bookmarkService.getBookmarks(searchForm);
+      return {
+         data,
+         searchForm
+      };
    }
 );
 
