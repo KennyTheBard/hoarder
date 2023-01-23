@@ -9,7 +9,7 @@
 - [ ] Add 'Refresh metadata' in bookmark card options
 - [x] "I feel lucky" option
 - [ ] Add "protected" setting for bookmarks 
-- [ ] Infinite scrolling
+- [x] Infinite scrolling
 - [x] Reflect formdata changes in url query
 
 ## Improvements
@@ -23,7 +23,8 @@
 - [x] Enable tag list button that redirects to all bookmarks with that tag 
 
 ## Issues
-- [ ] Solve problem with steam images expiring
+- [ ] Expired Steam image URLs
+- [ ] MultiSelect inputs keep the first value inserted after all are deleted (even if the first one was deleted before)
 
 ## Refactoring
 - [ ] Create configuration directory
