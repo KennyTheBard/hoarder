@@ -1,4 +1,4 @@
-import { ActionIcon, Image, Card, Center, Group, Text, Stack, Box, Spoiler, MantineTheme, UnstyledButton, Tooltip, SimpleGrid } from '@mantine/core';
+import { Image, Card, Center, Group, Text, Stack, Box, MantineTheme, UnstyledButton, Tooltip, SimpleGrid } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import { Archive, ArchiveOff, Edit, HandClick, Link, PhotoOff, TrashX, WorldWww } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -204,7 +204,11 @@ export function BookmarkCard(props: BookmarkCardProps) {
                </Stack>
             </Card.Section>
 
-            <Spoiler maxHeight={40} showLabel="More" hideLabel="Less">
+            {/* <Spoiler
+               maxHeight={25}
+               showLabel="More"
+               hideLabel="Less"
+            > */}
                <Group mb="15px" spacing="xs">
                   {[...props.tags]
                      .sort()
@@ -219,7 +223,7 @@ export function BookmarkCard(props: BookmarkCardProps) {
                         />
                      )}
                </Group>
-            </Spoiler>
+            {/* </Spoiler> */}
             <Group position="apart">
                {!props.viewOnly && <>
                   <ReactTimeAgo timeStyle="twitter" tooltip={false} date={new Date(props.createdTimestamp)} />

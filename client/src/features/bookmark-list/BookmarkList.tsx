@@ -15,7 +15,7 @@ export function BookmarkList() {
 
    const dispatch = useAppDispatch();
    const [scroll, scrollTo] = useWindowScroll();
-   const { ref, height: elementHeight } = useElementSize();
+   const { ref: elementSizeRef, height: elementHeight } = useElementSize();
    const { height: viewportHeight } = useViewportSize();
    const [searchParams, setSearchParams] = useSearchParams();
 
@@ -57,7 +57,7 @@ export function BookmarkList() {
 
    return (
       <>
-         <Container size="xl" ref={ref}>
+         <Container size="xl" ref={elementSizeRef}>
             <Stack mt="20px">
                {!!bookmarkTotal &&
                   <Stack mb="10px">
@@ -135,7 +135,7 @@ export function BookmarkList() {
                {loading
                   ? <Center><Loader color="red" size="xl" variant="dots" /></Center>
                   : bookmarks.length > 0
-                     ? <BoardFeed bookmarks={bookmarks} columnCount={4} />
+                     ? <BoardFeed columnCount={4} />
                      : <Center>
                         <Text size="xl" color="grey" weight="lighter" ml="20px">No bookmarks found</Text>
                      </Center>
