@@ -69,6 +69,12 @@ export class TagService {
       return await this.tags.get(id).run(this.connection);
    }
 
+   public async getTagsByIds(ids: string[]): Promise<WithId<Tag>[]> {
+      return await this.tags
+      .filter((tag) => r.expr(ids).contains(tag('id')))
+      .run(this.connection);
+   }
+
    public async updateTag(id: string, tag: Tag): Promise<void> {
       await this.tags
          .get(id)

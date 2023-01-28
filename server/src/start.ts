@@ -6,8 +6,8 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
-import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramListener, DataService } from './services';
-import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse, ImportDataRequest } from './controllers';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramBotService, DataService } from './services';
+import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse, ImportDataRequest, SendBookmarkToTelegramRequest } from './controllers';
 import { TableNames, postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
 import { RefreshSteamAppCacheCron } from './cron';
@@ -58,7 +58,7 @@ import { r } from 'rethinkdb-ts';
       const dataService = new DataService(conn);
       
       // init telegram listener
-      new TelegramListener(process.env.TELEGRAM_BOT, messageService);
+      const telegramBot = new TelegramBotService(process.env.TELEGRAM_BOT, messageService);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
@@ -68,7 +68,11 @@ import { r } from 'rethinkdb-ts';
       );
 
       // init controllers
-      const bookmarkController = new BookmarkController(bookmarkService);
+      const bookmarkController = new BookmarkController(
+         bookmarkService,
+         tagService,
+         telegramBot,   
+      );
       const metadataController = new MetadataController(
          typeFinderService,
          metadataService,
@@ -104,6 +108,9 @@ import { r } from 'rethinkdb-ts';
       ));
       app.post('/api/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
          bookmarkController.deleteBookmark
+      ));
+      app.post('/api/sendBookmarkToTelegram', postHandler<SendBookmarkToTelegramRequest, void>(
+         bookmarkController.sendBookmarkToTelegram
       ));
       app.post('/api/updateIsArchivedForBookmark', postHandler<UpdateIsArchivedForBookmarkRequest, void>(
          bookmarkController.updateIsArchivedForBookmark

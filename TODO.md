@@ -11,6 +11,7 @@
 - [ ] Add "protected" setting for bookmarks 
 - [x] Infinite scrolling
 - [x] Reflect formdata changes in url query
+- [x] Send to Telegram
 
 ## Improvements
 - [ ] Expose image_url property for bookmark on editing/adding

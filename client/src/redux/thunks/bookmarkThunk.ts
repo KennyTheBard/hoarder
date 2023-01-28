@@ -114,3 +114,10 @@ export const deleteBookmark = createAsyncThunk(
       thunkAPI.dispatch(getBookmarks());
    }
 );
+
+export const sendBookmarkToTelegram = createAsyncThunk(
+   'bookmark/sendBookmarkToTelegram',
+   async (bookmarkId: string, thunkAPI) => {
+      await bookmarkService.sendBookmarkToTelegram(bookmarkId);
+   }
+);

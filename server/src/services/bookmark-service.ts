@@ -34,6 +34,14 @@ export class BookmarkService {
       }
    }
 
+   public async getBookmarkById(id: Id): Promise<WithId<Bookmark>> {
+      const bookmark = this.bookmarks
+         .get(id)
+         .run(this.connection);
+
+      return bookmark;
+   }
+
    public async updateBookmark(id: string, bookmark: Partial<Bookmark>): Promise<void> {
       await this.bookmarks
          .get(id)

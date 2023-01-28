@@ -3,7 +3,8 @@ import { MessageService } from './message-service';
 import telebot from 'telebot';
 
 
-export class TelegramListener {
+const DROPCAN_CHAT_ID = -1001457135508;
+export class TelegramBotService {
    readonly bot: telebot;
 
    constructor(
@@ -19,11 +20,15 @@ export class TelegramListener {
       this.bot.on('channel_post', this.messageHandler);
    }
 
-   private messageHandler = async (msg) => {
+   private messageHandler = async (msg: any) => {
       if (msg.text.indexOf('/start') > -1) {
          return this.bot.sendMessage(msg.from.id, 'I await your command!');
       }
-
+      console.log(msg);
       await this.messageService.addPendingMessage(msg.text, msg.date);
+   }
+
+   public sendMessage = async (message: string) => {
+      await this.bot.sendMessage(DROPCAN_CHAT_ID, message);
    }
 }
