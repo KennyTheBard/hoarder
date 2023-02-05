@@ -2,14 +2,12 @@ import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { GeneralDropzone } from './GeneralDropzone';
 import { dataService } from '../../services/data-service';
-import { useModals } from '@mantine/modals';
 import { AddBookmarkForm } from '../../components';
 import { Bookmark } from 'common';
 
 
 export function Import() {
 
-   const modals = useModals();
    const [filesToImport, setFilesToImport] = useState<File[] | null>(null);
    const [importType, setImportType] = useState<'none' | 'partial' | 'database'>('none');
    const [dataToImport, setDataToImport] = useState<Partial<Bookmark>[]>([]);

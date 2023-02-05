@@ -105,6 +105,7 @@ export type GameBookmark = BaseBookmark & Partial<{
    steamReviews: SteamAppReviews;
    gogReviews: GogReviews;
    duration: GameDuration;
+   magnetUrl?: string;
 }>;
 
 export type BoardGameBookmark = BaseBookmark & Partial<{
