@@ -14,6 +14,7 @@ export function GeneralDropzone(props: GeneralDropzoneProps) {
          onDrop={props.onDrop}
          onReject={props.onReject ? props.onReject : () => { }}
          maxSize={3 * 1024 ** 2}
+         maxFiles={1}
       >
          <Group position="center" spacing="xl" style={{ minHeight: 220, minWidth: 400, pointerEvents: 'none' }}>
             {/* <Dropzone.Accept>

@@ -24,7 +24,6 @@ export class TelegramBotService {
       if (msg.text.indexOf('/start') > -1) {
          return this.bot.sendMessage(msg.from.id, 'I await your command!');
       }
-      console.log(msg);
       await this.messageService.addPendingMessage(msg.text, msg.date);
    }
 

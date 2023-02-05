@@ -9,7 +9,7 @@ import { AddBookmarkForm } from '../bookmark-form';
 import { WithId, Bookmark, Tag, BookmarkType } from 'common';
 import ReactTimeAgo from 'react-time-ago';
 import { useCallback } from 'react';
-import { archiveBookmark, restoreBookmark, deleteBookmark, sendBookmarkToTelegram } from '../../redux/thunks';
+import { archiveBookmark, restoreBookmark, deleteBookmark, sendBookmarkToTelegram, getBookmarks } from '../../redux/thunks';
 
 
 export type BookmarkCardProps = WithId<Bookmark> & {
