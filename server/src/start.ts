@@ -1,3 +1,4 @@
+import { GetTorrentMagnetRequest, GetTorrentMagnetResponse } from './controllers/metadata-controller';
 import { GetMessagesRequest } from './controllers/message-controller';
 import { GetTagsExtendedResponse } from './controllers/tag-controller';
 import { MovieDb } from 'moviedb-promise';
@@ -121,6 +122,9 @@ import { r } from 'rethinkdb-ts';
       ));
       app.post('/api/getGameDurationCandidates', postHandler<GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse>(
          metadataController.getGameDurationCandidates
+      ));
+      app.post('/api/getTorrentMagnet', postHandler<GetTorrentMagnetRequest, GetTorrentMagnetResponse>(
+         metadataController.getTorrentMagnet
       ));
       app.post('/api/getMetadataCandidates', postHandler<GetMetadataCandidatesRequest, GetMetadataCandidatesResponse>(
          metadataController.getMetadataCandidates,

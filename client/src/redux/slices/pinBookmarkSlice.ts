@@ -62,6 +62,14 @@ export const isUrlAlreadyBookmarked = createAsyncThunk(
    }
 );
 
+export const getTorrentMagnet = createAsyncThunk(
+   'pinBookmark/getTorrentMagnet',
+   async (url: string, thunkAPI) => {
+      const { data } = await metadataService.getTorrentMagnet(url);
+      return data.magnet;
+   }
+)
+
 interface PinBookmarksState {}
 
 const initialState: PinBookmarksState = {};

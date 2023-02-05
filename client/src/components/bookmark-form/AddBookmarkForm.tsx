@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../redux/hooks';
 import { notifyError, getTypeOptions } from '../../utils';
 import { BookmarkCard } from '../cards';
 import { TagsSelect } from './utils';
-import { getUrlMetadata, getTypeSuggestions, getMetadataCandidates, getVideoDurationInSeconds, isUrlAlreadyBookmarked, updateBookmark, saveBookmark } from '../../redux/slices';
+import { getUrlMetadata, getTypeSuggestions, getMetadataCandidates, getVideoDurationInSeconds, isUrlAlreadyBookmarked, updateBookmark, saveBookmark, getTorrentMagnet } from '../../redux/slices';
 import { getBookmarks } from '../../redux/thunks';
 
 export type AddBookmarkFormProps = {
@@ -145,6 +145,21 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                })
                .catch(error => reject(error));
          });
+
+         if (url.startsWith('https://1337x.to/torrent/')) {
+            await new Promise<void>((resolve, reject) => {
+               dispatch(getTorrentMagnet(url))
+                  .unwrap()
+                  .then((magnet: string | undefined) => {
+                     changeFormdata({
+                        magnetUrl: magnet
+                     });
+                     resolve();
+                  })
+                  .catch(error => reject(error));
+            });
+         }
+      
       }, 500),
       []
    );

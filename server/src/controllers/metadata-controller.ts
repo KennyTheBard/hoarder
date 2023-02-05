@@ -37,6 +37,14 @@ export class MetadataController {
       };
    }
 
+   public getTorrentMagnet = async (request: GetTorrentMagnetRequest)
+      : Promise<GetTorrentMagnetResponse> => {
+      const magnet = await this.gameMetadataService.getTorrentMagnet(request.url);
+      return {
+         magnet
+      };
+   }
+
    public getMetadataCandidates = async (request: GetMetadataCandidatesRequest)
       : Promise<GetMetadataCandidatesResponse> => {
       switch (request.type) {
@@ -102,6 +110,14 @@ export type GetGameDurationCandidatesRequest = {
 
 export type GetGameDurationCandidatesResponse = {
    candidates: GameDurationCandidate[];
+}
+
+export type GetTorrentMagnetRequest = {
+   url: string;
+}
+
+export type GetTorrentMagnetResponse = {
+   magnet: string | undefined;
 }
 
 export type GetMetadataCandidatesRequest = {

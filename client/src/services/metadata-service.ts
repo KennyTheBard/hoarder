@@ -19,4 +19,8 @@ export const metadataService = {
       axios.post('http://localhost:8080/api/getVideoDurationInSeconds', {
          url
       }),
+   getTorrentMagnet: (url: string) =>
+      axios.post('http://localhost:8080/api/getTorrentMagnet', {
+         url
+      }),
 }

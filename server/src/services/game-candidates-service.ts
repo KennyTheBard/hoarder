@@ -39,6 +39,15 @@ export class GameCandidatesService {
       }
    }
 
+   public async getTorrentMagnet(url: string): Promise<string | undefined> {
+      const response = await axios.get(url);
+      const matches = Array.from(response.data.matchAll(/magnet:\?xt=urn:btih:[0-9a-fA-F]{40,}.*/g));
+      if (matches.length === 0) {
+         return undefined;
+      }
+      return matches[0][0].split('"')[0];
+   }
+
    // Doesn't seem used, i think i can remove it
    public async updateSteamAppList(apps: SteamAPI.App[]): Promise<void> {
       const lastAddedDocuments = await this.apps
