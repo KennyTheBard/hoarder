@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Reducer } from '@reduxjs/toolkit';
-import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, FilterOperator, BookmarkType, Id } from 'common';
+import { WithId, Bookmark, WithPagination, WithTotal, BookmarkSearchForm, FilterOperator, BookmarkType, Id, KeysOfUnion } from 'common';
 import { BOOKMARK_TYPE_OPTIONS, DEFAULT_PAGE_SIZE } from '../../utils';
 import { getBookmarks, getRandomBookmark } from '../thunks';
 
@@ -19,6 +19,14 @@ const initialBookmarkSearchForm: BookmarkSearchForm = {
       limit: DEFAULT_PAGE_SIZE
    },
    tagsOperator: FilterOperator.OR,
+}
+
+export enum SortingType {
+   CREATED_DESC = 'created-desc',
+   CREATED_ASC = 'created-asc',
+   MODIFIED_DESC = 'modified-desc',
+   MODIFIED_ASC = 'modified-asc',
+   RANDOM = 'random',
 }
 
 export function searchParamsToBookmarkSearchForm(searchParams: URLSearchParams): BookmarkSearchForm {
@@ -82,6 +90,13 @@ export const bookmarkSlice = createSlice({
       setTagsOperator(state: BookmarkSliceState, action: PayloadAction<FilterOperator>) {
          state.searchForm.tagsOperator = action.payload;
       },
+      setSorting(state: BookmarkSliceState, action: PayloadAction<{
+         field: KeysOfUnion<Bookmark>;
+         order: 'desc' | 'asc';
+      } | undefined>) {
+         state.searchForm.sortingField = action.payload?.field;
+         state.searchForm.sortingOrder = action.payload?.order;
+      },
       setShowArchived(state: BookmarkSliceState, action: PayloadAction<boolean>) {
          state.searchForm.isArchived = action.payload;
       },
@@ -134,6 +149,6 @@ const areSearchFormsConditionsEqual = (
    });
 }
 
-export const { bookmarksLoading, setSearchForm, setSearchTerm, setTypes, setTags, setTagsOperator, setShowArchived, getNextPage } = bookmarkSlice.actions;
+export const { bookmarksLoading, setSearchForm, setSearchTerm, setTypes, setTags, setTagsOperator, setSorting, setShowArchived, getNextPage } = bookmarkSlice.actions;
 // export { setShowArchived, getNextPage };
 export const bookmarkSliceReducer: Reducer<typeof initialState> = bookmarkSlice.reducer;

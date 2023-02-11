@@ -1,5 +1,5 @@
 import { BookmarkType, FilterOperator, Id } from 'common';
-import { BookmarkSliceState, setSearchTerm, setTags, setTagsOperator, setTypes } from '../slices';
+import { BookmarkSliceState, setSearchTerm, setSorting, setTags, setTagsOperator, setTypes, SortingType } from '../slices';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import debounce from 'lodash.debounce';
 import { bookmarkService } from '../../services';
@@ -40,6 +40,42 @@ export const setTagsOperatorAndUpdate = createAsyncThunk(
    }
 );
 
+export const setSortingAndUpdate = createAsyncThunk(
+   'bookmark/setSortingAndUpdate',
+   async (sortingType: SortingType, thunkAPI) => {
+      switch (sortingType) {
+         case SortingType.CREATED_ASC:
+            thunkAPI.dispatch(setSorting({
+               field: 'createdTimestamp',
+               order: 'asc'
+            }));
+            break;
+
+         case SortingType.CREATED_DESC:
+            thunkAPI.dispatch(setSorting({
+               field: 'createdTimestamp',
+               order: 'desc'
+            })); break;
+
+         case SortingType.MODIFIED_ASC:
+            thunkAPI.dispatch(setSorting({
+               field: 'updatedTimestamp',
+               order: 'asc'
+            })); break;
+
+         case SortingType.MODIFIED_DESC:
+            thunkAPI.dispatch(setSorting({
+               field: 'updatedTimestamp',
+               order: 'desc'
+            })); break;
+
+         default:
+            thunkAPI.dispatch(setSorting());
+      }
+      debouncedGetBookmarks(thunkAPI);
+   }
+);
+
 export const getBookmarks = createAsyncThunk(
    'bookmark/getBookmarks',
    async (_, thunkAPI) => {
@@ -48,7 +84,7 @@ export const getBookmarks = createAsyncThunk(
       };
       if (!bookmarkSlice) {
          console.error("Could not find bookmarkSlice in global store");
-      } 
+      }
       if (bookmarkSlice.loading) {
          return thunkAPI.rejectWithValue("Already requested");
       }
@@ -71,7 +107,7 @@ export const getRandomBookmark = createAsyncThunk(
       };
       if (!bookmarkSlice) {
          console.error("Could not find bookmarkSlice in global store");
-      } 
+      }
       if (bookmarkSlice.loading) {
          return thunkAPI.rejectWithValue("Already requested");
       }

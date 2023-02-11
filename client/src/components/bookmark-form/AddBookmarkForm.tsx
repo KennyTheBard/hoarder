@@ -225,13 +225,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
 
    const validateFormdata = async (currentFormdata: BookmarkFormdata) => {
       const newErrors: Record<string, string | null> = {};
-      const requiredFields = getRequiredFields();
+      const fieldsConfig = getFieldsConfig(currentFormdata.type);
       newErrors['type'] = currentFormdata.type.length === 0 ? 'Type is mandatory' : null;
-      newErrors['title'] = currentFormdata.title.length === 0 && requiredFields.title === 'required' ? 'Title is mandatory' : null;
-      newErrors['url'] = requiredFields.url === 'required'
+      newErrors['title'] = currentFormdata.title.length === 0 && fieldsConfig.title === 'required' ? 'Title is mandatory' : null;
+      newErrors['url'] = fieldsConfig.url === 'required'
          ? (currentFormdata.url.length === 0 ? 'URL is mandatory' : null)
          : (currentFormdata.url.length === 0 ? null : (!isValidHttpUrl(currentFormdata.url) ? 'Invalid URL' : null));
-      newErrors['note'] = currentFormdata.note.length === 0 && requiredFields.note === 'required' ? 'Note is mandatory' : null;
+      newErrors['note'] = currentFormdata.note.length === 0 && fieldsConfig.note === 'required' ? 'Note is mandatory' : null;
 
       if (newErrors['url']) {
          setErrors({
@@ -241,8 +241,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
          return;
       }
 
-      const hiddenProperties = Object.keys(requiredFields)
-         .filter(key => requiredFields[key] === 'hidden' && !currentFormdata[key])
+      const hiddenProperties = Object.keys(fieldsConfig)
+         .filter(key => fieldsConfig[key] === 'hidden' && !currentFormdata[key])
          .reduce((acc, key) => acc = { ...acc, [key]: '' }, {});
       if (Object.keys(hiddenProperties).length > 0) {
          changeFormdata({
@@ -309,8 +309,8 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
       }
    }
 
-   const getRequiredFields = (): Record<string, 'required' | 'hidden'> => {
-      switch (formdata.type) {
+   const getFieldsConfig = (type: BookmarkType): Record<string, 'required' | 'hidden'> => {
+      switch (type) {
          case BookmarkType.PLAINTEXT:
             return {
                url: 'hidden',
@@ -434,7 +434,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   {...style}
                />
 
-               {getRequiredFields().url !== 'hidden' &&
+               {getFieldsConfig(formdata.type).url !== 'hidden' &&
                   <>
                      <Textarea
                         label={getUrlLabelByType() || 'URL'}
@@ -452,7 +452,7 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                            </div>
                         }
                         value={formdata.url}
-                        required={getRequiredFields().url === 'required'}
+                        required={getFieldsConfig(formdata.type).url === 'required'}
                         minRows={2} maxRows={2}
                         onChange={(event) => changeFormdata({ url: event.target.value })}
                         error={errors.url}
@@ -461,13 +461,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   </>
                }
 
-               {getRequiredFields().title !== 'hidden' &&
+               {getFieldsConfig(formdata.type).title !== 'hidden' &&
                   <Textarea
                      label="Title or Name"
                      placeholder={placeholders.title || ""}
                      value={formdata.title}
                      rightSection={getAcceptSuggestionButton("title")}
-                     required={getRequiredFields().title === 'required'}
+                     required={getFieldsConfig(formdata.type).title === 'required'}
                      minRows={2} maxRows={2}
                      onChange={(event) => changeFormdata({ title: event.target.value })}
                      error={errors.title}
@@ -475,13 +475,13 @@ export function AddBookmarkForm(props: AddBookmarkFormProps) {
                   />
                }
 
-               {getRequiredFields().note !== 'hidden' &&
+               {getFieldsConfig(formdata.type).note !== 'hidden' &&
                   <Textarea
                      label="Note"
                      placeholder={placeholders.note || "Something that might be worth mentioning..."}
                      rightSection={getAcceptSuggestionButton("note")}
                      autosize
-                     required={getRequiredFields().note === 'required'}
+                     required={getFieldsConfig(formdata.type).note === 'required'}
                      minRows={2} maxRows={2}
                      value={formdata.note}
                      onChange={(event) => changeFormdata({ note: event.target.value })}

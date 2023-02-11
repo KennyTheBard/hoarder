@@ -143,14 +143,14 @@ export class BookmarkService {
                r.or(
                   r.expr(1 !== 1), // boolean needed, not false
                   ...form.tags.map(tag => bookmark('tags').contains(tag))
-                  )
+               )
             );
          } else {
             query = query.filter(bookmark =>
                r.and(
                   r.expr(1 === 1), // boolean needed, not true
                   ...form.tags.map(tag => bookmark('tags').contains(tag))
-                  )
+               )
             );
          }
       }
@@ -161,6 +161,13 @@ export class BookmarkService {
                bookmark('title').downcase().match(form.searchTerm.toLowerCase()).ne(null),
                bookmark('note').downcase().match(form.searchTerm.toLowerCase()).ne(null)
             )
+         );
+      }
+
+      if (form.sortingField && form.sortingOrder) {
+         query = query.orderBy(form.sortingOrder === 'desc'
+            ? r.desc(form.sortingField)
+            : r.asc(form.sortingField)
          );
       }
 

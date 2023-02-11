@@ -1,4 +1,4 @@
-import { Affix, Button, Center, Checkbox, Container, Group, Input, Mark, MultiSelect, SegmentedControl, Space, Stack, Text, Transition } from '@mantine/core';
+import { Affix, Button, Center, Checkbox, Container, Group, Input, Mark, MultiSelect, SegmentedControl, Select, Space, Stack, Text, Transition } from '@mantine/core';
 import { Refresh, Search, ArrowUp, Dice3 } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { ChangeEvent, useEffect, useMemo } from 'react';
@@ -6,8 +6,8 @@ import { BoardFeed } from './feed';
 import { getTypeOptions } from '../../utils';
 import { BookmarkType, FilterOperator, Id, Tag, WithId } from 'common';
 import { useWindowScroll } from '@mantine/hooks';
-import { getBookmarks, getRandomBookmark, setSearchTermAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
-import { getAllTags, setShowArchived, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm } from '../../redux/slices';
+import { getBookmarks, getRandomBookmark, setSearchTermAndUpdate, setSortingAndUpdate, setTagsAndUpdate, setTagsOperatorAndUpdate, setTypesAndUpdate } from '../../redux/thunks';
+import { getAllTags, setShowArchived, searchParamsToBookmarkSearchForm, bookmarkSearchFormToSearchParams, setSearchForm, SortingType } from '../../redux/slices';
 import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 
@@ -124,6 +124,18 @@ export function BookmarkList() {
                         clearable
                         onChange={(tags: Id[]) => dispatch(setTagsAndUpdate(tags))}
                         sx={{ width: 350 }}
+                     />
+                     <Select
+                        placeholder="Order by..."
+                        defaultValue={SortingType.RANDOM}
+                        data={[
+                           { value: SortingType.RANDOM, label: 'Random' },
+                           { value: SortingType.CREATED_ASC, label: 'Oldest created to newest' },
+                           { value: SortingType.CREATED_DESC, label: 'Newest created to oldest' },
+                           { value: SortingType.MODIFIED_ASC, label: 'Oldest modified to newest' },
+                           { value: SortingType.MODIFIED_DESC, label: 'Newest modified to oldest' },
+                        ]}
+                        onChange={(value: SortingType) => dispatch(setSortingAndUpdate(value))}
                      />
                   </Group>
                </Center>
