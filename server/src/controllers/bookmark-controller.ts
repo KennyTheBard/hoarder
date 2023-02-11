@@ -44,8 +44,9 @@ export class BookmarkController {
       const bookmark = await this.bookmarkService.getBookmarkById(request.id);
       const tags = await this.tagService.getTagsByIds(bookmark.tags);
 
-      await this.telegramBot.sendMessage(
-         `${bookmark.title}\n${bookmark.note}\n${bookmark.url}\nTags: ${tags.map(tag => tag.name).join(', ')}`
+      await this.telegramBot.sendBookmark(
+         bookmark,
+         tags
       );
    }
 

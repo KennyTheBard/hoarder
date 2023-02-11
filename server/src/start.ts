@@ -59,7 +59,7 @@ import { r } from 'rethinkdb-ts';
       const dataService = new DataService(conn);
       
       // init telegram listener
-      const telegramBot = new TelegramBotService(process.env.TELEGRAM_BOT, messageService);
+      const telegramBot = new TelegramBotService(process.env.TELEGRAM_BOT, bookmarkService, messageService);
 
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
