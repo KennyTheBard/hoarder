@@ -42,10 +42,12 @@ export function searchParamsToBookmarkSearchForm(searchParams: URLSearchParams):
    if (searchParams.get('tagsOperator') === FilterOperator.AND) {
       searchForm.tagsOperator = FilterOperator.AND;
    }
-   searchForm.searchTerm = searchParams.get('searchTerm') || undefined;
+   searchForm.searchTerm = searchParams.get('searchTerm') ?? undefined;
    const bookmarkTypes = BOOKMARK_TYPE_OPTIONS.map(op => op.value);
    searchForm.types = !!searchParams.get('types') ? searchParams.get('types')!.split(',').filter(type => bookmarkTypes.includes(type)) as BookmarkType[] : undefined;
    searchForm.tags = !!searchParams.get('tags') ? searchParams.get('tags')!.split(',') : undefined;
+   searchForm.sortingField = searchParams.get('sortingField') as KeysOfUnion<Bookmark> ?? undefined;
+   searchForm.sortingOrder = searchParams.get('sortingOrder') === 'asc' ? 'asc' : (searchParams.get('sortingOrder') === 'desc' ? 'desc' : undefined);
    return searchForm;
 }
 

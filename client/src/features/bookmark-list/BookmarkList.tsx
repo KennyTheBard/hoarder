@@ -128,6 +128,8 @@ export function BookmarkList() {
                      <Select
                         placeholder="Order by..."
                         defaultValue={SortingType.RANDOM}
+                        maxDropdownHeight={500}
+                        sx={{ width: 350 }}
                         data={[
                            { value: SortingType.RANDOM, label: 'Random' },
                            { value: SortingType.CREATED_ASC, label: 'Oldest created to newest' },
