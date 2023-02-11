@@ -134,6 +134,12 @@ export function BookmarkList() {
                            { value: SortingType.CREATED_DESC, label: 'Newest created to oldest' },
                            { value: SortingType.MODIFIED_ASC, label: 'Oldest modified to newest' },
                            { value: SortingType.MODIFIED_DESC, label: 'Newest modified to oldest' },
+                           ...(searchForm.types && searchForm.types.length === 1 && searchForm.types[0] === BookmarkType.VIDEO
+                                 ? [
+                                    { value: SortingType.DURATION_ASC, label: 'Shortest to longest (Video only)' },
+                                    { value: SortingType.DURATION_DESC, label: 'Longest to shortes (Video only)' },
+                                 ]
+                                 : [])
                         ]}
                         onChange={(value: SortingType) => dispatch(setSortingAndUpdate(value))}
                      />

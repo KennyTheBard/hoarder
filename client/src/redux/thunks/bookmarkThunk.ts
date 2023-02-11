@@ -55,19 +55,36 @@ export const setSortingAndUpdate = createAsyncThunk(
             thunkAPI.dispatch(setSorting({
                field: 'createdTimestamp',
                order: 'desc'
-            })); break;
+            }));
+            break;
 
          case SortingType.MODIFIED_ASC:
             thunkAPI.dispatch(setSorting({
                field: 'updatedTimestamp',
                order: 'asc'
-            })); break;
+            }));
+            break;
 
          case SortingType.MODIFIED_DESC:
             thunkAPI.dispatch(setSorting({
                field: 'updatedTimestamp',
                order: 'desc'
-            })); break;
+            }));
+            break;
+
+         case SortingType.DURATION_ASC:
+            thunkAPI.dispatch(setSorting({
+               field: 'durationInSeconds',
+               order: 'asc'
+            }));
+            break;
+
+         case SortingType.DURATION_DESC:
+            thunkAPI.dispatch(setSorting({
+               field: 'durationInSeconds',
+               order: 'desc'
+            }));
+            break;
 
          default:
             thunkAPI.dispatch(setSorting());

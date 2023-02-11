@@ -22,11 +22,15 @@ const initialBookmarkSearchForm: BookmarkSearchForm = {
 }
 
 export enum SortingType {
+   RANDOM = 'random',
    CREATED_DESC = 'created-desc',
    CREATED_ASC = 'created-asc',
    MODIFIED_DESC = 'modified-desc',
    MODIFIED_ASC = 'modified-asc',
-   RANDOM = 'random',
+
+   // specific for a subset of bookmarks
+   DURATION_DESC = 'duration-desc',
+   DURATION_ASC = 'duration-asc',
 }
 
 export function searchParamsToBookmarkSearchForm(searchParams: URLSearchParams): BookmarkSearchForm {
