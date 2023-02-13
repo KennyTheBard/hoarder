@@ -138,20 +138,31 @@ export class BookmarkService {
       }
 
       if (form.tags && form.tags.length > 0) {
-         if (form.tagsOperator === FilterOperator.OR) {
-            query = query.filter(bookmark =>
-               r.or(
-                  r.expr(1 !== 1), // boolean needed, not false
-                  ...form.tags.map(tag => bookmark('tags').contains(tag))
-               )
-            );
-         } else {
-            query = query.filter(bookmark =>
-               r.and(
-                  r.expr(1 === 1), // boolean needed, not true
-                  ...form.tags.map(tag => bookmark('tags').contains(tag))
-               )
-            );
+         switch (form.tagsOperator) {
+            case FilterOperator.OR:
+               query = query.filter(bookmark =>
+                  r.or(
+                     r.expr(1 !== 1), // boolean needed, not false
+                     ...form.tags.map(tag => bookmark('tags').contains(tag))
+                  )
+               );
+               break;
+            case FilterOperator.AND:
+               query = query.filter(bookmark =>
+                  r.and(
+                     r.expr(1 === 1), // boolean needed, not true
+                     ...form.tags.map(tag => bookmark('tags').contains(tag))
+                  )
+               );
+               break;
+            case FilterOperator.NOT:
+               query = query.filter(bookmark =>
+                  r.or(
+                     r.expr(1 !== 1), // boolean needed, not false
+                     ...form.tags.map(tag => bookmark('tags').contains(tag))
+                  ).not()
+               );
+               break;
          }
       }
 

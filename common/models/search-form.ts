@@ -14,6 +14,7 @@ export type BookmarkSearchForm = WithPagination<{
 export enum FilterOperator {
    AND = "and",
    OR = "or",
+   NOT = "not",
 }
 
 export type MessageSearchForm = WithPagination<{

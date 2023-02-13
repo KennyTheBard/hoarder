@@ -49,6 +49,7 @@ export function BookmarkList() {
    }, []);
    useEffect(() => {
       debouncedRefreshData();
+      // TODO: debounce this operation
       setSearchParams(bookmarkSearchFormToSearchParams(searchForm));
    }, [searchForm]);
 
@@ -106,7 +107,8 @@ export function BookmarkList() {
                      <SegmentedControl
                         data={[
                            FilterOperator.OR,
-                           FilterOperator.AND
+                           FilterOperator.AND,
+                           FilterOperator.NOT
                         ]}
                         value={searchForm.tagsOperator}
                         defaultValue={FilterOperator.OR}
