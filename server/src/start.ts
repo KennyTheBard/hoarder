@@ -3,7 +3,7 @@ import { GetMessagesRequest } from './controllers/message-controller';
 import { GetTagsExtendedResponse } from './controllers/tag-controller';
 import { MovieDb } from 'moviedb-promise';
 import { TypeFinderService } from './services/type-finder-service';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
@@ -16,6 +16,8 @@ import { Client as OmdbClient } from 'imdb-api';
 import SteamAPI from 'steamapi';
 import { HowLongToBeatService } from 'howlongtobeat';
 import { r } from 'rethinkdb-ts';
+import path from 'path';
+
 
 (async () => {
    try {
@@ -96,6 +98,13 @@ import { r } from 'rethinkdb-ts';
          limit: '10mb'
       }));
       app.use(new ErrorHandlerMiddleware().use);
+      const clientPath = path.join(__dirname, '..', '..', 'client', 'build');
+      app.use(express.static(clientPath));
+
+      // serve frontend client
+      app.get('/', (req: Request, res: Response) => {
+         res.sendFile(path.join(clientPath, 'index.html'));
+      });
 
       // add endpoints
       app.post('/api/addBookmark', postHandler<AddBookmarkRequest, AddBookmarkResponse>(

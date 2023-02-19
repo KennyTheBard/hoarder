@@ -59,14 +59,14 @@ function getInputOverrides(props: AddBookmarkFormProps): Partial<BookmarkFormdat
    if (props.origin === 'process_message') {
       const matches = findHttpUrls(props.messageText);
 
-      if (matches.length !== 1) {
+      if (matches.length !== 1 || !matches[0].index) {
          ret[props.messageText.length < 300 ? 'title' : 'note'] = props.messageText;
          return ret;
       }
 
       const onlyMatch = matches[0];
       ret['url'] = onlyMatch.text;
-      const messageWithoutUrl = props.messageText.slice(0, onlyMatch.index) + props.messageText.slice(onlyMatch.index + onlyMatch.text.length);
+      const messageWithoutUrl = props.messageText.slice(0, onlyMatch.index) + props.messageText.slice(onlyMatch.index! + onlyMatch.text.length);
       ret[messageWithoutUrl.length < 300 ? 'title' : 'note'] = messageWithoutUrl;
    }
 

@@ -18,7 +18,7 @@ export function getHostnameForUrl(url: string): string {
 }
 
 
-export function findHttpUrls(s: string): {text: string, index: number}[] {
+export function findHttpUrls(s: string): {text: string, index: number | undefined}[] {
    const matches = Array.from(s.matchAll(/(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,10})+)(\/(.)*)?(\?(.)*)?/g));
    return matches.map(match => ({
       text: match[0],
