@@ -17,3 +17,21 @@ services:
         rethinkdb --bind all
     volumes:
       - ~/apps/rethinkdb:/data
+    networks:
+      - hoarder-net
+  hoarder:
+    image: kennythebard/hoarder:1.0
+    container_name: hoarder
+    restart: always
+    depends_on:
+      - rethinkdb
+    env_file:
+      - .env
+    ports:
+     - 8080:${PORT}
+    networks:
+      - hoarder-net
+
+networks:
+  hoarder-net:
+    driver: bridge

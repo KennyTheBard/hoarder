@@ -3,8 +3,7 @@
 ## Deployment
 - [ ] use [`ttypescript` + `ttypescript-is`](https://stackoverflow.com/a/60824562) to validate request bodies
 - [x] create a `Dockerfile`
-- [ ] expect env variables to be received as docker env variables
-- [ ] create `docker-compose.yml` for the entire project
+- [x] create `docker-compose.yml` for the entire project
 
 ## Features
 - [ ] Add 'Refresh metadata' in bookmark card options

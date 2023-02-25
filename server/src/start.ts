@@ -26,8 +26,9 @@ import path from 'path';
 
       // establish connection to database
       const conn = await r.connect({
-         password: process.env.RETHINKDB_PASSWORD,
+         host: process.env.RETHINKDB_HOST,
          port: parseInt(process.env.RETHINKDB_PORT),
+         password: process.env.RETHINKDB_PASSWORD,
       });
       conn.use(process.env.RETHINKDB_DATABASE);
 
