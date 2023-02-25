@@ -101,11 +101,6 @@ import path from 'path';
       const clientPath = path.join(__dirname, '..', '..', 'client', 'build');
       app.use(express.static(clientPath));
 
-      // serve frontend client
-      app.get('/', (req: Request, res: Response) => {
-         res.sendFile(path.join(clientPath, 'index.html'));
-      });
-
       // add endpoints
       app.post('/api/addBookmark', postHandler<AddBookmarkRequest, AddBookmarkResponse>(
          bookmarkController.addBookmark
@@ -178,6 +173,11 @@ import path from 'path';
       app.post('/api/importData', postHandler<ImportDataRequest, void>(
          dataController.importData
       ));
+
+      // serve frontend client last
+      app.get('*', (req: Request, res: Response) => {
+         res.sendFile(path.join(clientPath, 'index.html'));
+      });
 
       // start server
       const port = process.env.PORT;
