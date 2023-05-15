@@ -7,7 +7,7 @@ import express, { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { ErrorHandlerMiddleware } from './middleware';
-import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, TelegramBotService, DataService } from './services';
+import { BookmarkService, GameCandidatesService, MetadataService, MediaCandidatesService, TagService, OpenLibraryService, BoardGameCandidatesService, MessageService, DataService } from './services';
 import { AddBookmarkRequest, AddBookmarkResponse, AddTagRequest, AddTagResponse, BookmarkController, DeleteBookmarkRequest, GetAllTagsResponse, GetBookmarksRequest, GetBookmarksResponse, GetUrlMetadataRequest, GetUrlMetadataResponse, MetadataController, TagController, UpdateBookmarkRequest, DeleteTagsRequest, UpdateTagRequest, GetGameDurationCandidatesRequest, GetGameDurationCandidatesResponse, GetTypeSuggestionsResponse, GetTypeSuggestionsRequest, GetMetadataCandidatesRequest, GetMetadataCandidatesResponse, GetVideoDurationInSecondsRequest, GetVideoDurationInSecondsResponse, UpdateIsArchivedForBookmarkRequest, ValidationController, IsUrlAlreadyBookmarkedRequest, IsUrlAlreadyBookmarkedResponse, MessageController, MarkMessagesRequest, GetMessagesResponse, DataController, ExportDataResponse, ImportDataRequest, SendBookmarkToTelegramRequest } from './controllers';
 import { TableNames, postHandler } from './utils';
 import { SteamAppCache, UrlMetadataCache, CandidateMetadataCache, UrlBookedCache } from './cache';
@@ -17,6 +17,7 @@ import SteamAPI from 'steamapi';
 import { HowLongToBeatService } from 'howlongtobeat';
 import { r } from 'rethinkdb-ts';
 import path from 'path';
+import { config } from './config';
 
 
 (async () => {
@@ -26,11 +27,11 @@ import path from 'path';
 
       // establish connection to database
       const conn = await r.connect({
-         host: process.env.RETHINKDB_HOST,
-         port: parseInt(process.env.RETHINKDB_PORT),
-         password: process.env.RETHINKDB_PASSWORD,
+         host: config.rethinkdb.host,
+         port: config.rethinkdb.port,
+         password: config.rethinkdb.password,
       });
-      conn.use(process.env.RETHINKDB_DATABASE);
+      conn.use(config.rethinkdb.database);
 
       // make sure that our tables exists
       const existingTables = await r.tableList().run(conn);
@@ -41,8 +42,8 @@ import path from 'path';
       }
 
       // init APIs
-      const movieDbClient = new MovieDb(process.env.MOVIEDB_API_KEY);
-      const omdbClient = new OmdbClient({ apiKey: process.env.OMDB_API_KEY });
+      const movieDbClient = new MovieDb(config.moviedbApi.key);
+      const omdbClient = new OmdbClient({ apiKey: config.omdbApi.key });
       const steamClient = new SteamAPI('fakekeysoitwontshowwarnings');
       const hltbService = new HowLongToBeatService();
 
@@ -61,9 +62,6 @@ import path from 'path';
       const boardGameCandidatesService = new BoardGameCandidatesService();
       const dataService = new DataService(conn);
       
-      // init telegram listener
-      const telegramBot = new TelegramBotService(process.env.TELEGRAM_BOT, bookmarkService, messageService);
-
       // init crons
       RefreshSteamAppCacheCron.createAndInit(
          60 * 60 * 1000,
@@ -75,7 +73,6 @@ import path from 'path';
       const bookmarkController = new BookmarkController(
          bookmarkService,
          tagService,
-         telegramBot,   
       );
       const metadataController = new MetadataController(
          typeFinderService,
@@ -114,9 +111,6 @@ import path from 'path';
       ));
       app.post('/api/deleteBookmark', postHandler<DeleteBookmarkRequest, void>(
          bookmarkController.deleteBookmark
-      ));
-      app.post('/api/sendBookmarkToTelegram', postHandler<SendBookmarkToTelegramRequest, void>(
-         bookmarkController.sendBookmarkToTelegram
       ));
       app.post('/api/updateIsArchivedForBookmark', postHandler<UpdateIsArchivedForBookmarkRequest, void>(
          bookmarkController.updateIsArchivedForBookmark
@@ -181,7 +175,7 @@ import path from 'path';
       });
 
       // start server
-      const port = process.env.PORT;
+      const port = config.port;
       app.listen(port, () => {
          console.log(`App listening on the port ${port}`);
       });

@@ -5,6 +5,7 @@ import { Client as OmdbClient } from 'imdb-api';
 import axios from 'axios';
 import * as iso8601 from 'iso8601-duration';
 import { TypeSpecificMetadata, MovieBookmark, ShowBookmark, AnimeBookmark } from 'common';
+import { config } from '../config';
 
 export class MediaCandidatesService {
 
@@ -103,7 +104,7 @@ export class MediaCandidatesService {
       if ( urlObject.hostname === 'youtu.be') {
          videoId = urlObject.pathname.split('/')[1];
       }
-      const { data } = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${process.env.GOOGLE_API_KEY}`)
+      const { data } = await axios.get(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${config.googleApi.key}`)
       return iso8601.toSeconds(iso8601.parse(data.items[0].contentDetails.duration));
    }
 

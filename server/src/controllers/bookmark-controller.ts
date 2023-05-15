@@ -1,12 +1,11 @@
 import { AnonymousBookmark, BookmarkType, BookmarkSearchForm, Bookmark, getHostnameForUrl, WithTotal, WithId, Id, WithPagination } from 'common';
-import { BookmarkService, TagService, TelegramBotService } from '../services';
+import { BookmarkService, TagService } from '../services';
 
 export class BookmarkController {
 
    constructor(
       private readonly bookmarkService: BookmarkService,
       private readonly tagService: TagService,
-      private readonly telegramBot: TelegramBotService,
    ) { }
 
    public addBookmark = async (request: AnonymousBookmark): Promise<AddBookmarkResponse> => {
@@ -38,16 +37,6 @@ export class BookmarkController {
 
    public deleteBookmark = async (request: DeleteBookmarkRequest): Promise<void> => {
       await this.bookmarkService.deleteBookmark(request.id);
-   }
-
-   public sendBookmarkToTelegram = async (request: SendBookmarkToTelegramRequest): Promise<void> => {
-      const bookmark = await this.bookmarkService.getBookmarkById(request.id);
-      const tags = await this.tagService.getTagsByIds(bookmark.tags);
-
-      await this.telegramBot.sendBookmark(
-         bookmark,
-         tags
-      );
    }
 
    public updateIsArchivedForBookmark = async (request: UpdateIsArchivedForBookmarkRequest): Promise<void> => {
