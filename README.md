@@ -1,5 +1,5 @@
 # hoarder
-Manage and search over your bookmarks with ease and ellegance.
+Manage and search over your bookmarks with ease and elegance.
 
 ## Build docker image
 
